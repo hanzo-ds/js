@@ -34,7 +34,6 @@ import type Http from 'http'
 import type * as net from 'net'
 import type Https from 'node:https'
 import Stream from 'stream'
-import type { URLSearchParams } from 'url'
 import Zlib from 'zlib'
 import { getAsText, getUserAgent, isStream } from '../utils'
 import { decompressResponse, isDecompressionError } from './compression'
@@ -478,13 +477,22 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { authorization, host, ...headers } = request.getHeaders()
       const duration = Date.now() - startTimestamp
+
+      // Redact query parameter from URL search params unless explicitly allowed
+      let searchParams = params.url.searchParams
+      if (!this.params.unsafeLogUnredactedQueries) {
+        // Clone to avoid mutating the original search params
+        searchParams = new URLSearchParams(searchParams)
+        searchParams.delete('query')
+      }
+
       this.params.log_writer.debug({
         module: 'HTTP Adapter',
         message: `${op}: got a response from ClickHouse`,
         args: {
           request_method: params.method,
           request_path: params.url.pathname,
-          request_params: params.url.search,
+          request_params: searchParams.toString(),
           request_headers: headers,
           response_status: response.statusCode,
           response_headers: response.headers,
@@ -503,6 +511,13 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
     extra_args,
   }: LogRequestErrorParams) {
     if (this.params.log_level <= ClickHouseLogLevel.ERROR) {
+      // Redact query parameter from search params unless explicitly allowed
+      if (!this.params.unsafeLogUnredactedQueries && search_params) {
+        // Clone to avoid mutating the original search params
+        search_params = new URLSearchParams(search_params)
+        search_params.delete('query')
+      }
+
       this.params.log_writer.error({
         message: this.httpRequestErrorMessage(op),
         err: err as Error,
@@ -510,7 +525,7 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
           query: this.params.unsafeLogUnredactedQueries
             ? query_params.query
             : undefined,
-          search_params: search_params?.toString() ?? '',
+          search_params: search_params?.toString(),
           with_abort_signal: query_params.abort_signal !== undefined,
           session_id: query_params.session_id,
           query_id: query_id,

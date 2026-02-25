@@ -21,8 +21,12 @@ describe('[Node.js] Logger/LogWriter', () => {
   const message = 'very informative'
   const err = new Error('boo')
 
-  it('should use OFF by default', async () => {
-    const logWriter = new LogWriter(new DefaultLogger(), module)
+  it('should explicitly use OFF', async () => {
+    const logWriter = new LogWriter(
+      new DefaultLogger(),
+      module,
+      ClickHouseLogLevel.OFF,
+    )
     logEveryLogLevel(logWriter)
     expect(debugSpy).toHaveBeenCalledTimes(0)
     expect(infoSpy).toHaveBeenCalledTimes(0)

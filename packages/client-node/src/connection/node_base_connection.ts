@@ -193,6 +193,7 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
           message: this.httpRequestErrorMessage('Ping'),
           err: error as Error,
           args: {
+            connection_id: this.connectionId,
             query_id,
           },
         })
@@ -349,10 +350,12 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
       log_writer.trace({
         message: 'Command: operation started',
         args: {
+          operation: 'Command',
+          connection_id: this.connectionId,
+          query_id,
           query: this.params.unsafeLogUnredactedQueries
             ? params.query
             : undefined,
-          query_id,
         },
       })
     }
@@ -368,6 +371,8 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
       log_writer.trace({
         message: 'Command: runExec completed, starting stream drain',
         args: {
+          operation: 'Command',
+          connection_id: this.connectionId,
           query_id,
           runExec_duration_ms: runExecDuration,
           stream_state: {
@@ -398,6 +403,8 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
       log_writer.trace({
         message: 'Command: operation completed',
         args: {
+          operation: 'Command',
+          connection_id: this.connectionId,
           query_id,
           drain_duration_ms: drainDuration,
           total_duration_ms: totalDuration,
@@ -503,13 +510,15 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
         message: this.httpRequestErrorMessage(op),
         err: err as Error,
         args: {
+          operation: op,
+          connection_id: this.connectionId,
+          query_id,
           query: this.params.unsafeLogUnredactedQueries
             ? query_params.query
             : undefined,
           search_params: search_params?.toString(),
           with_abort_signal: query_params.abort_signal !== undefined,
           session_id: query_params.session_id,
-          query_id: query_id,
           ...extra_args,
         },
       })
@@ -533,6 +542,8 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
           this.params.log_writer.error({
             message: `${op}: failed to parse X-ClickHouse-Summary header.`,
             args: {
+              operation: op,
+              connection_id: this.connectionId,
               'X-ClickHouse-Summary': summaryHeader,
             },
             err: err as Error,
@@ -635,7 +646,7 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
     return new Promise((resolve, reject) => {
       const start = Date.now()
       const request = this.createClientRequest(params)
-      const requestId = this.getNewRequestId()
+      const request_id = this.getNewRequestId()
 
       function onError(e: Error): void {
         removeRequestListeners()
@@ -662,8 +673,12 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
 
           this.params.log_writer.debug({
             module: 'HTTP Adapter',
-            message: `${op}: request ${requestId}: got a response from ClickHouse`,
+            message: `${op}: got a response from ClickHouse`,
             args: {
+              operation: op,
+              connection_id: this.connectionId,
+              query_id,
+              request_id,
               request_method: params.method,
               request_path: params.url.pathname,
               request_params: searchParams.toString(),
@@ -703,10 +718,12 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
 
         if (log_level <= ClickHouseLogLevel.TRACE) {
           log_writer.trace({
-            message: `${op}: request ${requestId}: response stream created`,
+            message: `${op}: response stream created`,
             args: {
-              query_id,
               operation: op,
+              connection_id: this.connectionId,
+              query_id,
+              request_id,
               stream_state: {
                 readable: responseStream.readable,
                 readableEnded: responseStream.readableEnded,
@@ -802,16 +819,23 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
             // It is the first time we've encountered this socket,
             // so it doesn't have the idle timeout handler attached to it
             if (socketInfo === undefined) {
-              const socketId = this.getNewSocketId()
+              const socket_id = this.getNewSocketId()
               if (log_level <= ClickHouseLogLevel.TRACE) {
                 log_writer.trace({
-                  message: `${op}: request ${requestId}: using a fresh socket ${socketId}, setting up a new 'free' listener`,
+                  message: `${op}: using a fresh socket, setting up a new 'free' listener`,
+                  args: {
+                    operation: op,
+                    connection_id: this.connectionId,
+                    query_id,
+                    request_id,
+                    socket_id,
+                  },
                 })
               }
               const newSocketInfo: SocketInfo = {
-                id: socketId,
+                id: socket_id,
                 idle_timeout_handle: undefined,
-                usageCount: 1,
+                usage_count: 1,
               }
               this.knownSockets.set(socket, newSocketInfo)
               // When the request is complete and the socket is released,
@@ -819,7 +843,14 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
               socket.on('free', () => {
                 if (log_level <= ClickHouseLogLevel.TRACE) {
                   log_writer.trace({
-                    message: `${op}: request ${requestId}: socket ${socketId} was released`,
+                    message: `${op}: socket was released`,
+                    args: {
+                      operation: op,
+                      connection_id: this.connectionId,
+                      query_id,
+                      request_id,
+                      socket_id,
+                    },
                   })
                 }
                 // Avoiding the built-in socket.timeout() method usage here,
@@ -827,7 +858,15 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
                 const idleTimeoutHandle = setTimeout(() => {
                   if (log_level <= ClickHouseLogLevel.TRACE) {
                     log_writer.trace({
-                      message: `${op}: request ${requestId}: removing socket ${socketId} after ${this.idleSocketTTL} ms of idle`,
+                      message: `${op}: removing idle socket`,
+                      args: {
+                        operation: op,
+                        connection_id: this.connectionId,
+                        query_id,
+                        request_id,
+                        socket_id,
+                        idle_socket_ttl_ms: this.idleSocketTTL,
+                      },
                     })
                   }
                   this.knownSockets.delete(socket)
@@ -844,7 +883,15 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
                 }
                 if (log_level <= ClickHouseLogLevel.TRACE) {
                   log_writer.trace({
-                    message: `${op}: request ${requestId}: socket ${socketId} received '${eventName}' event, 'free' listener removed`,
+                    message: `${op}: received '${eventName}' event, 'free' listener removed`,
+                    args: {
+                      operation: op,
+                      connection_id: this.connectionId,
+                      query_id,
+                      request_id,
+                      socket_id,
+                      event: eventName,
+                    },
                   })
                 }
 
@@ -852,14 +899,19 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
                   if (responseStream && !responseStream.readableEnded) {
                     log_writer.warn({
                       message:
-                        `${op}: request ${requestId}: socket was closed or ended before the response was fully read. ` +
+                        `${op}: socket was closed or ended before the response was fully read. ` +
                         'This can potentially result in an uncaught ECONNRESET error! ' +
                         'Consider fully consuming, draining, or destroying the response stream.',
                       args: {
+                        operation: op,
+                        connection_id: this.connectionId,
+                        query_id,
+                        request_id,
+                        socket_id,
+                        event: eventName,
                         query: this.params.unsafeLogUnredactedQueries
                           ? params.query
                           : undefined,
-                        query_id,
                       },
                     })
                   }
@@ -872,17 +924,31 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
               socketInfo.idle_timeout_handle = undefined
               if (log_level <= ClickHouseLogLevel.TRACE) {
                 log_writer.trace({
-                  message: `${op}: request ${requestId}: reusing socket ${socketInfo.id} (usage count: ${socketInfo.usageCount})`,
+                  message: `${op}: reusing socket`,
+                  args: {
+                    operation: op,
+                    connection_id: this.connectionId,
+                    query_id,
+                    request_id,
+                    socket_id: socketInfo.id,
+                    usage_count: socketInfo.usage_count,
+                  },
                 })
               }
-              socketInfo.usageCount++
+              socketInfo.usage_count++
             }
           }
         } catch (e) {
           if (log_level <= ClickHouseLogLevel.ERROR) {
             log_writer.error({
-              message: `${op}: request ${requestId}: An error occurred while housekeeping the idle sockets`,
+              message: `${op}: an error occurred while housekeeping the idle sockets`,
               err: e as Error,
+              args: {
+                operation: op,
+                connection_id: this.connectionId,
+                query_id,
+                request_id,
+              },
             })
           }
         }
@@ -896,11 +962,26 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
           const socketInfo = this.knownSockets.get(socket)
           if (socketInfo) {
             log_writer.trace({
-              message: `${op}: request ${requestId}: setting up request timeout on socket ${socketInfo.id} for ${requestTimeout} ms`,
+              message: `${op}: setting up request timeout`,
+              args: {
+                operation: op,
+                connection_id: this.connectionId,
+                query_id,
+                request_id,
+                socket_id: socketInfo.id,
+                timeout_ms: requestTimeout,
+              },
             })
           } else {
             log_writer.trace({
-              message: `${op}: request ${requestId}: setting up request timeout on a socket for ${requestTimeout} ms`,
+              message: `${op}: setting up request timeout on a socket`,
+              args: {
+                operation: op,
+                connection_id: this.connectionId,
+                query_id,
+                request_id,
+                timeout_ms: requestTimeout,
+              },
             })
           }
         }
@@ -933,10 +1014,13 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
             : undefined
 
           log_writer.trace({
-            message: `${op}: connection ${this.connectionId}: socket ${maybeSocketInfo?.id}: timeout occurred`,
+            message: `${op}: timeout occurred`,
             args: {
-              query_id,
               operation: op,
+              connection_id: this.connectionId,
+              query_id,
+              request_id,
+              socket_id: maybeSocketInfo?.id,
               timeout_ms: requestTimeout,
               socket_state: socketState,
               response_stream_state: responseStreamState,
@@ -954,8 +1038,14 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
         } catch (e) {
           if (log_level <= ClickHouseLogLevel.ERROR) {
             log_writer.error({
-              message: `${op}: request ${requestId}: An error occurred while destroying the request`,
+              message: `${op}: An error occurred while destroying the request`,
               err: e as Error,
+              args: {
+                operation: op,
+                connection_id: this.connectionId,
+                query_id,
+                request_id,
+              },
             })
           }
         }
@@ -993,8 +1083,14 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
         } catch (e) {
           if (log_level <= ClickHouseLogLevel.ERROR) {
             log_writer.error({
-              message: `${op}: request ${requestId}: An error occurred while ending the request without body`,
+              message: `${op}: an error occurred while ending the request without body`,
               err: e as Error,
+              args: {
+                operation: op,
+                connection_id: this.connectionId,
+                query_id,
+                request_id,
+              },
             })
           }
         }
@@ -1022,7 +1118,7 @@ interface LogRequestErrorParams {
 interface SocketInfo {
   id: string
   idle_timeout_handle: ReturnType<typeof setTimeout> | undefined
-  usageCount: number
+  usage_count: number
 }
 
 type RunExecParams = ConnBaseQueryParams & {

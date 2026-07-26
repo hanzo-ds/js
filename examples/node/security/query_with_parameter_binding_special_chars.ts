@@ -1,8 +1,8 @@
-import { createClient } from "@clickhouse/client";
+import { createClient } from "@hanzo-ds/client";
 
 /**
  * Binding query parameters that contain special characters (tabs, newlines, quotes, backslashes, etc.).
- * Available since clickhouse-js 0.3.1.
+ * Available since datastore-js 0.3.1.
  *
  * For an overview of binding regular values of various data types, see `query_with_parameter_binding.ts`.
  */

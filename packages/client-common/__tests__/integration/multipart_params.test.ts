@@ -1,9 +1,9 @@
 import { describe, it, expect, afterEach } from "vitest";
-import { type ClickHouseClient } from "@clickhouse/client-common";
+import { type DatastoreClient } from "@hanzo-ds/client-common";
 import { createTestClient } from "../utils";
 
 describe("multipart query params", () => {
-  let client: ClickHouseClient;
+  let client: DatastoreClient;
   afterEach(async () => {
     await client.close();
   });

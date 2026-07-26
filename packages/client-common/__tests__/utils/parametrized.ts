@@ -1,4 +1,4 @@
-import type { ClickHouseClient } from "@clickhouse/client-common";
+import type { DatastoreClient } from "@hanzo-ds/client-common";
 
 const baseClientMethod = ["query", "command", "exec"] as const;
 interface TestParam {
@@ -7,7 +7,7 @@ interface TestParam {
 }
 
 export function getHeadersTestParams<Stream>(
-  client: Pick<ClickHouseClient<Stream>, TestParam["methodName"]>,
+  client: Pick<DatastoreClient<Stream>, TestParam["methodName"]>,
 ): Array<TestParam> {
   const testParams: Array<TestParam> = baseClientMethod.map((methodName) => ({
     methodName,

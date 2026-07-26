@@ -1,10 +1,10 @@
-import type { ClickHouseClient, Row } from "@clickhouse/client-common";
+import type { DatastoreClient, Row } from "@hanzo-ds/client-common";
 import { describe, it, beforeEach, afterEach, expect } from "vitest";
 import { createTestClient } from "@test/utils/client";
 import type Stream from "stream";
 
 describe("[Node.js] SELECT streaming", () => {
-  let client: ClickHouseClient<Stream.Readable>;
+  let client: DatastoreClient<Stream.Readable>;
   afterEach(async () => {
     await client.close();
   });

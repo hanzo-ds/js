@@ -1,9 +1,9 @@
 name: "publish: client-common"
 
-# Publish + release for @clickhouse/client-common (DEPRECATED).
+# Publish + release for @hanzo-ds/client-common (DEPRECATED).
 #
-# This package is deprecated and effectively frozen: @clickhouse/client and
-# @clickhouse/client-web no longer depend on the published package — they build
+# This package is deprecated and effectively frozen: @hanzo-ds/client and
+# @hanzo-ds/client-web no longer depend on the published package — they build
 # the common sources straight from packages/client-common/src via their
 # src/common symlinks. It can still be cut a final standalone release.
 #
@@ -54,7 +54,7 @@ env:
 
 jobs:
   publish:
-    name: "Publish @clickhouse/client-common (deprecated)"
+    name: "Publish @hanzo-ds/client-common (deprecated)"
     if: github.ref == 'refs/heads/release' && github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     environment: npm-publish
@@ -63,7 +63,7 @@ jobs:
       id-token: write # Required for npm OIDC authentication and provenance
     outputs:
       version: ${{ steps.version.outputs.version }}
-      packages: "@clickhouse/client-common"
+      packages: "@hanzo-ds/client-common"
     steps:
       - name: Checkout repository
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
@@ -85,11 +85,11 @@ jobs:
           echo "version=$BASE_VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Build the package
-        run: npm --workspace @clickhouse/client-common run build
+        run: npm --workspace @hanzo-ds/client-common run build
 
-      - name: Publish @clickhouse/client-common to the latest tag (implicit)
+      - name: Publish @hanzo-ds/client-common to the latest tag (implicit)
         run: |
-          npm --workspace @clickhouse/client-common publish \
+          npm --workspace @hanzo-ds/client-common publish \
             --access public \
             --provenance
 

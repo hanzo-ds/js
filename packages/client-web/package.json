@@ -1,17 +1,17 @@
 {
-  "name": "@clickhouse/client-web",
-  "description": "Official JS client for ClickHouse DB - Web API implementation",
-  "homepage": "https://clickhouse.com",
+  "name": "@hanzo-ds/client-web",
+  "description": "Official JS client for Hanzo Datastore - Web API implementation",
+  "homepage": "https://docs.hanzo.ai/datastore",
   "version": "1.23.1",
   "license": "Apache-2.0",
   "keywords": [
-    "clickhouse",
+    "datastore",
     "sql",
     "client"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ClickHouse/clickhouse-js.git"
+    "url": "git+https://github.com/hanzo-ds/js.git"
   },
   "private": false,
   "files": [
@@ -30,12 +30,12 @@
     "lint": "eslint --max-warnings=0 .",
     "lint:fix": "eslint . --fix",
     "build": "rm -rf dist; tsc",
-    "test:unit": "CLICKHOUSE_TEST_SKIP_INIT=1 TEST_MODE=unit vitest",
+    "test:unit": "DATASTORE_TEST_SKIP_INIT=1 TEST_MODE=unit vitest",
     "test:integration": "TEST_MODE=integration vitest",
     "test:integration:dist": "npm --prefix ../.. run build && TEST_TARGET=dist TEST_MODE=integration vitest",
-    "test:integration:local_cluster": "CLICKHOUSE_TEST_ENVIRONMENT=local_cluster TEST_MODE=integration vitest",
-    "test:integration:cloud": "CLICKHOUSE_TEST_ENVIRONMENT=cloud TEST_MODE=integration vitest",
-    "test:integration:cloud:jwt": "CLICKHOUSE_TEST_ENVIRONMENT=cloud TEST_MODE=jwt vitest",
+    "test:integration:local_cluster": "DATASTORE_TEST_ENVIRONMENT=local_cluster TEST_MODE=integration vitest",
+    "test:integration:cloud": "DATASTORE_TEST_ENVIRONMENT=cloud TEST_MODE=integration vitest",
+    "test:integration:cloud:jwt": "DATASTORE_TEST_ENVIRONMENT=cloud TEST_MODE=jwt vitest",
     "test:all": "TEST_MODE=all vitest",
     "test:coverage": "VITEST_COVERAGE=true TEST_MODE=all vitest"
   },

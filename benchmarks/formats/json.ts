@@ -1,4 +1,4 @@
-import { createClient } from "@clickhouse/client";
+import { createClient } from "@hanzo-ds/client";
 import { attachExceptionHandlers } from "../common";
 
 /*

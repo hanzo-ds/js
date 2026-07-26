@@ -6,7 +6,7 @@
 // See also:
 //  - `select_json_with_metadata.ts` for metadata-aware JSON responses.
 //  - `select_data_formats_overview.ts` for a broader format comparison.
-import { createClient } from "@clickhouse/client-web";
+import { createClient } from "@hanzo-ds/client-web";
 
 interface Data {
   number: string;

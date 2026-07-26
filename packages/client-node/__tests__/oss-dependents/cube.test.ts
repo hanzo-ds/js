@@ -3,18 +3,18 @@
  * =================================================
  *
  *   Repo:        https://github.com/cube-js/cube  (~20k★)
- *   Package:     @clickhouse/client  ^1.12.0
+ *   Package:     @hanzo-ds/client  ^1.12.0
  *   Lives in:    packages/cubejs-clickhouse-driver
  *   Analysed at: f8851968710e332121d2ad8399f9d788660275f1
  *
  * How the client is used
  * ----------------------
  * Cube ships a first-party CLICKHOUSE DRIVER. It migrated from the legacy
- * `apla-clickhouse` package to the official `@clickhouse/client` (#8928), and
+ * `apla-clickhouse` package to the official `@hanzo-ds/client` (#8928), and
  * keeps the version bumped via dependency PRs (e.g. 1.7.0 -> 1.12.0, #9829).
  *
  * Key patterns:
- *   - `import { ClickHouseClient, createClient }` + types `ClickHouseSettings`,
+ *   - `import { DatastoreClient, createClient }` + types `DatastoreSettings`,
  *     `ResponseJSON`.
  *   - Query results consumed as `ResponseJSON`; large result sets streamed via
  *     `node:stream` `Readable`.
@@ -31,24 +31,24 @@
 
 import { afterEach, describe, expect, it } from "vitest";
 import {
-  type ClickHouseClient,
-  type ClickHouseSettings,
+  type DatastoreClient,
+  type DatastoreSettings,
   type ResponseJSON,
-} from "@clickhouse/client";
+} from "@hanzo-ds/client";
 import { createTestClient } from "@test/utils";
 
 describe("oss-dependents / cube", () => {
   let driver: ClickHouseDriver;
 
   class ClickHouseDriver {
-    private client: ClickHouseClient;
+    private client: DatastoreClient;
 
     constructor() {
-      const clickhouse_settings: ClickHouseSettings = {
+      const datastore_settings: DatastoreSettings = {
         // Cube reads numeric ids as strings to avoid precision loss.
         output_format_json_quote_64bit_integers: 1,
       };
-      this.client = createTestClient({ clickhouse_settings });
+      this.client = createTestClient({ datastore_settings });
     }
 
     // Query results consumed as ResponseJSON (format: 'JSON').

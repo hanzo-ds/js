@@ -1,7 +1,7 @@
 import net, { type AddressInfo } from "net";
 import { afterEach, describe, it } from "vitest";
-import { createClient } from "@clickhouse/client";
-import type { ClickHouseClient } from "@clickhouse/client-common";
+import { createClient } from "@hanzo-ds/client";
+import type { DatastoreClient } from "@hanzo-ds/client-common";
 
 // Verifies that the Node.js client honors the `max_response_headers_size`
 // configuration option, which is forwarded to `http(s).request` as the
@@ -11,9 +11,9 @@ import type { ClickHouseClient } from "@clickhouse/client-common";
 // of using the raw Node `http` module the request is issued through
 // `createClient` + `client.ping()`. A raw TCP server is still used to emit a
 // hand-crafted HTTP/1.1 response with a large block of headers, bypassing the
-// real ClickHouse server (and its own header-size limits).
+// real Datastore server (and its own header-size limits).
 describe("[Node.js] client max_response_headers_size behavior", () => {
-  let client: ClickHouseClient | undefined;
+  let client: DatastoreClient | undefined;
 
   afterEach(async () => {
     if (client !== undefined) {

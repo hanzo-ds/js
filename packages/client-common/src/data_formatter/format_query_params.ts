@@ -80,7 +80,7 @@ function formatQueryParamsInternal({
   }
 
   if (value instanceof Date) {
-    // The ClickHouse server parses numbers as time-zone-agnostic Unix timestamps
+    // The Datastore server parses numbers as time-zone-agnostic Unix timestamps
     const unixTimestamp = Math.floor(value.getTime() / 1000)
       .toString()
       .padStart(10, "0");

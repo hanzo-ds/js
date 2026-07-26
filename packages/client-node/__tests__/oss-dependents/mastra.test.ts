@@ -3,7 +3,7 @@
  * =====================================================
  *
  *   Repo:        https://github.com/mastra-ai/mastra  (~23k★)
- *   Package:     @clickhouse/client  ^1.20.0
+ *   Package:     @hanzo-ds/client  ^1.20.0
  *   Lives in:    stores/clickhouse
  *   Analysed at: 02087e1fbc54aa07f3071f7a200df1bf5be601a8
  *
@@ -15,7 +15,7 @@
  * logs, metrics, scores, feedback), workflows and background tasks.
  *
  * Key patterns:
- *   - `import type { ClickHouseClient, ClickHouseClientConfigOptions }`.
+ *   - `import type { DatastoreClient, DatastoreClientConfigOptions }`.
  *   - A central DB module creates the client; domain modules issue typed
  *     reads/writes.
  *   - "v-next" observability domain mirrors OTel-style tracing tables.
@@ -31,9 +31,9 @@
 
 import { afterEach, describe, expect, it } from "vitest";
 import {
-  type ClickHouseClient,
-  type ClickHouseClientConfigOptions,
-} from "@clickhouse/client";
+  type DatastoreClient,
+  type DatastoreClientConfigOptions,
+} from "@hanzo-ds/client";
 import { createTestClient, guid } from "@test/utils";
 
 describe("oss-dependents / mastra", () => {
@@ -41,12 +41,12 @@ describe("oss-dependents / mastra", () => {
 
   // Central DB module: builds the client shared by all storage domains.
   class ClickHouseStore {
-    private client: ClickHouseClient;
+    private client: DatastoreClient;
 
     constructor() {
       // Exercise the Node config-options type, then hand it to the test helper.
-      const options: ClickHouseClientConfigOptions = {
-        clickhouse_settings: {
+      const options: DatastoreClientConfigOptions = {
+        datastore_settings: {
           // Mastra relies on best-effort datetime parsing for OTel timestamps.
           date_time_input_format: "best_effort",
         },
@@ -80,7 +80,7 @@ describe("oss-dependents / mastra", () => {
     async createSchema(): Promise<void> {
       await this.client.command({
         query: `CREATE TABLE ${table} (threadId String, role String, content String) ENGINE = MergeTree ORDER BY threadId`,
-        clickhouse_settings: { wait_end_of_query: 1 },
+        datastore_settings: { wait_end_of_query: 1 },
       });
     }
 
@@ -95,7 +95,7 @@ describe("oss-dependents / mastra", () => {
     await store.close();
   });
 
-  it("ClickHouseClientConfigOptions + best_effort, insert + parameterised read", async () => {
+  it("DatastoreClientConfigOptions + best_effort, insert + parameterised read", async () => {
     store = new ClickHouseStore();
     await store.createSchema();
     await store.saveMessage({

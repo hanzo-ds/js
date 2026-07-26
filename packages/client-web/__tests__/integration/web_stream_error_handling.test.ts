@@ -3,14 +3,14 @@ import {
   assertError,
   streamErrorQueryParams,
 } from "@test/fixtures/stream_errors";
-import { isClickHouseVersionAtLeast } from "@test/utils/server_version";
-import type { ClickHouseClient } from "@clickhouse/client-web";
-import type { ClickHouseError } from "@clickhouse/client-web";
+import { isDatastoreVersionAtLeast } from "@test/utils/server_version";
+import type { DatastoreClient } from "@hanzo-ds/client-web";
+import type { DatastoreError } from "@hanzo-ds/client-web";
 import { createWebTestClient } from "../utils/web_client";
 
-// See https://github.com/ClickHouse/ClickHouse/pull/88818
+// See https://github.com/hanzoai/datastore/pull/88818
 describe("[Web] Stream error handling", () => {
-  let client: ClickHouseClient;
+  let client: DatastoreClient;
 
   beforeEach(async () => {
     client = createWebTestClient();
@@ -20,11 +20,11 @@ describe("[Web] Stream error handling", () => {
   });
 
   it("with reader", async ({ skip }) => {
-    if (!(await isClickHouseVersionAtLeast(client, 25, 11))) {
+    if (!(await isDatastoreVersionAtLeast(client, 25, 11))) {
       skip();
     }
 
-    let caughtError: ClickHouseError | null = null;
+    let caughtError: DatastoreError | null = null;
 
     try {
       const queryParams = streamErrorQueryParams();
@@ -39,7 +39,7 @@ describe("[Web] Stream error handling", () => {
         }
       }
     } catch (err) {
-      caughtError = err as ClickHouseError;
+      caughtError = err as DatastoreError;
     }
 
     assertError(caughtError);

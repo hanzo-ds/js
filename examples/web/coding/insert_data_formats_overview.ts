@@ -18,14 +18,14 @@
 // If some format is missing from the overview, you could help us by updating this example or submitting an issue.
 //
 // See also:
-// - ClickHouse formats documentation - https://clickhouse.com/docs/en/interfaces/formats
+// - Datastore formats documentation - https://docs.hanzo.ai/datastore/en/interfaces/formats
 // - SELECT formats overview - select_data_formats_overview.ts
 import {
   createClient,
   type DataFormat,
   type InputJSON,
   type InputJSONObjectEachRow,
-} from "@clickhouse/client-web";
+} from "@hanzo-ds/client-web";
 
 const tableName = "insert_data_formats_overview_web";
 const client = createClient();
@@ -77,7 +77,7 @@ await insertJSON("JSONCompactStringsEachRowWithNamesAndTypes", [
 // These are single document JSON formats, which are not streamable
 console.log("\n#### Single document JSON formats:\n");
 // JSON, JSONCompact, JSONColumnsWithMetadata accept the InputJSON<T> shape.
-// For example: https://clickhouse.com/docs/en/interfaces/formats#json
+// For example: https://docs.hanzo.ai/datastore/en/interfaces/formats#json
 const meta: InputJSON["meta"] = [
   { name: "id", type: "UInt32" },
   { name: "name", type: "String" },
@@ -110,7 +110,7 @@ await insertJSON("JSONColumnsWithMetadata", {
 });
 
 // JSONObjectEachRow accepts Record<string, T> (alias: InputJSONObjectEachRow<T>).
-// See https://clickhouse.com/docs/en/interfaces/formats#jsonobjecteachrow
+// See https://docs.hanzo.ai/datastore/en/interfaces/formats#jsonobjecteachrow
 await insertJSON("JSONObjectEachRow", {
   row_1: { id: 23, name: "foo", sku: [1, 2, 3] },
   row_2: { id: 24, name: "bar", sku: [4, 5, 6] },

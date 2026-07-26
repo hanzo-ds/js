@@ -3,7 +3,7 @@
  * ====================================================
  *
  *   Repo:        https://github.com/PostHog/posthog  (~33k★)
- *   Package:     @clickhouse/client  ^1.12.0
+ *   Package:     @hanzo-ds/client  ^1.12.0
  *   Lives in:    nodejs/ (the TypeScript services; ClickHouse is core to PostHog)
  *   Analysed at: 000d0abdab8c45eb5456741c68a361562a5b8fc8
  *
@@ -16,10 +16,10 @@
  * Node service surface.)
  *
  * Key patterns:
- *   - `import { ClickHouseClient, createClient as createClickHouseClient }`.
+ *   - `import { DatastoreClient, createClient as createDatastoreClient }`.
  *   - Custom `https` agent passed to `createClient` for connection tuning.
  *   - `ExecResult` + `node:stream` `Readable` in test helpers for streaming reads.
- *   - `jest.mock('@clickhouse/client')` with `query`/`close` stubs in unit tests.
+ *   - `jest.mock('@hanzo-ds/client')` with `query`/`close` stubs in unit tests.
  *
  * References (pinned to ref=000d0abdab8c45eb5456741c68a361562a5b8fc8):
  *   - Session-replay API: https://github.com/PostHog/posthog/blob/000d0abdab8c45eb5456741c68a361562a5b8fc8/nodejs/src/session-replay/recording-api/recording-api.ts
@@ -36,16 +36,16 @@
 import { Agent } from "node:http";
 import type { Readable } from "node:stream";
 import { afterEach, describe, expect, it } from "vitest";
-import { type ClickHouseClient } from "@clickhouse/client";
+import { type DatastoreClient } from "@hanzo-ds/client";
 import { createTestClient, guid } from "@test/utils";
 
 describe("oss-dependents / posthog", () => {
   // A custom http agent tunes connection pooling for the Node services.
   const httpAgent = new Agent({ keepAlive: true, maxSockets: 10 });
-  let client: ClickHouseClient;
+  let client: DatastoreClient;
   const table = `oss_posthog_${guid()}`;
 
-  function createConnection(): ClickHouseClient {
+  function createConnection(): DatastoreClient {
     return createTestClient({
       http_agent: httpAgent,
       // PostHog disables the client keep-alive in favour of the custom agent.
@@ -55,7 +55,7 @@ describe("oss-dependents / posthog", () => {
 
   // Session-replay recording API: stream rows for a recording.
   async function streamRecording(
-    c: ClickHouseClient,
+    c: DatastoreClient,
     sessionId: string,
   ): Promise<Readable> {
     const result = await c.query({
@@ -76,7 +76,7 @@ describe("oss-dependents / posthog", () => {
     client = createConnection();
     await client.command({
       query: `CREATE TABLE ${table} (session_id String, seq UInt32) ENGINE = MergeTree ORDER BY (session_id, seq)`,
-      clickhouse_settings: { wait_end_of_query: 1 },
+      datastore_settings: { wait_end_of_query: 1 },
     });
     await client.insert({
       table,

@@ -1,6 +1,6 @@
 import type {
-  BaseClickHouseClientConfigOptions,
-  ClickHouseSpan,
+  BaseDatastoreClientConfigOptions,
+  DatastoreSpan,
   CompressionSettings,
   ConnectionParams,
   DataFormat,
@@ -12,8 +12,8 @@ import { WebConnection } from "./connection";
 import { ResultSet } from "./result_set";
 import { WebValuesEncoder } from "./utils";
 
-export type WebClickHouseClientConfigOptions =
-  BaseClickHouseClientConfigOptions & {
+export type WebDatastoreClientConfigOptions =
+  BaseDatastoreClientConfigOptions & {
     /** A custom implementation or wrapper over the global `fetch` method that will be used by the client internally.
      *  This might be helpful if you want to configure mTLS or change other default `fetch` settings. */
     fetch?: typeof fetch;
@@ -31,8 +31,8 @@ function ensureNoZstdCodec(compression: CompressionSettings): void {
   for (const [direction, value] of directions) {
     if (value?.codec === "zstd") {
       throw new Error(
-        `zstd ${direction} compression is not supported by @clickhouse/client-web; ` +
-          `it is only available in @clickhouse/client (Node.js). Use gzip instead.`,
+        `zstd ${direction} compression is not supported by @hanzo-ds/client-web; ` +
+          `it is only available in @hanzo-ds/client (Node.js). Use gzip instead.`,
       );
     }
   }
@@ -40,7 +40,7 @@ function ensureNoZstdCodec(compression: CompressionSettings): void {
 
 export const WebImpl: ImplementationDetails<ReadableStream>["impl"] = {
   make_connection: (
-    config: WebClickHouseClientConfigOptions,
+    config: WebDatastoreClientConfigOptions,
     params: ConnectionParams,
   ) => {
     ensureNoZstdCodec(params.compression);
@@ -56,7 +56,7 @@ export const WebImpl: ImplementationDetails<ReadableStream>["impl"] = {
     _log_error: (err: Error) => void,
     response_headers: ResponseHeaders,
     jsonHandling: JSONHandling,
-    span?: ClickHouseSpan,
+    span?: DatastoreSpan,
   ) =>
     new ResultSet(
       stream,

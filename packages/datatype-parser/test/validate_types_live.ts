@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/// Sanity-check that every type in cases.txt is a REAL ClickHouse type — i.e.
+/// Sanity-check that every type in cases.txt is a REAL Datastore type — i.e.
 /// that we did not invent any — against a stock running server (no AST-JSON
 /// support needed). Unlike `EXPLAIN SYNTAX`/`EXPLAIN AST`, which only check
 /// syntax (they happily accept `Bogus(UInt8)`), this instantiates the type via

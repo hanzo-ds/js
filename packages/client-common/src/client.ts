@@ -1,58 +1,58 @@
 import type {
-  BaseClickHouseClientConfigOptions,
-  ClickHouseSettings,
+  BaseDatastoreClientConfigOptions,
+  DatastoreSettings,
   Connection,
   ConnectionParams,
   ConnExecResult,
   IsSame,
   MakeResultSet,
-  WithClickHouseSummary,
+  WithDatastoreSummary,
   WithResponseHeaders,
   DataFormat,
 } from "./index";
 import { defaultJSONHandling } from "./parse";
-import { DefaultLogger, ClickHouseLogLevel } from "./logger";
+import { DefaultLogger, DatastoreLogLevel } from "./logger";
 import type {
   InsertValues,
   NonEmptyArray,
   WithHttpStatusCode,
-} from "./clickhouse_types";
+} from "./datastore_types";
 import type { ImplementationDetails, ValuesEncoder } from "./config";
 import { getConnectionParams, prepareConfigWithURL } from "./config";
 import type { ConnPingResult } from "./connection";
 import type { JSONHandling } from "./parse/json_handling";
 import type { BaseResultSet } from "./result";
 import type {
-  ClickHouseSpan,
-  ClickHouseSpanAttributes,
-  ClickHouseTracer,
+  DatastoreSpan,
+  DatastoreSpanAttributes,
+  DatastoreTracer,
 } from "./tracing";
 import {
-  ClickHouseSpanKind,
-  ClickHouseSpanNames,
-  NoopClickHouseTracer,
+  DatastoreSpanKind,
+  DatastoreSpanNames,
+  NoopDatastoreTracer,
   recordSpanError,
 } from "./tracing";
 
 export interface BaseQueryParams {
-  /** ClickHouse's settings that can be applied on query level. */
-  clickhouse_settings?: ClickHouseSettings;
-  /** Parameters for query binding. https://clickhouse.com/docs/en/interfaces/http/#cli-queries-with-parameters */
+  /** Datastore's settings that can be applied on query level. */
+  datastore_settings?: DatastoreSettings;
+  /** Parameters for query binding. https://docs.hanzo.ai/datastore/en/interfaces/http/#cli-queries-with-parameters */
   query_params?: Record<string, unknown>;
   /** AbortSignal instance to cancel a request in progress. */
   abort_signal?: AbortSignal;
   /** A specific `query_id` that will be sent with this request.
    *  If it is not set, a random identifier will be generated automatically by the client. */
   query_id?: string;
-  /** A specific ClickHouse Session id for this query.
-   *  If it is not set, {@link BaseClickHouseClientConfigOptions.session_id} will be used.
+  /** A specific Datastore Session id for this query.
+   *  If it is not set, {@link BaseDatastoreClientConfigOptions.session_id} will be used.
    *  @default undefined (no override) */
   session_id?: string;
   /** A specific list of roles to use for this query.
-   *  If it is not set, {@link BaseClickHouseClientConfigOptions.role} will be used.
+   *  If it is not set, {@link BaseDatastoreClientConfigOptions.role} will be used.
    *  @default undefined (no override) */
   role?: string | Array<string>;
-  /** When defined, overrides {@link BaseClickHouseClientConfigOptions.auth} for this particular request.
+  /** When defined, overrides {@link BaseDatastoreClientConfigOptions.auth} for this particular request.
    *  @default undefined (no override) */
   auth?:
     | {
@@ -61,14 +61,14 @@ export interface BaseQueryParams {
       }
     | { access_token: string };
   /** Additional HTTP headers to attach to this particular request.
-   *  Overrides the headers set in {@link BaseClickHouseClientConfigOptions.http_headers}.
+   *  Overrides the headers set in {@link BaseDatastoreClientConfigOptions.http_headers}.
    *  @default empty object */
   http_headers?: Record<string, string>;
-  /** When defined, overrides {@link BaseClickHouseClientConfigOptions.use_multipart_params}
+  /** When defined, overrides {@link BaseDatastoreClientConfigOptions.use_multipart_params}
    *  for this particular request.
    *  @default undefined (no override) */
   use_multipart_params?: boolean;
-  /** When defined, overrides {@link BaseClickHouseClientConfigOptions.use_multipart_params_auto}
+  /** When defined, overrides {@link BaseDatastoreClientConfigOptions.use_multipart_params_auto}
    *  for this particular request.
    *  @default undefined (no override) */
   use_multipart_params_auto?: boolean;
@@ -101,7 +101,7 @@ export type ExecParams = BaseQueryParams & {
    *  and the values are sent in the request body instead. */
   query: string;
   /** If set to `false`, the client _will not_ decompress the response stream, even if the response compression
-   *  was requested by the client via the {@link BaseClickHouseClientConfigOptions.compression.response } setting.
+   *  was requested by the client via the {@link BaseDatastoreClientConfigOptions.compression.response } setting.
    *  This could be useful if the response stream is passed to another application as-is,
    *  and the decompression is handled there.
    *  @note 1) Node.js only. This setting will have no effect on the Web version.
@@ -124,12 +124,12 @@ export type ExecParamsWithValues<Stream> = ExecParams & {
    *  NB: the data in the stream is expected to be serialized accordingly to the FORMAT clause
    *  used in {@link ExecParams.query} in this case.
    *
-   *  @see https://clickhouse.com/docs/en/interfaces/formats */
+   *  @see https://docs.hanzo.ai/datastore/en/interfaces/formats */
   values: Stream;
 };
 
 export type CommandParams = ExecParams;
-export type CommandResult = { query_id: string } & WithClickHouseSummary &
+export type CommandResult = { query_id: string } & WithDatastoreSummary &
   WithResponseHeaders &
   WithHttpStatusCode;
 
@@ -146,7 +146,7 @@ export type InsertResult = {
    * Otherwise, either {@link InsertParams.query_id} if it was set, or the id that was generated by the client.
    */
   query_id: string;
-} & WithClickHouseSummary &
+} & WithDatastoreSummary &
   WithResponseHeaders &
   WithHttpStatusCode;
 
@@ -178,7 +178,7 @@ export interface InsertParams<
    * By default, the data is inserted into all columns of the {@link InsertParams.table},
    * and the generated statement will be: `INSERT INTO table FORMAT DataFormat`.
    *
-   * See also: https://clickhouse.com/docs/en/sql-reference/statements/insert-into */
+   * See also: https://docs.hanzo.ai/datastore/en/sql-reference/statements/insert-into */
   columns?: NonEmptyArray<string> | InsertColumnsExcept;
 }
 
@@ -199,8 +199,8 @@ export type PingParamsWithSelectQuery = { select: true } & Omit<
 export type PingParams = PingParamsWithEndpoint | PingParamsWithSelectQuery;
 export type PingResult = ConnPingResult;
 
-export class ClickHouseClient<Stream = unknown> {
-  private readonly clientClickHouseSettings: ClickHouseSettings;
+export class DatastoreClient<Stream = unknown> {
+  private readonly clientDatastoreSettings: DatastoreSettings;
   private readonly connectionParams: ConnectionParams;
   private readonly connection: Connection<Stream>;
   private readonly makeResultSet: MakeResultSet<Stream>;
@@ -208,10 +208,10 @@ export class ClickHouseClient<Stream = unknown> {
   private readonly sessionId?: string;
   private readonly role?: string | Array<string>;
   private readonly jsonHandling: JSONHandling;
-  private readonly tracer: ClickHouseTracer;
+  private readonly tracer: DatastoreTracer;
 
   constructor(
-    config: BaseClickHouseClientConfigOptions & ImplementationDetails<Stream>,
+    config: BaseDatastoreClientConfigOptions & ImplementationDetails<Stream>,
   ) {
     const logger = config?.log?.LoggerClass
       ? new config.log.LoggerClass()
@@ -222,7 +222,7 @@ export class ClickHouseClient<Stream = unknown> {
       config.impl.handle_specific_url_params ?? null,
     );
     this.connectionParams = getConnectionParams(configWithURL, logger);
-    this.clientClickHouseSettings = this.connectionParams.clickhouse_settings;
+    this.clientDatastoreSettings = this.connectionParams.datastore_settings;
     this.sessionId = config.session_id;
     this.role = config.role;
     this.connection = config.impl.make_connection(
@@ -240,7 +240,7 @@ export class ClickHouseClient<Stream = unknown> {
     this.valuesEncoder = config.impl.values_encoder(this.jsonHandling);
     // Assigned once at client creation: when no tracer is configured, the
     // shared no-op tracer keeps the hot path branch-free.
-    this.tracer = config.tracer ?? NoopClickHouseTracer;
+    this.tracer = config.tracer ?? NoopDatastoreTracer;
   }
 
   /**
@@ -249,14 +249,14 @@ export class ClickHouseClient<Stream = unknown> {
    *
    * The `FORMAT` clause should be specified separately via {@link QueryParams.format} (default is `JSON`);
    * this method will always append `FORMAT <format>` to the end of {@link QueryParams.query}.
-   * If the query already contains a `FORMAT` clause, ClickHouse will return a syntax error due to a duplicate `FORMAT`.
+   * If the query already contains a `FORMAT` clause, Datastore will return a syntax error due to a duplicate `FORMAT`.
    * This is intended behavior.
-   * Use {@link ClickHouseClient.insert} for data insertion, {@link ClickHouseClient.command} for DDLs,
-   * or {@link ClickHouseClient.exec} for queries where you need to provide the full SQL (including `FORMAT`) yourself or where the `FORMAT` suffix is not supported.
+   * Use {@link DatastoreClient.insert} for data insertion, {@link DatastoreClient.command} for DDLs,
+   * or {@link DatastoreClient.exec} for queries where you need to provide the full SQL (including `FORMAT`) yourself or where the `FORMAT` suffix is not supported.
    *
    * @note For `SHOW [ROW] POLICIES`, use the full syntax `SHOW POLICIES ON *`,
    * as the short version does not support appending `FORMAT` at the server SQL parser level.
-   * See https://github.com/ClickHouse/ClickHouse/issues/105899
+   * See https://github.com/hanzoai/datastore/issues/105899
    *
    * See {@link DataFormat} for the formats supported by the client.
    */
@@ -268,13 +268,13 @@ export class ClickHouseClient<Stream = unknown> {
     const queryParams = this.withClientQueryParams(params);
     const { log_writer, log_level } = this.connectionParams;
     return this.tracer.startActiveSpan(
-      ClickHouseSpanNames.query,
+      DatastoreSpanNames.query,
       {
-        kind: ClickHouseSpanKind.CLIENT,
+        kind: DatastoreSpanKind.CLIENT,
         attributes: this.withBaseSpanAttributes({
-          "clickhouse.response.format": format,
-          "clickhouse.request.query_id": queryParams.query_id,
-          "clickhouse.request.session_id": queryParams.session_id,
+          "datastore.response.format": format,
+          "datastore.request.query_id": queryParams.query_id,
+          "datastore.request.session_id": queryParams.session_id,
         }),
       },
       async (span) => {
@@ -292,19 +292,19 @@ export class ClickHouseClient<Stream = unknown> {
         const { stream, query_id, response_headers, http_status_code } =
           queryResult;
         // The query_id may have been generated by the connection layer.
-        span.setAttributes({ "clickhouse.request.query_id": query_id });
+        span.setAttributes({ "datastore.request.query_id": query_id });
         setResponseSpanAttributes(span, { http_status_code });
-        // The clickhouse.query span covers the HTTP request lifetime only:
+        // The datastore.query span covers the HTTP request lifetime only:
         // it ends here, once response headers are received.  A separate
-        // clickhouse.query.stream child span is started and handed to the
+        // datastore.query.stream child span is started and handed to the
         // ResultSet to track the response stream consumption (decoded bytes,
         // returned rows, streaming errors).  Separating the two spans makes
         // it easy to distinguish the original request duration from a stream
         // that may never end (e.g. tailing a live table).
         span.end();
         return this.tracer.startActiveSpan(
-          ClickHouseSpanNames.query_stream,
-          { kind: ClickHouseSpanKind.CLIENT },
+          DatastoreSpanNames.query_stream,
+          { kind: DatastoreSpanKind.CLIENT },
           (streamSpan) => {
             try {
               return this.makeResultSet(
@@ -312,7 +312,7 @@ export class ClickHouseClient<Stream = unknown> {
                 format,
                 query_id,
                 (err) => {
-                  if (log_level <= ClickHouseLogLevel.ERROR) {
+                  if (log_level <= DatastoreLogLevel.ERROR) {
                     log_writer.error({
                       err,
                       module: "Client",
@@ -347,20 +347,20 @@ export class ClickHouseClient<Stream = unknown> {
    * The response stream is destroyed immediately as we do not expect useful information there.
    * Examples of such statements are DDLs or custom inserts.
    *
-   * @note if you have a custom query that does not work with {@link ClickHouseClient.query},
-   * and you are interested in the response data, consider using {@link ClickHouseClient.exec}.
+   * @note if you have a custom query that does not work with {@link DatastoreClient.query},
+   * and you are interested in the response data, consider using {@link DatastoreClient.exec}.
    */
   async command(params: CommandParams): Promise<CommandResult> {
     const query = removeTrailingSemi(params.query.trim());
     const ignore_error_response = params.ignore_error_response ?? false;
     const queryParams = this.withClientQueryParams(params);
     return this.tracer.startActiveSpan(
-      ClickHouseSpanNames.command,
+      DatastoreSpanNames.command,
       {
-        kind: ClickHouseSpanKind.CLIENT,
+        kind: DatastoreSpanKind.CLIENT,
         attributes: this.withBaseSpanAttributes({
-          "clickhouse.request.query_id": queryParams.query_id,
-          "clickhouse.request.session_id": queryParams.session_id,
+          "datastore.request.query_id": queryParams.query_id,
+          "datastore.request.session_id": queryParams.session_id,
         }),
       },
       async (span) => {
@@ -371,7 +371,7 @@ export class ClickHouseClient<Stream = unknown> {
             ...queryParams,
           });
           span.setAttributes({
-            "clickhouse.request.query_id": result.query_id,
+            "datastore.request.query_id": result.query_id,
           });
           setResponseSpanAttributes(span, result);
           return result;
@@ -386,12 +386,12 @@ export class ClickHouseClient<Stream = unknown> {
   }
 
   /**
-   * Similar to {@link ClickHouseClient.command}, but for the cases where the output _is expected_,
+   * Similar to {@link DatastoreClient.command}, but for the cases where the output _is expected_,
    * but format clause is not applicable. The caller of this method _must_ consume the stream,
    * as the underlying socket will not be released until then, and the request will eventually be timed out.
    *
    * @note it is not intended to use this method to execute the DDLs, such as `CREATE TABLE` or similar;
-   * use {@link ClickHouseClient.command} instead.
+   * use {@link DatastoreClient.command} instead.
    */
   async exec(
     params: ExecParams | ExecParamsWithValues<Stream>,
@@ -403,12 +403,12 @@ export class ClickHouseClient<Stream = unknown> {
     const ignore_error_response = params.ignore_error_response ?? false;
     const queryParams = this.withClientQueryParams(params);
     return this.tracer.startActiveSpan(
-      ClickHouseSpanNames.exec,
+      DatastoreSpanNames.exec,
       {
-        kind: ClickHouseSpanKind.CLIENT,
+        kind: DatastoreSpanKind.CLIENT,
         attributes: this.withBaseSpanAttributes({
-          "clickhouse.request.query_id": queryParams.query_id,
-          "clickhouse.request.session_id": queryParams.session_id,
+          "datastore.request.query_id": queryParams.query_id,
+          "datastore.request.session_id": queryParams.session_id,
         }),
       },
       async (span) => {
@@ -421,7 +421,7 @@ export class ClickHouseClient<Stream = unknown> {
             ...queryParams,
           });
           span.setAttributes({
-            "clickhouse.request.query_id": result.query_id,
+            "datastore.request.query_id": result.query_id,
           });
           setResponseSpanAttributes(span, result);
           return result;
@@ -441,7 +441,7 @@ export class ClickHouseClient<Stream = unknown> {
    * As the insert operation does not provide any output, the response stream is immediately destroyed.
    *
    * @note in case of a custom insert operation (e.g., `INSERT FROM SELECT`),
-   * consider using {@link ClickHouseClient.command}, passing the entire raw query there
+   * consider using {@link DatastoreClient.command}, passing the entire raw query there
    * (including the `FORMAT` clause).
    */
   async insert<T>(params: InsertParams<Stream, T>): Promise<InsertResult> {
@@ -455,18 +455,18 @@ export class ClickHouseClient<Stream = unknown> {
     const query = getInsertQuery(params, format);
     const queryParams = this.withClientQueryParams(params);
     return this.tracer.startActiveSpan(
-      ClickHouseSpanNames.insert,
+      DatastoreSpanNames.insert,
       {
-        kind: ClickHouseSpanKind.CLIENT,
+        kind: DatastoreSpanKind.CLIENT,
         attributes: this.withBaseSpanAttributes({
           "db.operation.name": "INSERT",
           "db.collection.name": params.table,
-          "clickhouse.request.format": format,
-          "clickhouse.request.query_id": queryParams.query_id,
-          "clickhouse.request.session_id": queryParams.session_id,
+          "datastore.request.format": format,
+          "datastore.request.query_id": queryParams.query_id,
+          "datastore.request.session_id": queryParams.session_id,
           // Only known up front for array-based inserts; for streamed
           // inserts, the row count is not observable by the client.
-          "clickhouse.request.sent_rows": Array.isArray(params.values)
+          "datastore.request.sent_rows": Array.isArray(params.values)
             ? params.values.length
             : undefined,
         }),
@@ -474,7 +474,7 @@ export class ClickHouseClient<Stream = unknown> {
       async (span) => {
         try {
           const values = this.valuesEncoder.encodeValues(params.values, format);
-          // TODO: record `clickhouse.request.encoded_bytes` (the
+          // TODO: record `datastore.request.encoded_bytes` (the
           // pre-compression request body size) here. This is a
           // post-common-deprecation feature: once `client-common` is
           // deprecated and the Node.js / Web clients are fully independent,
@@ -487,7 +487,7 @@ export class ClickHouseClient<Stream = unknown> {
             ...queryParams,
           });
           span.setAttributes({
-            "clickhouse.request.query_id": result.query_id,
+            "datastore.request.query_id": result.query_id,
           });
           setResponseSpanAttributes(span, result);
           return { ...result, executed: true };
@@ -513,11 +513,11 @@ export class ClickHouseClient<Stream = unknown> {
   async ping(params?: PingParams): Promise<PingResult> {
     const select = params?.select ?? false;
     return this.tracer.startActiveSpan(
-      ClickHouseSpanNames.ping,
+      DatastoreSpanNames.ping,
       {
-        kind: ClickHouseSpanKind.CLIENT,
+        kind: DatastoreSpanKind.CLIENT,
         attributes: this.withBaseSpanAttributes({
-          "clickhouse.ping.select": select,
+          "datastore.ping.select": select,
         }),
       },
       async (span) => {
@@ -548,7 +548,7 @@ export class ClickHouseClient<Stream = unknown> {
    * Closes the client connection.
    *
    * Automatically called when using `using` statement in supported environments.
-   * @see {@link ClickHouseClient.close}
+   * @see {@link DatastoreClient.close}
    * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/using
    */
   async [Symbol.asyncDispose]() {
@@ -556,17 +556,20 @@ export class ClickHouseClient<Stream = unknown> {
   }
 
   private withBaseSpanAttributes(
-    extra: ClickHouseSpanAttributes,
-  ): ClickHouseSpanAttributes {
+    extra: DatastoreSpanAttributes,
+  ): DatastoreSpanAttributes {
     const url = this.connectionParams.url;
-    const attrs: ClickHouseSpanAttributes = {
+    const attrs: DatastoreSpanAttributes = {
+      // Value from the OpenTelemetry semantic-convention registry, not our
+      // brand: it tells tracing backends which wire protocol this is. Datastore
+      // speaks the same protocol, so the registry value stays as-is.
       "db.system.name": "clickhouse",
       "server.address": url.hostname,
       "server.port": getServerPort(url),
       "db.namespace": this.connectionParams.database,
     };
     if (this.connectionParams.application_id !== undefined) {
-      attrs["clickhouse.application"] = this.connectionParams.application_id;
+      attrs["datastore.application"] = this.connectionParams.application_id;
     }
     for (const [k, v] of Object.entries(extra)) {
       if (v !== undefined) attrs[k] = v;
@@ -576,9 +579,9 @@ export class ClickHouseClient<Stream = unknown> {
 
   private withClientQueryParams(params: BaseQueryParams): BaseQueryParams {
     return {
-      clickhouse_settings: {
-        ...this.clientClickHouseSettings,
-        ...params.clickhouse_settings,
+      datastore_settings: {
+        ...this.clientDatastoreSettings,
+        ...params.datastore_settings,
       },
       query_params: params.query_params,
       abort_signal: params.abort_signal,
@@ -600,27 +603,27 @@ function getServerPort(url: URL): number {
   return url.protocol === "https:" ? 443 : 80;
 }
 
-/** Records HTTP status and `X-ClickHouse-Summary` counters on the span once
+/** Records HTTP status and `X-Datastore-Summary` counters on the span once
  *  the response (headers) arrived. The summary values are complete only when
  *  the query was executed with `wait_end_of_query=1`; see
- *  {@link ClickHouseSummary}. */
+ *  {@link DatastoreSummary}. */
 function setResponseSpanAttributes(
-  span: ClickHouseSpan,
-  result: WithHttpStatusCode & WithClickHouseSummary,
+  span: DatastoreSpan,
+  result: WithHttpStatusCode & WithDatastoreSummary,
 ): void {
-  const attributes: ClickHouseSpanAttributes = {};
+  const attributes: DatastoreSpanAttributes = {};
   if (result.http_status_code !== undefined) {
     attributes["db.response.status_code"] = result.http_status_code;
   }
   const summary = result.summary;
   if (summary !== undefined) {
-    attributes["clickhouse.summary.read_rows"] = summary.read_rows;
-    attributes["clickhouse.summary.read_bytes"] = summary.read_bytes;
-    attributes["clickhouse.summary.written_rows"] = summary.written_rows;
-    attributes["clickhouse.summary.written_bytes"] = summary.written_bytes;
-    attributes["clickhouse.summary.result_rows"] = summary.result_rows;
-    attributes["clickhouse.summary.result_bytes"] = summary.result_bytes;
-    attributes["clickhouse.summary.elapsed_ns"] = summary.elapsed_ns;
+    attributes["datastore.summary.read_rows"] = summary.read_rows;
+    attributes["datastore.summary.read_bytes"] = summary.read_bytes;
+    attributes["datastore.summary.written_rows"] = summary.written_rows;
+    attributes["datastore.summary.written_bytes"] = summary.written_bytes;
+    attributes["datastore.summary.result_rows"] = summary.result_rows;
+    attributes["datastore.summary.result_bytes"] = summary.result_bytes;
+    attributes["datastore.summary.elapsed_ns"] = summary.elapsed_ns;
   }
   span.setAttributes(attributes);
 }

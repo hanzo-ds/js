@@ -1,8 +1,8 @@
 import type {
-  ClickHouseClient,
-  ClickHouseSettings,
+  DatastoreClient,
+  DatastoreSettings,
   RawDataFormat,
-} from "@clickhouse/client-common";
+} from "@hanzo-ds/client-common";
 import { describe, it, beforeEach, afterEach, expect } from "vitest";
 import { createSimpleTable } from "@test/fixtures/simple_table";
 import { assertJsonValues, jsonValues } from "@test/fixtures/test_data";
@@ -12,7 +12,7 @@ import Stream from "stream";
 import { makeRawStream } from "../utils/stream";
 
 describe("[Node.js] stream raw formats", () => {
-  let client: ClickHouseClient;
+  let client: DatastoreClient;
   let tableName: string;
 
   beforeEach(async () => {
@@ -252,7 +252,7 @@ describe("[Node.js] stream raw formats", () => {
   });
 
   describe("Custom separated", () => {
-    const clickhouse_settings: ClickHouseSettings = {
+    const datastore_settings: DatastoreSettings = {
       format_custom_escaping_rule: "CSV",
       format_custom_field_delimiter: "^",
     };
@@ -266,13 +266,9 @@ describe("[Node.js] stream raw formats", () => {
         table: tableName,
         values: stream,
         format: "CustomSeparated",
-        clickhouse_settings,
+        datastore_settings,
       });
-      await assertInsertedValues(
-        "CustomSeparated",
-        values,
-        clickhouse_settings,
-      );
+      await assertInsertedValues("CustomSeparated", values, datastore_settings);
     });
 
     it("should insert a custom separated stream with names", async () => {
@@ -284,12 +280,12 @@ describe("[Node.js] stream raw formats", () => {
         table: tableName,
         values: stream,
         format: "CustomSeparatedWithNames",
-        clickhouse_settings,
+        datastore_settings,
       });
       await assertInsertedValues(
         "CustomSeparatedWithNames",
         values,
-        clickhouse_settings,
+        datastore_settings,
       );
     });
 
@@ -302,12 +298,12 @@ describe("[Node.js] stream raw formats", () => {
         table: tableName,
         values: stream,
         format: "CustomSeparatedWithNamesAndTypes",
-        clickhouse_settings,
+        datastore_settings,
       });
       await assertInsertedValues(
         "CustomSeparatedWithNamesAndTypes",
         values,
-        clickhouse_settings,
+        datastore_settings,
       );
     });
 
@@ -320,7 +316,7 @@ describe("[Node.js] stream raw formats", () => {
           table: tableName,
           values: stream,
           format: "CustomSeparated",
-          clickhouse_settings,
+          datastore_settings,
         }),
       ).rejects.toMatchObject({
         message: expect.stringContaining("Cannot parse input"),
@@ -338,7 +334,7 @@ describe("[Node.js] stream raw formats", () => {
             values: stream,
             format: "CustomSeparated",
             table: tableName,
-            clickhouse_settings,
+            datastore_settings,
           });
         }),
       );
@@ -353,11 +349,11 @@ describe("[Node.js] stream raw formats", () => {
   async function assertInsertedValues(
     format: RawDataFormat,
     expected: string,
-    clickhouse_settings?: ClickHouseSettings,
+    datastore_settings?: DatastoreSettings,
   ) {
     const result = await client.query({
       query: `SELECT * FROM ${tableName} ORDER BY id ASC`,
-      clickhouse_settings,
+      datastore_settings,
       format,
     });
     expect(await result.text()).toEqual(expected);

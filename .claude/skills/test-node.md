@@ -8,7 +8,7 @@ After making changes to the node package, run both test suites:
 npm run test:node:unit
 ```
 
-- Integration tests (requires a running ClickHouse server):
+- Integration tests (requires a running Datastore server):
 
 ```
 npm run test:node:integration

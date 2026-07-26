@@ -2,8 +2,8 @@ import { describe, it, expect, vi, beforeAll } from "vitest";
 import {
   DefaultLogger,
   LogWriter,
-  ClickHouseLogLevel,
-} from "@clickhouse/client-common";
+  DatastoreLogLevel,
+} from "@hanzo-ds/client-common";
 import { drainStreamInternal, type Context } from "../../src/connection/stream";
 import stream from "stream";
 
@@ -17,13 +17,13 @@ describe("drainStreamInternal", () => {
     log_writer = new LogWriter(
       new DefaultLogger(),
       "Connection",
-      ClickHouseLogLevel.OFF,
+      DatastoreLogLevel.OFF,
     );
     context = {
       op: "Insert",
       query_id: "test-query-id",
       log_writer,
-      log_level: ClickHouseLogLevel.OFF,
+      log_level: DatastoreLogLevel.OFF,
     };
   });
   it("resolves when the stream ends", async () => {

@@ -1,4 +1,4 @@
-import { createClient } from "@clickhouse/client-web";
+import { createClient } from "@hanzo-ds/client-web";
 
 /**
  * Similar to `insert_js_dates.ts` but testing custom JSON handling

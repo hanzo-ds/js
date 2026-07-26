@@ -1,12 +1,12 @@
 #pragma once
 
-/// A small purpose-built tokenizer for ClickHouse data-type strings.
+/// A small purpose-built tokenizer for Datastore data-type strings.
 ///
 /// Type strings use a tiny slice of the SQL grammar — identifiers (bare,
 /// backtick- or double-quoted), single-quoted string literals, numbers, and a
-/// handful of punctuation tokens. Rather than vendor the full ClickHouse
+/// handful of punctuation tokens. Rather than vendor the full Datastore
 /// `Lexer` (and its `UTF8Helpers` / `find_symbols` dependencies), this covers
-/// exactly that slice, keeping the library free of any ClickHouse headers.
+/// exactly that slice, keeping the library free of any Datastore headers.
 
 #include <cstddef>
 #include <string>

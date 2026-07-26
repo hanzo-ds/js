@@ -3,18 +3,18 @@
 // E2E packaging check for shipped AI-agent skills.
 //
 // Source of truth: the repo-root `skills/` directory. Every skill that lives
-// there is shipped via `@clickhouse/client` (its `prepack` copies the entire
+// there is shipped via `@hanzo-ds/client` (its `prepack` copies the entire
 // `skills/` tree into the package), so this script discovers skills from the
 // source directory and asserts that each one is:
 //
-//   1. declared in `agents.skills` of the installed @clickhouse/client
+//   1. declared in `agents.skills` of the installed @hanzo-ds/client
 //      package.json (with matching `path`),
 //   2. present at the declared path inside the installed package and contains
 //      a `SKILL.md`,
 //   3. symlinked into `.claude/skills/` by skills-npm.
 //
 // It also asserts that `agents.skills` does not declare any skill that is
-// missing from the source `skills/` directory, and that `@clickhouse/client-web`
+// missing from the source `skills/` directory, and that `@hanzo-ds/client-web`
 // ships no skills.
 
 const assert = require("assert");
@@ -39,7 +39,7 @@ const skillsSrcDir = path.join(repoRoot, "skills");
 // Discover skills from the source-of-truth `skills/` directory.
 assert.ok(
   fs.existsSync(skillsSrcDir),
-  `source-of-truth skills directory not found at ${skillsSrcDir}; this script is meant to run from tests/e2e/skills inside the clickhouse-js repo`,
+  `source-of-truth skills directory not found at ${skillsSrcDir}; this script is meant to run from tests/e2e/skills inside the datastore-js repo`,
 );
 const expectedSkills = fs
   .readdirSync(skillsSrcDir, { withFileTypes: true })
@@ -58,8 +58,8 @@ check("repo skills/ directory contains at least one skill", () => {
   );
 });
 
-// @clickhouse/client (Node.js) — ships every skill from the repo `skills/` tree.
-const nodeRoot = path.join(nm, "@clickhouse", "client");
+// @hanzo-ds/client (Node.js) — ships every skill from the repo `skills/` tree.
+const nodeRoot = path.join(nm, "@datastore", "client");
 const nodePkg = JSON.parse(
   fs.readFileSync(path.join(nodeRoot, "package.json"), "utf8"),
 );
@@ -67,11 +67,11 @@ const declaredSkills = Array.isArray(nodePkg.agents?.skills)
   ? nodePkg.agents.skills
   : [];
 
-check("@clickhouse/client skills dir exists", () =>
+check("@hanzo-ds/client skills dir exists", () =>
   assert.ok(fs.existsSync(path.join(nodeRoot, "skills"))),
 );
 check(
-  "@clickhouse/client agents.skills declares every skill from skills/",
+  "@hanzo-ds/client agents.skills declares every skill from skills/",
   () => {
     const declaredNames = declaredSkills.map((s) => s.name).sort();
     assert.deepStrictEqual(
@@ -84,7 +84,7 @@ check(
 
 for (const skill of declaredSkills) {
   check(
-    `@clickhouse/client agents.skills entry "${skill.name}" has a valid path`,
+    `@hanzo-ds/client agents.skills entry "${skill.name}" has a valid path`,
     () => {
       assert.ok(
         typeof skill.path === "string" && skill.path.length > 0,
@@ -109,16 +109,13 @@ for (const skill of declaredSkills) {
   );
 }
 
-// @clickhouse/client-web — no skills yet; verify the package installed cleanly and does not ship skills
-check("@clickhouse/client-web installs without skills dir", () => {
-  const webRoot = path.join(nm, "@clickhouse", "client-web");
-  assert.ok(
-    fs.existsSync(webRoot),
-    "@clickhouse/client-web should be installed",
-  );
+// @hanzo-ds/client-web — no skills yet; verify the package installed cleanly and does not ship skills
+check("@hanzo-ds/client-web installs without skills dir", () => {
+  const webRoot = path.join(nm, "@datastore", "client-web");
+  assert.ok(fs.existsSync(webRoot), "@hanzo-ds/client-web should be installed");
   assert.ok(
     !fs.existsSync(path.join(webRoot, "skills")),
-    "@clickhouse/client-web should not include a skills directory",
+    "@hanzo-ds/client-web should not include a skills directory",
   );
 });
 

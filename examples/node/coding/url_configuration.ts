@@ -1,4 +1,4 @@
-import { createClient } from "@clickhouse/client";
+import { createClient } from "@hanzo-ds/client";
 
 // URL configuration reference with all possible values.
 //
@@ -35,15 +35,15 @@ const url =
     "keep_alive_enabled=false",
     // (Node.js only) sets keep_alive.idle_socket_ttl = 1500
     "keep_alive_idle_socket_ttl=1500",
-    // all values prefixed with clickhouse_setting_ will be added to clickhouse_settings
-    // this will set clickhouse_settings.async_insert = 1
-    "clickhouse_setting_async_insert=1",
-    // ch_ is a shorthand for clickhouse_setting_* parameters; works similarly.
-    // this will set clickhouse_settings.wait_for_async_insert = 0
+    // all values prefixed with datastore_setting_ will be added to datastore_settings
+    // this will set datastore_settings.async_insert = 1
+    "datastore_setting_async_insert=1",
+    // ch_ is a shorthand for datastore_setting_* parameters; works similarly.
+    // this will set datastore_settings.wait_for_async_insert = 0
     "ch_wait_for_async_insert=0",
-    // adds a custom HTTP header 'X-CLICKHOUSE-AUTH' with 'secret_header' value to client requests
+    // adds a custom HTTP header 'X-DATASTORE-AUTH' with 'secret_header' value to client requests
     // arbitrary string value
-    "http_header_X-CLICKHOUSE-AUTH=secret_header",
+    "http_header_X-DATASTORE-AUTH=secret_header",
   ].join("&");
 /*
   The URL above is an equivalent to the following configuration object:
@@ -65,12 +65,12 @@ const url =
     keep_alive: {
       enabled: false,
     },
-    clickhouse_settings: {
+    datastore_settings: {
       async_insert: 1,
       wait_for_async_insert: 0,
     },
     http_headers: {
-      'X-CLICKHOUSE-AUTH': 'secret_header',
+      'X-DATASTORE-AUTH': 'secret_header',
     },
   }
  */

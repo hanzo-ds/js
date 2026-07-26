@@ -1,4 +1,4 @@
-# ClickHouse data-type parser test corpus
+# Datastore data-type parser test corpus
 # One type per line. Lines starting with # and blank lines are ignored.
 
 # ---- Integers ----

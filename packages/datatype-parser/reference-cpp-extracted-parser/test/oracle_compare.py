@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compare the standalone parser's JSON AST against the ClickHouse server.
+"""Compare the standalone parser's JSON AST against the Datastore server.
 
 For each data type in the cases file, the expected output is the `data_type`
 subtree the server produces for
@@ -42,10 +42,10 @@ def find_column_data_type(node, column):
     return None
 
 
-def server_data_type(clickhouse, type_str):
+def server_data_type(datastore, type_str):
     sql = f"EXPLAIN AST json = 1 CREATE TABLE t (c {type_str}) ENGINE = Null"
     out = subprocess.run(
-        [clickhouse, "local", "--format", "TSVRaw", "-q", sql],
+        [datastore, "local", "--format", "TSVRaw", "-q", sql],
         capture_output=True, text=True,
     )
     if out.returncode != 0:
@@ -78,7 +78,7 @@ def read_cases(path):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--clickhouse", required=True)
+    ap.add_argument("--datastore", required=True)
     ap.add_argument("--tool", required=True)
     ap.add_argument("--cases", required=True)
     args = ap.parse_args()
@@ -87,7 +87,7 @@ def main():
     failures = 0
     for type_str in cases:
         try:
-            expected = canon(server_data_type(args.clickhouse, type_str))
+            expected = canon(server_data_type(args.datastore, type_str))
             actual = canon(tool_data_type(args.tool, type_str))
         except Exception as exc:  # noqa: BLE001
             print(f"ERROR {type_str!r}: {exc}")

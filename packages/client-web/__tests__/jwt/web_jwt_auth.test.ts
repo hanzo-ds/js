@@ -1,15 +1,15 @@
 import { describe, it, expect, afterEach, beforeAll } from "vitest";
 import { EnvKeys, getFromEnv, maybeGetFromEnv } from "@test/utils/env";
 import { createClient } from "../../src";
-import type { WebClickHouseClient } from "../../src/client";
+import type { WebDatastoreClient } from "../../src/client";
 
 const jwt = maybeGetFromEnv(EnvKeys.jwt_access_token);
 
 /** Cannot use the jsonwebtoken library to generate the token: it is Node.js only.
  *  The access token should be generated externally before running the test,
- *  and set as the CLICKHOUSE_JWT_ACCESS_TOKEN environment variable */
+ *  and set as the DATASTORE_JWT_ACCESS_TOKEN environment variable */
 describe.skipIf(!jwt)("[Web] JWT auth", () => {
-  let client: WebClickHouseClient | undefined;
+  let client: WebDatastoreClient | undefined;
   let url: string;
 
   beforeAll(() => {

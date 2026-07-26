@@ -7,7 +7,7 @@ import {
   afterAll,
   vi,
 } from "vitest";
-import type { DataFormat, Row } from "@clickhouse/client-common";
+import type { DataFormat, Row } from "@hanzo-ds/client-common";
 import { guid } from "../../../client-common/__tests__/utils/guid";
 import Stream, { Readable } from "stream";
 import { ResultSet } from "../../src";
@@ -61,7 +61,7 @@ describe("[Node.js] ResultSet", () => {
     await expect(rs.text()).rejects.toEqual(err);
   });
 
-  // Regression test for https://github.com/ClickHouse/clickhouse-js/issues/575
+  // Regression test for https://github.com/hanzo-ds/js/issues/575
   // The old code used readableEnded to track consumption, which could become
   // true before json() is called (for fast/small responses). The fix uses a
   // _consumed boolean flag that only our code controls.

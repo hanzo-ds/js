@@ -1,36 +1,36 @@
 import { describe, it, expect } from "vitest";
 import {
-  ClickHouseSpanKind,
-  ClickHouseSpanNames,
-  ClickHouseSpanStatusCode,
-  type ClickHouseSpan,
-  type ClickHouseSpanAttributes,
-  type ClickHouseSpanOptions,
-  type ClickHouseSpanStatus,
-  type ClickHouseTracer,
-} from "@clickhouse/client-common";
-import { parseError } from "@clickhouse/client-common";
-import { ClickHouseClient } from "../../src/client";
-import { NoopClickHouseSpan } from "../../src/tracing";
+  DatastoreSpanKind,
+  DatastoreSpanNames,
+  DatastoreSpanStatusCode,
+  type DatastoreSpan,
+  type DatastoreSpanAttributes,
+  type DatastoreSpanOptions,
+  type DatastoreSpanStatus,
+  type DatastoreTracer,
+} from "@hanzo-ds/client-common";
+import { parseError } from "@hanzo-ds/client-common";
+import { DatastoreClient } from "../../src/client";
+import { NoopDatastoreSpan } from "../../src/tracing";
 
-class RecordedSpan implements ClickHouseSpan {
-  readonly initialAttributes: ClickHouseSpanAttributes;
-  attributes: ClickHouseSpanAttributes;
-  status?: ClickHouseSpanStatus;
+class RecordedSpan implements DatastoreSpan {
+  readonly initialAttributes: DatastoreSpanAttributes;
+  attributes: DatastoreSpanAttributes;
+  status?: DatastoreSpanStatus;
   exception?: Error;
   ended = false;
 
   constructor(
     readonly name: string,
-    readonly options?: ClickHouseSpanOptions,
+    readonly options?: DatastoreSpanOptions,
   ) {
     this.initialAttributes = { ...options?.attributes };
     this.attributes = { ...options?.attributes };
   }
-  setAttributes(attributes: ClickHouseSpanAttributes) {
+  setAttributes(attributes: DatastoreSpanAttributes) {
     this.attributes = { ...this.attributes, ...attributes };
   }
-  setStatus(status: ClickHouseSpanStatus) {
+  setStatus(status: DatastoreSpanStatus) {
     this.status = status;
   }
   recordException(error: Error) {
@@ -42,11 +42,11 @@ class RecordedSpan implements ClickHouseSpan {
 }
 
 function createRecordingTracer(): {
-  tracer: ClickHouseTracer<RecordedSpan>;
+  tracer: DatastoreTracer<RecordedSpan>;
   spans: RecordedSpan[];
 } {
   const spans: RecordedSpan[] = [];
-  const tracer: ClickHouseTracer<RecordedSpan> = {
+  const tracer: DatastoreTracer<RecordedSpan> = {
     startActiveSpan(name, options, fn) {
       const span = new RecordedSpan(name, options);
       spans.push(span);
@@ -96,9 +96,9 @@ function makePing(impl?: () => Promise<any>) {
 }
 
 function buildClient(
-  tracer: ClickHouseTracer<any> | undefined,
+  tracer: DatastoreTracer<any> | undefined,
   overrides: Partial<MockConnection> = {},
-): ClickHouseClient {
+): DatastoreClient {
   const connection: MockConnection = {
     query: makeQuery(overrides.query),
     command: makeCommand(overrides.command),
@@ -107,7 +107,7 @@ function buildClient(
     ping: makePing(overrides.ping),
     close: async () => {},
   };
-  return new ClickHouseClient({
+  return new DatastoreClient({
     url: "http://localhost:8123",
     database: "my_db",
     application: "my_app",
@@ -135,33 +135,32 @@ describe("tracer", () => {
     const { tracer, spans } = createRecordingTracer();
     const client = buildClient(tracer);
     const rs = await client.query({ query: "SELECT 1", query_id: "caller-q" });
-    // query() emits two spans: clickhouse.query (HTTP request) and
-    // clickhouse.query.stream (ResultSet consumption).
+    // query() emits two spans: datastore.query (HTTP request) and
+    // datastore.query.stream (ResultSet consumption).
     expect(spans).toHaveLength(2);
     const [querySpan, streamSpan] = spans;
-    expect(querySpan.name).toBe(ClickHouseSpanNames.query);
-    expect(querySpan.options?.kind).toBe(ClickHouseSpanKind.CLIENT);
+    expect(querySpan.name).toBe(DatastoreSpanNames.query);
+    expect(querySpan.options?.kind).toBe(DatastoreSpanKind.CLIENT);
+    // OpenTelemetry semantic-convention registry value, not our brand name.
     expect(querySpan.initialAttributes["db.system.name"]).toBe("clickhouse");
     expect(querySpan.initialAttributes["db.namespace"]).toBe("my_db");
     expect(querySpan.initialAttributes["server.address"]).toBe("localhost");
     expect(querySpan.initialAttributes["server.port"]).toBe(8123);
-    expect(querySpan.initialAttributes["clickhouse.application"]).toBe(
-      "my_app",
-    );
-    expect(querySpan.initialAttributes["clickhouse.response.format"]).toBe(
+    expect(querySpan.initialAttributes["datastore.application"]).toBe("my_app");
+    expect(querySpan.initialAttributes["datastore.response.format"]).toBe(
       "JSON",
     );
-    expect(querySpan.initialAttributes["clickhouse.request.query_id"]).toBe(
+    expect(querySpan.initialAttributes["datastore.request.query_id"]).toBe(
       "caller-q",
     );
-    expect(querySpan.attributes["clickhouse.request.query_id"]).toBe("q-1");
+    expect(querySpan.attributes["datastore.request.query_id"]).toBe("q-1");
     // Per the OTEL spec, the status is left unset on success.
     expect(querySpan.status).toBeUndefined();
     expect(querySpan.exception).toBeUndefined();
     // The query span ends as soon as the HTTP response headers are received.
     expect(querySpan.ended).toBe(true);
     // The stream span stays open until the ResultSet is consumed or closed.
-    expect(streamSpan.name).toBe(ClickHouseSpanNames.query_stream);
+    expect(streamSpan.name).toBe(DatastoreSpanNames.query_stream);
     expect(streamSpan.ended).toBe(false);
     (rs as any).consume();
     expect(streamSpan.ended).toBe(true);
@@ -191,7 +190,7 @@ describe("tracer", () => {
       ping: makePing(),
       close: async () => {},
     };
-    const client = new ClickHouseClient({
+    const client = new DatastoreClient({
       url: "http://localhost:8123",
       tracer,
       impl: {
@@ -211,22 +210,22 @@ describe("tracer", () => {
       "make_result_set failed",
     );
     // The query span ends normally (HTTP response was received).
-    expect(spans[0].name).toBe(ClickHouseSpanNames.query);
+    expect(spans[0].name).toBe(DatastoreSpanNames.query);
     expect(spans[0].ended).toBe(true);
     expect(spans[0].exception).toBeUndefined();
     // The stream span captures the makeResultSet error.
-    expect(spans[1].name).toBe(ClickHouseSpanNames.query_stream);
+    expect(spans[1].name).toBe(DatastoreSpanNames.query_stream);
     expect(spans[1].exception?.message).toBe("make_result_set failed");
-    expect(spans[1].status?.code).toBe(ClickHouseSpanStatusCode.ERROR);
+    expect(spans[1].status?.code).toBe(DatastoreSpanStatusCode.ERROR);
     expect(spans[1].ended).toBe(true);
   });
 
   it("emits the operation span via startActiveSpan", async () => {
     const calls: string[] = [];
-    const tracer: ClickHouseTracer = {
+    const tracer: DatastoreTracer = {
       startActiveSpan(name, _options, fn) {
         calls.push(`start:${name}`);
-        const result = fn(NoopClickHouseSpan);
+        const result = fn(NoopDatastoreSpan);
         calls.push(`returned:${name}`);
         return result;
       },
@@ -234,10 +233,10 @@ describe("tracer", () => {
     const client = buildClient(tracer);
     await client.query({ query: "SELECT 1" });
     expect(calls).toEqual([
-      "start:clickhouse.query",
-      "returned:clickhouse.query",
-      "start:clickhouse.query.stream",
-      "returned:clickhouse.query.stream",
+      "start:datastore.query",
+      "returned:datastore.query",
+      "start:datastore.query.stream",
+      "returned:datastore.query.stream",
     ]);
   });
 
@@ -246,8 +245,8 @@ describe("tracer", () => {
     const client = buildClient(tracer);
     await client.command({ query: "CREATE TABLE t (a UInt8) ENGINE = Memory" });
     expect(spans).toHaveLength(1);
-    expect(spans[0].name).toBe(ClickHouseSpanNames.command);
-    expect(spans[0].attributes["clickhouse.request.query_id"]).toBe("c-1");
+    expect(spans[0].name).toBe(DatastoreSpanNames.command);
+    expect(spans[0].attributes["datastore.request.query_id"]).toBe("c-1");
     expect(spans[0].status).toBeUndefined();
     expect(spans[0].ended).toBe(true);
   });
@@ -257,8 +256,8 @@ describe("tracer", () => {
     const client = buildClient(tracer);
     await client.exec({ query: "SELECT 1" });
     expect(spans).toHaveLength(1);
-    expect(spans[0].name).toBe(ClickHouseSpanNames.exec);
-    expect(spans[0].attributes["clickhouse.request.query_id"]).toBe("e-1");
+    expect(spans[0].name).toBe(DatastoreSpanNames.exec);
+    expect(spans[0].attributes["datastore.request.query_id"]).toBe("e-1");
     expect(spans[0].status).toBeUndefined();
   });
 
@@ -267,13 +266,13 @@ describe("tracer", () => {
     const client = buildClient(tracer);
     await client.insert({ table: "my_table", values: [{ a: 1 }] });
     expect(spans).toHaveLength(1);
-    expect(spans[0].name).toBe(ClickHouseSpanNames.insert);
+    expect(spans[0].name).toBe(DatastoreSpanNames.insert);
     expect(spans[0].initialAttributes["db.operation.name"]).toBe("INSERT");
     expect(spans[0].initialAttributes["db.collection.name"]).toBe("my_table");
-    expect(spans[0].initialAttributes["clickhouse.request.format"]).toBe(
+    expect(spans[0].initialAttributes["datastore.request.format"]).toBe(
       "JSONCompactEachRow",
     );
-    expect(spans[0].attributes["clickhouse.request.query_id"]).toBe("i-1");
+    expect(spans[0].attributes["datastore.request.query_id"]).toBe("i-1");
     expect(spans[0].status).toBeUndefined();
   });
 
@@ -282,7 +281,7 @@ describe("tracer", () => {
     const client = buildClient(tracer);
     await client.insert({ table: "my_table", values: [{ a: 1 }, { a: 2 }] });
     const [span] = spans;
-    expect(span.initialAttributes["clickhouse.request.sent_rows"]).toBe(2);
+    expect(span.initialAttributes["datastore.request.sent_rows"]).toBe(2);
   });
 
   it("does not record sent_rows for streamed inserts", async () => {
@@ -295,7 +294,7 @@ describe("tracer", () => {
     await client.insert({ table: "my_table", values: stream as any });
     const [span] = spans;
     expect(
-      span.initialAttributes["clickhouse.request.sent_rows"],
+      span.initialAttributes["datastore.request.sent_rows"],
     ).toBeUndefined();
   });
 
@@ -321,7 +320,7 @@ describe("tracer", () => {
     expect(spans[0].attributes["db.response.status_code"]).toBe(200);
   });
 
-  it("records clickhouse.summary.* attributes when the summary is present", async () => {
+  it("records datastore.summary.* attributes when the summary is present", async () => {
     const { tracer, spans } = createRecordingTracer();
     const client = buildClient(tracer, {
       command: async () => ({
@@ -343,10 +342,10 @@ describe("tracer", () => {
     await client.command({ query: "INSERT INTO t SELECT * FROM s" });
     const attrs = spans[0].attributes;
     expect(attrs["db.response.status_code"]).toBe(200);
-    expect(attrs["clickhouse.summary.read_rows"]).toBe("10");
-    expect(attrs["clickhouse.summary.written_rows"]).toBe("5");
-    expect(attrs["clickhouse.summary.result_bytes"]).toBe("50");
-    expect(attrs["clickhouse.summary.elapsed_ns"]).toBe("1000");
+    expect(attrs["datastore.summary.read_rows"]).toBe("10");
+    expect(attrs["datastore.summary.written_rows"]).toBe("5");
+    expect(attrs["datastore.summary.result_bytes"]).toBe("50");
+    expect(attrs["datastore.summary.elapsed_ns"]).toBe("1000");
   });
 
   it("emits a span for ping()", async () => {
@@ -354,8 +353,8 @@ describe("tracer", () => {
     const client = buildClient(tracer);
     await client.ping();
     expect(spans).toHaveLength(1);
-    expect(spans[0].name).toBe(ClickHouseSpanNames.ping);
-    expect(spans[0].initialAttributes["clickhouse.ping.select"]).toBe(false);
+    expect(spans[0].name).toBe(DatastoreSpanNames.ping);
+    expect(spans[0].initialAttributes["datastore.ping.select"]).toBe(false);
     expect(spans[0].status).toBeUndefined();
   });
 
@@ -372,13 +371,13 @@ describe("tracer", () => {
     expect(spans[0].exception).toBe(failure);
     expect(spans[0].attributes["error.type"]).toBe("Error");
     expect(spans[0].status).toEqual({
-      code: ClickHouseSpanStatusCode.ERROR,
+      code: DatastoreSpanStatusCode.ERROR,
       message: "boom",
     });
     expect(spans[0].ended).toBe(true);
   });
 
-  it("sets error.type and clickhouse.error.code for server-side errors", async () => {
+  it("sets error.type and datastore.error.code for server-side errors", async () => {
     const { tracer, spans } = createRecordingTracer();
     const failure = parseError(
       "Code: 62. DB::Exception: Syntax error: failed at position 1. (SYNTAX_ERROR) (version 24.3.1)",
@@ -389,9 +388,9 @@ describe("tracer", () => {
       },
     });
     await expect(client.query({ query: "SELECT 1" })).rejects.toThrow(failure);
-    expect(spans[0].attributes["error.type"]).toBe("ClickHouseError");
-    expect(spans[0].attributes["clickhouse.error.code"]).toBe(62);
-    expect(spans[0].status?.code).toBe(ClickHouseSpanStatusCode.ERROR);
+    expect(spans[0].attributes["error.type"]).toBe("DatastoreError");
+    expect(spans[0].attributes["datastore.error.code"]).toBe(62);
+    expect(spans[0].status?.code).toBe(DatastoreSpanStatusCode.ERROR);
   });
 
   it("normalizes non-Error throwables before recordException", async () => {
@@ -408,7 +407,7 @@ describe("tracer", () => {
     expect(spans[0].exception?.message).toBe("string failure");
     expect(spans[0].attributes["error.type"]).toBe("Error");
     expect(spans[0].status).toEqual({
-      code: ClickHouseSpanStatusCode.ERROR,
+      code: DatastoreSpanStatusCode.ERROR,
       message: "string failure",
     });
   });
@@ -421,7 +420,7 @@ describe("tracer", () => {
   });
 
   it("propagates tracer exceptions to the caller (no defensive wrapper)", async () => {
-    const brokenTracer: ClickHouseTracer = {
+    const brokenTracer: DatastoreTracer = {
       startActiveSpan: () => {
         throw new Error("start failed");
       },
@@ -433,7 +432,7 @@ describe("tracer", () => {
   });
 
   it("propagates span method exceptions to the caller", async () => {
-    const tracer: ClickHouseTracer = {
+    const tracer: DatastoreTracer = {
       startActiveSpan: (_name, _options, fn) =>
         fn({
           setAttributes: () => {
@@ -452,7 +451,7 @@ describe("tracer", () => {
 
   it("still ends the span on success even when setStatus is a no-op", async () => {
     let ended = false;
-    const tracer: ClickHouseTracer = {
+    const tracer: DatastoreTracer = {
       startActiveSpan: (_name, _options, fn) =>
         fn({
           setAttributes: () => {},

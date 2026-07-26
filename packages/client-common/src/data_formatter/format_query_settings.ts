@@ -6,7 +6,7 @@ export function formatQuerySettings(
   if (typeof value === "boolean") return value ? "1" : "0";
   if (typeof value === "number") return String(value);
   if (typeof value === "string") return value;
-  // ClickHouse requires a specific, non-JSON format for passing maps
+  // Datastore requires a specific, non-JSON format for passing maps
   // as a setting value - single quotes instead of double
   // Example: {'system.numbers':'number != 3'}
   if (value instanceof SettingsMap) {

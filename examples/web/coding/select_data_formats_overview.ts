@@ -6,17 +6,17 @@
 // If some format is missing from the overview, you could help us by updating this example or submitting an issue.
 //
 // See also:
-// - ClickHouse formats documentation - https://clickhouse.com/docs/en/interfaces/formats
+// - Datastore formats documentation - https://docs.hanzo.ai/datastore/en/interfaces/formats
 // - INSERT formats overview - insert_data_formats_overview.ts
 // - JSON data streaming example - select_streaming_json_each_row.ts
 // - Streaming Parquet into a file - node/select_parquet_as_file.ts
-import { createClient, type DataFormat } from "@clickhouse/client-web";
+import { createClient, type DataFormat } from "@hanzo-ds/client-web";
 
 const tableName = "select_data_formats_overview_web";
 const client = createClient();
 await prepareTestData();
 
-// These ClickHouse JSON formats can be streamed as well instead of loading the entire result into the app memory;
+// These Datastore JSON formats can be streamed as well instead of loading the entire result into the app memory;
 // See this example: node/select_streaming_json_each_row.ts
 console.log("#### Streamable JSON formats:\n");
 await selectJSON("JSONEachRow");
@@ -28,7 +28,7 @@ await selectJSON("JSONCompactEachRowWithNamesAndTypes");
 await selectJSON("JSONCompactStringsEachRowWithNames");
 await selectJSON("JSONCompactStringsEachRowWithNamesAndTypes");
 
-// These are single document ClickHouse JSON formats, which are not streamable
+// These are single document Datastore JSON formats, which are not streamable
 console.log("\n#### Single document JSON formats:\n");
 await selectJSON("JSON");
 await selectJSON("JSONStrings");
@@ -37,7 +37,7 @@ await selectJSON("JSONCompactStrings");
 await selectJSON("JSONColumnsWithMetadata");
 await selectJSON("JSONObjectEachRow");
 
-// These "raw" ClickHouse formats can be streamed as well instead of loading the entire result into the app memory;
+// These "raw" Datastore formats can be streamed as well instead of loading the entire result into the app memory;
 // see node/select_streaming_text_line_by_line.ts
 console.log("\n#### Raw formats:\n");
 await selectText("CSV");
@@ -72,9 +72,9 @@ async function selectText(format: DataFormat) {
   const rows = await client.query({
     query: `SELECT * FROM ${tableName} LIMIT 10`, // don't use FORMAT clause; specify the format separately
     format: format,
-    clickhouse_settings: {
+    datastore_settings: {
       // This is for CustomSeparated format demo purposes.
-      // See also: https://clickhouse.com/docs/en/interfaces/formats#format-customseparated
+      // See also: https://docs.hanzo.ai/datastore/en/interfaces/formats#format-customseparated
       format_custom_field_delimiter: " | ",
     },
   });

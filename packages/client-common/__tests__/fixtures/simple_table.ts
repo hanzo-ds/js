@@ -1,11 +1,11 @@
 import type {
-  ClickHouseClient,
+  DatastoreClient,
   MergeTreeSettings,
-} from "@clickhouse/client-common";
+} from "@hanzo-ds/client-common";
 import { createTable, TestEnv } from "../utils";
 
 export function createSimpleTable<Stream = unknown>(
-  client: ClickHouseClient<Stream>,
+  client: DatastoreClient<Stream>,
   tableName: string,
   settings: MergeTreeSettings = {},
 ) {
@@ -41,7 +41,7 @@ export function createSimpleTable<Stream = unknown>(
           CREATE TABLE ${tableName} ON CLUSTER '{cluster}'
           (id UInt64, name String, sku Array(UInt8))
           ENGINE ReplicatedMergeTree(
-            '/clickhouse/{cluster}/tables/{database}/{table}/{shard}',
+            '/datastore/{cluster}/tables/{database}/{table}/{shard}',
             '{replica}'
           )
           ORDER BY (id) ${_settings}
@@ -53,7 +53,7 @@ export function createSimpleTable<Stream = unknown>(
 function filterSettingsBasedOnEnv(settings: MergeTreeSettings, env: TestEnv) {
   switch (env) {
     case TestEnv.Cloud:
-      // ClickHouse Cloud does not like this particular one
+      // Datastore Cloud does not like this particular one
       // Local cluster, however, does.
       if ("non_replicated_deduplication_window" in settings) {
         const filtered = Object.assign({}, settings);

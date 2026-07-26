@@ -1,4 +1,4 @@
-import { createClient } from "@clickhouse/client";
+import { createClient } from "@hanzo-ds/client";
 import { randomUUID } from "node:crypto";
 
 /**
@@ -8,7 +8,7 @@ const defaultClient = createClient();
 
 // using the default (non-read-only) user to create a read-only one for the purposes of the example
 const guid = randomUUID().replace(/-/g, "");
-const readOnlyUsername = `clickhouse_js_examples_readonly_user_${guid}`;
+const readOnlyUsername = `datastore_js_examples_readonly_user_${guid}`;
 const readOnlyPassword = `${guid}_pwd`;
 const commands = [
   `
@@ -26,7 +26,7 @@ const commands = [
 for (const query of commands) {
   await defaultClient.command({
     query,
-    clickhouse_settings: {
+    datastore_settings: {
       wait_end_of_query: 1,
     },
   });
@@ -37,7 +37,7 @@ console.log(
 printSeparator();
 
 // and a test table with some data in there
-const testTableName = "clickhouse_js_examples_readonly_user_test_data";
+const testTableName = "datastore_js_examples_readonly_user_test_data";
 await defaultClient.command({
   query: `
     CREATE OR REPLACE TABLE ${testTableName}
@@ -45,7 +45,7 @@ await defaultClient.command({
     ENGINE MergeTree()
     ORDER BY (id)
   `,
-  clickhouse_settings: {
+  datastore_settings: {
     wait_end_of_query: 1,
   },
 });
@@ -104,12 +104,12 @@ const rs = await readOnlyUserClient.query({
 console.log("Select result:", await rs.json());
 printSeparator();
 
-// ... cannot use ClickHouse settings
+// ... cannot use Datastore settings
 await readOnlyUserClient.close();
 readOnlyUserClient = createClient({
   username: readOnlyUsername,
   password: readOnlyPassword,
-  clickhouse_settings: {
+  datastore_settings: {
     send_progress_in_http_headers: 1,
   },
 });

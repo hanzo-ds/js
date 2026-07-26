@@ -1,16 +1,16 @@
 {
-  "name": "clickhouse-js",
-  "description": "Official JS client for ClickHouse DB",
-  "homepage": "https://clickhouse.com",
+  "name": "datastore-js",
+  "description": "Official JS client for Hanzo Datastore",
+  "homepage": "https://docs.hanzo.ai/datastore",
   "license": "Apache-2.0",
   "keywords": [
-    "clickhouse",
+    "datastore",
     "sql",
     "client"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ClickHouse/clickhouse-js.git"
+    "url": "git+https://github.com/hanzo-ds/js.git"
   },
   "private": true,
   "engines": {
@@ -82,7 +82,7 @@
   },
   "workspaces": [
     "./packages/*",
-    "./tests/clickhouse-test-runner"
+    "./tests/datastore-test-runner"
   ],
   "files": [
     "dist"

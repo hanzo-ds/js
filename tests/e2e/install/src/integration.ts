@@ -1,11 +1,11 @@
-// Post-publish integration smoke against a real ClickHouse server.
+// Post-publish integration smoke against a real Datastore server.
 //
-// Where src/index.ts proves the freshly published @clickhouse/client installs
+// Where src/index.ts proves the freshly published @hanzo-ds/client installs
 // and exposes the expected version + createClient, this exercises the installed
 // artifact END-TO-END against a live server: connect, create/insert/select,
-// stream, and confirm a bad query surfaces as a ClickHouseError. It runs in the
+// stream, and confirm a bad query surfaces as a DatastoreError. It runs in the
 // publish workflow's e2e job (which installs the package by its published
-// version and starts a single-node ClickHouse), so it validates the actual npm
+// version and starts a single-node Datastore), so it validates the actual npm
 // tarball a consumer would receive, not the local build.
 //
 // NOTE: this file is run via `node src/integration.ts` across Node 20/22/24.
@@ -13,14 +13,14 @@
 // syntax (no type annotations, `as` casts, etc.) — plain JS in a .ts file, like
 // src/index.ts.
 const assert = require("assert");
-const { createClient, ClickHouseError } = require("@clickhouse/client");
+const { createClient, DatastoreError } = require("@hanzo-ds/client");
 
 async function main() {
   // Defaults target http://localhost:8123 with the default user, matching the
-  // single-node `clickhouse` service from docker-compose.yml.
+  // single-node `datastore` service from docker-compose.yml.
   const client = createClient();
   try {
-    // The e2e job starts ClickHouse via docker-compose just before this runs;
+    // The e2e job starts Datastore via docker-compose just before this runs;
     // poll ping briefly so we don't race the container coming up.
     const maxAttempts = 30;
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
@@ -31,7 +31,7 @@ async function main() {
         // not ready yet
       }
       if (attempt === maxAttempts) {
-        throw new Error("ClickHouse did not become available in time");
+        throw new Error("Datastore did not become available in time");
       }
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
@@ -70,7 +70,7 @@ async function main() {
     }
     assert.strictEqual(streamed, 3, "should stream 3 rows");
 
-    // A bad query must surface as a ClickHouseError instance from the SAME
+    // A bad query must surface as a DatastoreError instance from the SAME
     // installed package (a single bundle => one class identity).
     let caught;
     try {
@@ -83,13 +83,13 @@ async function main() {
     }
     assert.ok(caught, "expected an error for a bad query");
     assert.ok(
-      caught instanceof ClickHouseError,
-      "a server error should be a ClickHouseError instance",
+      caught instanceof DatastoreError,
+      "a server error should be a DatastoreError instance",
     );
 
     await client.command({ query: `DROP TABLE ${table}` });
     console.log(
-      "OK: integration against the published @clickhouse/client passed",
+      "OK: integration against the published @hanzo-ds/client passed",
     );
   } finally {
     await client.close();

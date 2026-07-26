@@ -1,16 +1,16 @@
 import { describe, it, beforeEach, afterEach, expect } from "vitest";
 import {
-  type ClickHouseClient,
+  type DatastoreClient,
   type ResponseJSON,
-} from "@clickhouse/client-common";
+} from "@hanzo-ds/client-common";
 import { createTestClient, guid } from "@test/utils";
 import { createSimpleTable } from "@test/fixtures/simple_table";
-import { isClickHouseVersionAtLeast } from "@test/utils/server_version";
+import { isDatastoreVersionAtLeast } from "@test/utils/server_version";
 import http from "http";
 import { type AddressInfo } from "net";
 import Zlib from "zlib";
 
-// zstd HTTP transport is supported by the ClickHouse server since 22.10, and the
+// zstd HTTP transport is supported by the Datastore server since 22.10, and the
 // client's zstd codec needs the built-in `zlib` zstd APIs (Node.js >= 22.15.0).
 const zstdSupported =
   typeof Zlib.createZstdCompress === "function" &&
@@ -100,7 +100,7 @@ describe("[Node.js] Compression", () => {
 });
 
 describe.skipIf(!zstdSupported)("[Node.js] zstd compression", () => {
-  let client: ClickHouseClient;
+  let client: DatastoreClient;
   afterEach(async () => {
     await client.close();
   });
@@ -111,7 +111,7 @@ describe.skipIf(!zstdSupported)("[Node.js] zstd compression", () => {
     client = createTestClient({
       compression: { request: { codec: "zstd" } },
     });
-    if (!(await isClickHouseVersionAtLeast(client, 22, 10))) {
+    if (!(await isDatastoreVersionAtLeast(client, 22, 10))) {
       skip();
     }
 
@@ -135,7 +135,7 @@ describe.skipIf(!zstdSupported)("[Node.js] zstd compression", () => {
     client = createTestClient({
       compression: { response: { codec: "zstd" } },
     });
-    if (!(await isClickHouseVersionAtLeast(client, 22, 10))) {
+    if (!(await isDatastoreVersionAtLeast(client, 22, 10))) {
       skip();
     }
 

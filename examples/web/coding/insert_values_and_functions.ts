@@ -1,7 +1,7 @@
 // An example how to send an INSERT INTO ... VALUES ... query that requires additional functions call.
-// Inspired by https://github.com/ClickHouse/clickhouse-js/issues/239
-import type { ClickHouseSettings } from "@clickhouse/client-web";
-import { createClient } from "@clickhouse/client-web";
+// Inspired by https://github.com/hanzo-ds/js/issues/239
+import type { DatastoreSettings } from "@hanzo-ds/client-web";
+import { createClient } from "@hanzo-ds/client-web";
 
 interface Data {
   id: string;
@@ -14,15 +14,15 @@ const tableName = "insert_values_and_functions_web";
 const client = createClient();
 // Recommended for cluster usage to avoid situations where a query processing error occurred after the response code
 // and HTTP headers were sent to the client, as it might happen before the changes were applied on the server.
-// See https://clickhouse.com/docs/en/interfaces/http/#response-buffering
-const commandSettings: ClickHouseSettings = {
+// See https://docs.hanzo.ai/datastore/en/interfaces/http/#response-buffering
+const commandSettings: DatastoreSettings = {
   wait_end_of_query: 1,
 };
 
 // Prepare an example table
 await client.command({
   query: `DROP TABLE IF EXISTS ${tableName}`,
-  clickhouse_settings: commandSettings,
+  datastore_settings: commandSettings,
 });
 await client.command({
   query: `
@@ -35,7 +35,7 @@ await client.command({
     ENGINE MergeTree()
     ORDER BY (id)
   `,
-  clickhouse_settings: commandSettings,
+  datastore_settings: commandSettings,
 });
 
 // Here we are assuming that we are getting these rows from somewhere...
@@ -51,7 +51,7 @@ const insertQuery = `
 
 await client.command({
   query: insertQuery,
-  clickhouse_settings: commandSettings,
+  datastore_settings: commandSettings,
 });
 
 // Get a few back and print those rows to check what was inserted

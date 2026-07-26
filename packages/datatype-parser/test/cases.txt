@@ -1,5 +1,5 @@
 # Supported data types, one per line. Each is compared against the
-# data_type subtree the ClickHouse server emits for
+# data_type subtree the Datastore server emits for
 #   EXPLAIN AST json = 1 CREATE TABLE t (c <TYPE>) ENGINE = Null
 # Blank lines and #-comments are ignored.
 

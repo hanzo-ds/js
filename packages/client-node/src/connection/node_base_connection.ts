@@ -1,5 +1,5 @@
 import type {
-  ClickHouseSummary,
+  DatastoreSummary,
   ConnBaseQueryParams,
   ConnCommandResult,
   Connection,
@@ -22,7 +22,7 @@ import {
   toSearchParams,
   transformUrl,
   withHttpSettings,
-  ClickHouseLogLevel,
+  DatastoreLogLevel,
 } from "../common/index";
 import { type ConnPingParams } from "../common/index";
 import crypto from "crypto";
@@ -42,7 +42,7 @@ export type NodeConnectionParams = ConnectionParams & {
     enabled: boolean;
     idle_socket_ttl: number;
   };
-  log_level: ClickHouseLogLevel;
+  log_level: DatastoreLogLevel;
   /**
    * Eagerly destroy the sockets that are considered stale (idle for more than `idle_socket_ttl`), without waiting for the timeout to trigger. This allows to free up the stale sockets in case of longer event loop delays.
    */
@@ -50,7 +50,7 @@ export type NodeConnectionParams = ConnectionParams & {
   /**
    * Optional override for {@link Http.RequestOptions.maxHeaderSize} forwarded to
    * `http(s).request`. Useful for long-running queries that accumulate many
-   * `X-ClickHouse-Progress` headers and would otherwise hit the Node.js default
+   * `X-Datastore-Progress` headers and would otherwise hit the Node.js default
    * (~16 KB) total response header limit.
    *
    * When `undefined`, the Node.js default applies.
@@ -159,7 +159,7 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
       // and we don't get unhandled error propagation later
       controller.abort("Ping failed");
       // not an error, as this might be semi-expected
-      if (log_level <= ClickHouseLogLevel.WARN) {
+      if (log_level <= DatastoreLogLevel.WARN) {
         log_writer.warn({
           message: this.httpRequestErrorMessage("Ping"),
           err: error as Error,
@@ -183,8 +183,8 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
   ): Promise<ConnQueryResult<Stream.Readable>> {
     const { log_writer, log_level } = this.params;
     const query_id = this.getQueryId(params.query_id);
-    const clickhouse_settings = withHttpSettings(
-      params.clickhouse_settings,
+    const datastore_settings = withHttpSettings(
+      params.datastore_settings,
       this.params.compression.decompress_response,
     );
 
@@ -218,7 +218,7 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
       query_params: useMultipart ? undefined : params.query_params,
       param_entries: urlParamEntries,
       session_id: params.session_id,
-      clickhouse_settings,
+      datastore_settings,
       query_id,
       role: params.role,
     });
@@ -227,14 +227,14 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
     // (enable_http_compression), independent of whether the client decompresses;
     // the codec is the explicitly configured one, defaulting to gzip.
     const responseCompressionCodec =
-      clickhouse_settings.enable_http_compression === 1
+      datastore_settings.enable_http_compression === 1
         ? (this.params.compression.decompress_response?.codec ?? "gzip")
         : undefined;
 
     let body: string = params.query;
     const headers = this.buildRequestHeaders(params);
     if (useMultipart && params.query_params !== undefined) {
-      const boundary = `----clickhouse-js-${crypto.randomUUID()}`;
+      const boundary = `----datastore-js-${crypto.randomUUID()}`;
       const parts: Record<string, string> = { query: params.query };
       for (const [key, value] of Object.entries(params.query_params)) {
         parts[`param_${key}`] = formatQueryParams({ value });
@@ -275,7 +275,7 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
         err: err as Error,
         extra_args: {
           decompress_response: responseCompressionCodec,
-          clickhouse_settings,
+          datastore_settings,
         },
       });
       throw err; // should be propagated to the user
@@ -291,7 +291,7 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
     const query_id = this.getQueryId(params.query_id);
     const searchParams = toSearchParams({
       database: this.params.database,
-      clickhouse_settings: params.clickhouse_settings,
+      datastore_settings: params.datastore_settings,
       query_params: params.query_params,
       query: params.query,
       session_id: params.session_id,
@@ -336,7 +336,7 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
         search_params: searchParams,
         err: err as Error,
         extra_args: {
-          clickhouse_settings: params.clickhouse_settings ?? {},
+          datastore_settings: params.datastore_settings ?? {},
         },
       });
       throw err; // should be propagated to the user
@@ -360,7 +360,7 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
     const { log_writer, log_level } = this.params;
     const query_id = this.getQueryId(params.query_id);
     const commandStartTime = Date.now();
-    if (log_level <= ClickHouseLogLevel.TRACE) {
+    if (log_level <= DatastoreLogLevel.TRACE) {
       log_writer.trace({
         message: "Command: operation started",
         args: {
@@ -378,7 +378,7 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
     });
 
     const runExecDuration = Date.now() - commandStartTime;
-    if (log_level <= ClickHouseLogLevel.TRACE) {
+    if (log_level <= DatastoreLogLevel.TRACE) {
       log_writer.trace({
         message: "Command: runExec completed, starting stream drain",
         args: {
@@ -407,7 +407,7 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
       stream,
     );
 
-    if (log_level <= ClickHouseLogLevel.TRACE) {
+    if (log_level <= DatastoreLogLevel.TRACE) {
       const drainDuration = Date.now() - drainStartTime;
       const totalDuration = Date.now() - commandStartTime;
 
@@ -508,7 +508,7 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
     query_params,
     extra_args,
   }: LogRequestErrorParams) {
-    if (this.params.log_level <= ClickHouseLogLevel.ERROR) {
+    if (this.params.log_level <= DatastoreLogLevel.ERROR) {
       this.params.log_writer.error({
         message: this.httpRequestErrorMessage(op),
         err: err as Error,
@@ -534,8 +534,8 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
     const { log_writer, log_level } = this.params;
     const query_id = params.query_id;
     const sendQueryInParams = params.values !== undefined;
-    const clickhouse_settings = withHttpSettings(
-      params.clickhouse_settings,
+    const datastore_settings = withHttpSettings(
+      params.datastore_settings,
       this.params.compression.decompress_response,
     );
     const toSearchParamsOptions = {
@@ -544,7 +544,7 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
       query_params: params.query_params,
       session_id: params.session_id,
       role: params.role,
-      clickhouse_settings,
+      datastore_settings,
       query_id,
     };
     const searchParams = toSearchParams(toSearchParamsOptions);
@@ -596,7 +596,7 @@ export abstract class NodeBaseConnection implements Connection<Stream.Readable> 
         search_params: searchParams,
         err: err as Error,
         extra_args: {
-          clickhouse_settings: params.clickhouse_settings ?? {},
+          datastore_settings: params.datastore_settings ?? {},
         },
       });
       throw err; // should be propagated to the user
@@ -617,7 +617,7 @@ interface RequestResult {
   stream: Stream.Readable;
   response_headers: ResponseHeaders;
   http_status_code?: number;
-  summary?: ClickHouseSummary;
+  summary?: DatastoreSummary;
 }
 
 interface LogRequestErrorParams {

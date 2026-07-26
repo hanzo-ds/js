@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import type { ClickHouseClient } from "@clickhouse/client-common";
+import type { DatastoreClient } from "@hanzo-ds/client-common";
 import { createSimpleTable } from "@test/fixtures/simple_table";
 import { jsonValues } from "@test/fixtures/test_data";
 import { createTestClient } from "@test/utils/client";
@@ -13,7 +13,7 @@ import type Stream from "stream";
 describe.skipIf(!isOnEnv(TestEnv.LocalSingleNode, TestEnv.LocalCluster))(
   "[Node.js] Summary header parsing",
   () => {
-    let client: ClickHouseClient<Stream.Readable>;
+    let client: DatastoreClient<Stream.Readable>;
     let tableName: string;
 
     beforeAll(async () => {
@@ -66,7 +66,7 @@ describe.skipIf(!isOnEnv(TestEnv.LocalSingleNode, TestEnv.LocalCluster))(
         query: `INSERT INTO ${tableName}
               VALUES (144, 'Hello', [2, 4]),
                      (255, 'World', [3, 5])`,
-        clickhouse_settings: {
+        datastore_settings: {
           wait_end_of_query: 1,
         },
       });

@@ -1,16 +1,16 @@
 import { describe, it, expect } from "vitest";
 import type {
-  BaseClickHouseClientConfigOptions,
+  BaseDatastoreClientConfigOptions,
   HandleImplSpecificURLParams,
 } from "../../src/index";
 import {
-  ClickHouseLogLevel,
+  DatastoreLogLevel,
   getConnectionParams,
   LogWriter,
   numberConfigURLValue,
 } from "../../src/index";
 import { TestLogger } from "../utils/test_logger";
-import type { BaseClickHouseClientConfigOptionsWithURL } from "../../src/config";
+import type { BaseDatastoreClientConfigOptionsWithURL } from "../../src/config";
 import {
   booleanConfigURLValue,
   createUrl,
@@ -24,7 +24,7 @@ describe("config", () => {
   const logger = new TestLogger();
 
   describe("prepareConfigWithURL", () => {
-    const defaultConfig: BaseClickHouseClientConfigOptionsWithURL = {
+    const defaultConfig: BaseDatastoreClientConfigOptionsWithURL = {
       url: new URL("http://localhost:8123/"),
     };
 
@@ -78,7 +78,7 @@ describe("config", () => {
             `${protocol} with invalid port ${port} is expected to throw`,
           ).toThrow(
             expect.objectContaining({
-              message: expect.stringContaining("ClickHouse URL is malformed"),
+              message: expect.stringContaining("Datastore URL is malformed"),
             }),
           );
         }
@@ -96,12 +96,12 @@ describe("config", () => {
           password: "secret",
           database: "analytics",
           http_headers: {
-            "X-CLICKHOUSE-AUTH": "secret_header",
+            "X-DATASTORE-AUTH": "secret_header",
           },
           keep_alive: { enabled: false },
           application: "my_app",
           // override the default HTTP settings + extra CH settings
-          clickhouse_settings: {
+          datastore_settings: {
             http_headers_progress_interval_ms: "55000",
             send_progress_in_http_headers: 0,
             async_insert: 1,
@@ -124,11 +124,11 @@ describe("config", () => {
         password: "secret",
         database: "analytics",
         http_headers: {
-          "X-CLICKHOUSE-AUTH": "secret_header",
+          "X-DATASTORE-AUTH": "secret_header",
         },
         keep_alive: { enabled: false },
         application: "my_app",
-        clickhouse_settings: {
+        datastore_settings: {
           http_headers_progress_interval_ms: "55000",
           send_progress_in_http_headers: 0,
           async_insert: 1,
@@ -141,7 +141,7 @@ describe("config", () => {
     });
 
     it("should be able to use the deprecated host parameter", async () => {
-      const deprecated: BaseClickHouseClientConfigOptions = {
+      const deprecated: BaseDatastoreClientConfigOptions = {
         host: "https://my.host:8443",
       };
       const res = prepareConfigWithURL(deprecated, logger, null);
@@ -155,21 +155,21 @@ describe("config", () => {
     });
 
     it("should be able to use the deprecated additional_headers parameter", async () => {
-      const deprecated: BaseClickHouseClientConfigOptions = {
+      const deprecated: BaseDatastoreClientConfigOptions = {
         additional_headers: {
-          "X-CLICKHOUSE-AUTH": "secret_header",
+          "X-DATASTORE-AUTH": "secret_header",
         },
       };
       const res = prepareConfigWithURL(deprecated, logger, null);
       expect(res).toEqual({
         ...defaultConfig,
         http_headers: {
-          "X-CLICKHOUSE-AUTH": "secret_header",
+          "X-DATASTORE-AUTH": "secret_header",
         },
       });
       expect(deprecated).toEqual({
         additional_headers: {
-          "X-CLICKHOUSE-AUTH": "secret_header",
+          "X-DATASTORE-AUTH": "secret_header",
         },
       }); // should not be modified
     });
@@ -203,7 +203,7 @@ describe("config", () => {
         database: "analytics",
         application: "my_app",
         impl_specific_setting: 42,
-      } as unknown as BaseClickHouseClientConfigOptionsWithURL);
+      } as unknown as BaseDatastoreClientConfigOptionsWithURL);
     });
 
     describe("Pathname", () => {
@@ -233,7 +233,7 @@ describe("config", () => {
             database: "my_db",
             request_timeout: 42000,
             max_open_connections: 2,
-          } as unknown as BaseClickHouseClientConfigOptionsWithURL);
+          } as unknown as BaseDatastoreClientConfigOptionsWithURL);
         });
       });
 
@@ -264,7 +264,7 @@ describe("config", () => {
               database: "my_db",
               request_timeout: 42000,
               max_open_connections: 2,
-            } as unknown as BaseClickHouseClientConfigOptionsWithURL,
+            } as unknown as BaseDatastoreClientConfigOptionsWithURL,
           );
         });
       });
@@ -288,7 +288,7 @@ describe("config", () => {
           // no `database` key
           request_timeout: 42000,
           max_open_connections: 2,
-        } as unknown as BaseClickHouseClientConfigOptionsWithURL);
+        } as unknown as BaseDatastoreClientConfigOptionsWithURL);
       });
     });
 
@@ -305,7 +305,7 @@ describe("config", () => {
           database: "analytics",
           application: "my_app",
           access_token: "jwt_secret",
-        } as unknown as BaseClickHouseClientConfigOptionsWithURL);
+        } as unknown as BaseDatastoreClientConfigOptionsWithURL);
       });
 
       // this will throw later during the config validation anyway
@@ -323,7 +323,7 @@ describe("config", () => {
           username: "bob",
           password: "secret",
           access_token: "jwt_secret",
-        } as unknown as BaseClickHouseClientConfigOptionsWithURL);
+        } as unknown as BaseDatastoreClientConfigOptionsWithURL);
       });
     });
 
@@ -331,7 +331,7 @@ describe("config", () => {
     it("should throw when the URL is not valid", async () => {
       expect(() => prepareConfigWithURL({ url: "foo" }, logger, null)).toThrow(
         expect.objectContaining({
-          message: expect.stringContaining("ClickHouse URL is malformed."),
+          message: expect.stringContaining("Datastore URL is malformed."),
         }),
       );
     });
@@ -374,9 +374,9 @@ describe("config", () => {
           type: "Credentials",
         },
         database: "default",
-        clickhouse_settings: {},
+        datastore_settings: {},
         log_writer: expect.any(LogWriter),
-        log_level: ClickHouseLogLevel.WARN,
+        log_level: DatastoreLogLevel.WARN,
         keep_alive: { enabled: true },
         application_id: undefined,
         http_headers: {},
@@ -450,11 +450,11 @@ describe("config", () => {
           username: "bob",
           password: "secret",
           database: "analytics",
-          clickhouse_settings: {
+          datastore_settings: {
             async_insert: 1,
           },
           http_headers: {
-            "X-CLICKHOUSE-AUTH": "secret_header",
+            "X-DATASTORE-AUTH": "secret_header",
           },
           keep_alive: { enabled: false },
           application: "my_app",
@@ -475,14 +475,14 @@ describe("config", () => {
           type: "Credentials",
         },
         database: "analytics",
-        clickhouse_settings: {
+        datastore_settings: {
           async_insert: 1,
         },
         http_headers: {
-          "X-CLICKHOUSE-AUTH": "secret_header",
+          "X-DATASTORE-AUTH": "secret_header",
         },
         log_writer: expect.any(LogWriter),
-        log_level: ClickHouseLogLevel.WARN,
+        log_level: DatastoreLogLevel.WARN,
         keep_alive: { enabled: false },
         application_id: "my_app",
         json: {
@@ -554,9 +554,9 @@ describe("config", () => {
           type: "JWT",
         },
         database: "default",
-        clickhouse_settings: {},
+        datastore_settings: {},
         log_writer: expect.any(LogWriter),
-        log_level: ClickHouseLogLevel.WARN,
+        log_level: DatastoreLogLevel.WARN,
         keep_alive: { enabled: true },
         application_id: undefined,
         http_headers: {},
@@ -596,7 +596,7 @@ describe("config", () => {
           {
             url: new URL("https://my.host:8443/"),
             request_timeout: 80_000,
-            clickhouse_settings: {
+            datastore_settings: {
               send_progress_in_http_headers: 0,
             },
           },
@@ -614,7 +614,7 @@ describe("config", () => {
           {
             url: new URL("https://my.host:8443/"),
             request_timeout: 120_000,
-            clickhouse_settings: {
+            datastore_settings: {
               send_progress_in_http_headers: 1,
             },
           },
@@ -660,7 +660,7 @@ describe("config", () => {
           {
             url: new URL("https://my.host:8443/"),
             request_timeout: 400_000,
-            clickhouse_settings: {
+            datastore_settings: {
               send_progress_in_http_headers: 1,
               http_headers_progress_interval_ms: "110000",
             },
@@ -678,7 +678,7 @@ describe("config", () => {
     });
 
     it("should leave the base config as-is when there is nothing from the URL", async () => {
-      const base: BaseClickHouseClientConfigOptions = {
+      const base: BaseDatastoreClientConfigOptions = {
         url: "http://localhost:8123",
         username: "bob",
         password: "secret",
@@ -687,12 +687,12 @@ describe("config", () => {
     });
 
     it("should take URL values first, then base config for the rest", async () => {
-      const base: BaseClickHouseClientConfigOptions = {
+      const base: BaseDatastoreClientConfigOptions = {
         url: "https://my.host:8124",
         username: "bob",
         password: "secret",
       };
-      const fromURL: BaseClickHouseClientConfigOptions = {
+      const fromURL: BaseDatastoreClientConfigOptions = {
         password: "secret_from_url!",
       };
       const res = mergeConfigs(base, fromURL, logger);
@@ -704,10 +704,10 @@ describe("config", () => {
     });
 
     it("should just merge non-conflicting values", async () => {
-      const base: BaseClickHouseClientConfigOptions = {
+      const base: BaseDatastoreClientConfigOptions = {
         url: "https://my.host:8124",
       };
-      const fromURL: BaseClickHouseClientConfigOptions = {
+      const fromURL: BaseDatastoreClientConfigOptions = {
         username: "bob",
         password: "secret",
       };
@@ -721,7 +721,7 @@ describe("config", () => {
 
     // realistically, we will always have at least URL in the base config
     it("should only take the URL values when there is nothing in the base config", async () => {
-      const fromURL: BaseClickHouseClientConfigOptions = {
+      const fromURL: BaseDatastoreClientConfigOptions = {
         url: "https://my.host:8443",
         username: "bob",
         password: "secret",
@@ -735,13 +735,13 @@ describe("config", () => {
     });
 
     it("should correctly work with nested levels when there are no defaults", async () => {
-      const base: BaseClickHouseClientConfigOptions = {
+      const base: BaseDatastoreClientConfigOptions = {
         url: "https://my.host:8124",
         application: "my_app",
-        // does not have clickhouse_settings
+        // does not have datastore_settings
       };
-      const fromURL: BaseClickHouseClientConfigOptions = {
-        clickhouse_settings: {
+      const fromURL: BaseDatastoreClientConfigOptions = {
+        datastore_settings: {
           wait_for_async_insert: 0,
         },
       };
@@ -749,26 +749,26 @@ describe("config", () => {
       expect(res).toEqual({
         url: "https://my.host:8124",
         application: "my_app",
-        clickhouse_settings: {
+        datastore_settings: {
           wait_for_async_insert: 0,
         },
       });
     });
 
     it("should deep merge two configs", async () => {
-      const base: BaseClickHouseClientConfigOptions = {
+      const base: BaseDatastoreClientConfigOptions = {
         url: "https://my.host:8124",
         application: "my_app",
         compression: {
           response: false,
         },
-        clickhouse_settings: {
+        datastore_settings: {
           async_insert: 1,
         },
       };
-      const fromURL: BaseClickHouseClientConfigOptions = {
+      const fromURL: BaseDatastoreClientConfigOptions = {
         pathname: "/my_proxy",
-        clickhouse_settings: {
+        datastore_settings: {
           wait_for_async_insert: 0,
         },
       };
@@ -780,7 +780,7 @@ describe("config", () => {
         compression: {
           response: false,
         },
-        clickhouse_settings: {
+        datastore_settings: {
           async_insert: 1,
           wait_for_async_insert: 0,
         },
@@ -789,7 +789,7 @@ describe("config", () => {
 
     it("should deep merge more than two levels", async () => {
       // Currently, we don't have this. Future-proofing.
-      type TestOptions = BaseClickHouseClientConfigOptions & {
+      type TestOptions = BaseDatastoreClientConfigOptions & {
         very: {
           deeply: {
             nested_setting: string;
@@ -802,7 +802,7 @@ describe("config", () => {
       };
       const base: TestOptions = {
         url: "https://my.host:8124",
-        clickhouse_settings: {
+        datastore_settings: {
           async_insert: 1,
         },
         very: {
@@ -816,7 +816,7 @@ describe("config", () => {
         },
       };
       const fromURL: TestOptions = {
-        clickhouse_settings: {
+        datastore_settings: {
           wait_for_async_insert: 0,
         },
         very: {
@@ -832,7 +832,7 @@ describe("config", () => {
       const res = mergeConfigs(base, fromURL, logger);
       expect(res as TestOptions).toEqual({
         url: "https://my.host:8124",
-        clickhouse_settings: {
+        datastore_settings: {
           async_insert: 1,
           wait_for_async_insert: 0,
         },
@@ -849,22 +849,22 @@ describe("config", () => {
     });
 
     it("should deep merge two configs with nested overrides", async () => {
-      const base: BaseClickHouseClientConfigOptions = {
+      const base: BaseDatastoreClientConfigOptions = {
         url: "https://my.host:8124",
         compression: {
           request: true,
           response: false,
         },
-        clickhouse_settings: {
+        datastore_settings: {
           async_insert: 1,
         },
       };
-      const fromURL: BaseClickHouseClientConfigOptions = {
+      const fromURL: BaseDatastoreClientConfigOptions = {
         compression: {
           request: false,
           response: true,
         },
-        clickhouse_settings: {
+        datastore_settings: {
           async_insert: 0,
           wait_for_async_insert: 0,
         },
@@ -876,7 +876,7 @@ describe("config", () => {
           request: false,
           response: true,
         },
-        clickhouse_settings: {
+        datastore_settings: {
           async_insert: 0,
           wait_for_async_insert: 0,
         },
@@ -898,16 +898,16 @@ describe("config", () => {
     it("should fail when the provided URL is not valid", async () => {
       expect(() => createUrl("foo")).toThrow(
         expect.objectContaining({
-          message: expect.stringContaining("ClickHouse URL is malformed."),
+          message: expect.stringContaining("Datastore URL is malformed."),
         }),
       );
       expect(() => createUrl("http://localhost:foo")).toThrow(
         expect.objectContaining({
-          message: expect.stringContaining("ClickHouse URL is malformed."),
+          message: expect.stringContaining("Datastore URL is malformed."),
         }),
       );
       expect(() => createUrl("tcp://localhost:8443")).toThrowError(
-        "ClickHouse URL protocol must be either http or https. Got: tcp:",
+        "Datastore URL protocol must be either http or https. Got: tcp:",
       );
     });
   });
@@ -926,9 +926,9 @@ describe("config", () => {
             "compression_response=false",
             "log_level=TRACE",
             "keep_alive_enabled=false",
-            "clickhouse_setting_async_insert=1",
+            "datastore_setting_async_insert=1",
             "ch_wait_for_async_insert=0",
-            "http_header_X-CLICKHOUSE-AUTH=secret_header",
+            "http_header_X-DATASTORE-AUTH=secret_header",
           ].join("&"),
       );
       const res = loadConfigOptionsFromURL(url, null);
@@ -946,16 +946,16 @@ describe("config", () => {
           request: true,
           response: false,
         },
-        log: { level: ClickHouseLogLevel.TRACE },
+        log: { level: DatastoreLogLevel.TRACE },
         keep_alive: { enabled: false },
-        clickhouse_settings: {
+        datastore_settings: {
           // type (string vs number) does not really matter here, as it will be serialized anyway
           // it is only important that the value itself is correct.
           async_insert: "1",
           wait_for_async_insert: "0",
         } as Record<string, string>,
         http_headers: {
-          "X-CLICKHOUSE-AUTH": "secret_header",
+          "X-DATASTORE-AUTH": "secret_header",
         },
       });
     });
@@ -998,12 +998,12 @@ describe("config", () => {
 
     // this lack of validation is a subject to change;
     // however, it might be not feasible to define and validate every setting defined in the client
-    it("should not fail if there is an arbitrary clickhouse_setting provided (not yet typed in the client)", async () => {
+    it("should not fail if there is an arbitrary datastore_setting provided (not yet typed in the client)", async () => {
       const url = new URL("http://localhost:8125/?ch_this_is_a_new_one=1");
       const res = loadConfigOptionsFromURL(url, null);
       expect(res[0].toString()).toEqual("http://localhost:8125/");
       expect(res[1]).toEqual({
-        clickhouse_settings: {
+        datastore_settings: {
           this_is_a_new_one: "1",
         },
       });
@@ -1036,7 +1036,7 @@ describe("config", () => {
       expect(res[0].toString()).toEqual("http://localhost:8124/");
       expect(res[1]).toEqual({
         impl_specific_setting: 42,
-      } as unknown as BaseClickHouseClientConfigOptions);
+      } as unknown as BaseDatastoreClientConfigOptions);
     });
 
     it("should fail if the parameter is still unknown after calling the extra URL params handler", async () => {
@@ -1084,9 +1084,9 @@ describe("config", () => {
             "compression_response=true",
             "log_level=TRACE",
             "keep_alive_enabled=false",
-            "clickhouse_setting_async_insert=1",
+            "datastore_setting_async_insert=1",
             "ch_wait_for_async_insert=0",
-            "http_header_X-CLICKHOUSE-AUTH=secret_header",
+            "http_header_X-DATASTORE-AUTH=secret_header",
             "impl_specific_setting=qaz",
             "another_impl_specific_setting=qux",
           ].join("&"),
@@ -1119,18 +1119,18 @@ describe("config", () => {
           request: true,
           response: true,
         },
-        log: { level: ClickHouseLogLevel.TRACE },
+        log: { level: DatastoreLogLevel.TRACE },
         keep_alive: { enabled: false },
-        clickhouse_settings: {
+        datastore_settings: {
           async_insert: "1",
           wait_for_async_insert: "0",
         } as Record<string, string>,
         http_headers: {
-          "X-CLICKHOUSE-AUTH": "secret_header",
+          "X-DATASTORE-AUTH": "secret_header",
         },
         impl_specific_setting: "qaz",
         another_impl_specific_setting: "qux",
-      } as unknown as BaseClickHouseClientConfigOptions);
+      } as unknown as BaseDatastoreClientConfigOptions);
     });
 
     // URL params that were handled by common are removed from the URL passed down to the extra handler by design
@@ -1246,26 +1246,26 @@ describe("config", () => {
     });
 
     it("should be parsed with enumConfigURLValue", async () => {
-      const args: [string, ClickHouseLogLevel][] = [
-        ["TRACE", ClickHouseLogLevel.TRACE],
-        [" TRACE ", ClickHouseLogLevel.TRACE],
-        ["DEBUG", ClickHouseLogLevel.DEBUG],
-        [" DEBUG ", ClickHouseLogLevel.DEBUG],
-        ["INFO", ClickHouseLogLevel.INFO],
-        [" INFO ", ClickHouseLogLevel.INFO],
-        ["WARN", ClickHouseLogLevel.WARN],
-        [" WARN ", ClickHouseLogLevel.WARN],
-        ["ERROR", ClickHouseLogLevel.ERROR],
-        [" ERROR ", ClickHouseLogLevel.ERROR],
-        ["OFF", ClickHouseLogLevel.OFF],
-        [" OFF ", ClickHouseLogLevel.OFF],
+      const args: [string, DatastoreLogLevel][] = [
+        ["TRACE", DatastoreLogLevel.TRACE],
+        [" TRACE ", DatastoreLogLevel.TRACE],
+        ["DEBUG", DatastoreLogLevel.DEBUG],
+        [" DEBUG ", DatastoreLogLevel.DEBUG],
+        ["INFO", DatastoreLogLevel.INFO],
+        [" INFO ", DatastoreLogLevel.INFO],
+        ["WARN", DatastoreLogLevel.WARN],
+        [" WARN ", DatastoreLogLevel.WARN],
+        ["ERROR", DatastoreLogLevel.ERROR],
+        [" ERROR ", DatastoreLogLevel.ERROR],
+        ["OFF", DatastoreLogLevel.OFF],
+        [" OFF ", DatastoreLogLevel.OFF],
       ];
       args.forEach(([value, expected]) => {
         expect(
           enumConfigURLValue({
             key,
             value,
-            enumObject: ClickHouseLogLevel,
+            enumObject: DatastoreLogLevel,
           }),
           `Expected log level for value "${value}" is ${expected}`,
         ).toEqual(expected);
@@ -1274,7 +1274,7 @@ describe("config", () => {
         enumConfigURLValue({
           key,
           value: "bar",
-          enumObject: ClickHouseLogLevel,
+          enumObject: DatastoreLogLevel,
         }),
       ).toThrowError(
         `"foo" has invalid value: bar. Expected one of: TRACE, DEBUG, INFO, WARN, ERROR, OFF.`,

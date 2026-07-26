@@ -1,12 +1,12 @@
 import { createTestClient } from "@test/utils";
 import type Stream from "stream";
 import type {
-  ClickHouseClient,
-  ClickHouseClientConfigOptions,
-} from "@clickhouse/client";
+  DatastoreClient,
+  DatastoreClientConfigOptions,
+} from "@hanzo-ds/client";
 
 export function createNodeTestClient(
-  config: ClickHouseClientConfigOptions = {},
-): ClickHouseClient {
-  return createTestClient<Stream.Readable>(config) as ClickHouseClient;
+  config: DatastoreClientConfigOptions = {},
+): DatastoreClient {
+  return createTestClient<Stream.Readable>(config) as DatastoreClient;
 }

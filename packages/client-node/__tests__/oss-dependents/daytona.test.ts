@@ -3,7 +3,7 @@
  * ======================================================
  *
  *   Repo:        https://github.com/daytonaio/daytona  (~72k★)
- *   Package:     @clickhouse/client  ^1.16.0
+ *   Package:     @hanzo-ds/client  ^1.16.0
  *   Lives in:    apps/api/src/clickhouse
  *   Analysed at: 8be4772fbff159856b99ca595622a7fb1e64e63a
  *
@@ -16,7 +16,7 @@
  * Key patterns:
  *   - `createClient({ url, username, password, database })`.
  *   - Reads via `client.query({ query, query_params, format: 'JSONEachRow',
- *     clickhouse_settings: { date_time_input_format: 'best_effort' } })` then
+ *     datastore_settings: { date_time_input_format: 'best_effort' } })` then
  *     `result.json()`.
  *   - A thin `query<T>()` / `queryOne<T>()` typed wrapper.
  *   - `await this.client.close()` in `onModuleDestroy()`.
@@ -29,19 +29,19 @@
  */
 
 import { afterEach, describe, expect, it } from "vitest";
-import { type ClickHouseClient } from "@clickhouse/client";
+import { type DatastoreClient } from "@hanzo-ds/client";
 import { createTestClient, guid } from "@test/utils";
 
 describe("oss-dependents / daytona", () => {
   const table = `oss_daytona_${guid()}`;
 
   // Mirrors the NestJS service: lazy client, typed query helpers, clean shutdown.
-  // `configured` stands in for the presence of a CLICKHOUSE_URL in upstream.
+  // `configured` stands in for the presence of a DATASTORE_URL in upstream.
   class ClickHouseService {
-    private client: ClickHouseClient | null = null;
+    private client: DatastoreClient | null = null;
     constructor(private readonly configured: boolean) {}
 
-    private getClient(): ClickHouseClient | null {
+    private getClient(): DatastoreClient | null {
       if (this.client) return this.client;
       if (!this.configured) return null;
       this.client = createTestClient();
@@ -58,7 +58,7 @@ describe("oss-dependents / daytona", () => {
         query,
         query_params,
         format: "JSONEachRow",
-        clickhouse_settings: { date_time_input_format: "best_effort" },
+        datastore_settings: { date_time_input_format: "best_effort" },
       });
       return result.json<T>();
     }
@@ -97,7 +97,7 @@ describe("oss-dependents / daytona", () => {
     const setup = createTestClient();
     await setup.command({
       query: `CREATE TABLE ${table} (id UInt32) ENGINE = MergeTree ORDER BY id`,
-      clickhouse_settings: { wait_end_of_query: 1 },
+      datastore_settings: { wait_end_of_query: 1 },
     });
     await setup.insert({
       table,

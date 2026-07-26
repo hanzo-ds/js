@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { type ClickHouseClient } from "@clickhouse/client-common";
+import { type DatastoreClient } from "@hanzo-ds/client-common";
 import { createTableWithFields } from "@test/fixtures/table_with_fields";
 import { createTestClient, guid } from "../utils";
 import { createSimpleTable } from "../fixtures/simple_table";
 
 describe("Insert with specific columns", () => {
-  let client: ClickHouseClient;
+  let client: DatastoreClient;
   let table: string;
 
   beforeEach(async () => {

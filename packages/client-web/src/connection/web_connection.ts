@@ -11,6 +11,7 @@ import type {
 } from "../common/index";
 import {
   buildMultipartBody,
+  EXCEPTION_CODE_HEADER_NAME,
   serializeQueryParamsForUrl,
   formatQueryParams,
   isCredentialsAuth,
@@ -53,8 +54,8 @@ export class WebConnection implements Connection<ReadableStream> {
     params: ConnBaseQueryParams,
   ): Promise<ConnQueryResult<ReadableStream<Uint8Array>>> {
     const query_id = getQueryId(params.query_id);
-    const clickhouse_settings = withHttpSettings(
-      params.clickhouse_settings,
+    const datastore_settings = withHttpSettings(
+      params.datastore_settings,
       this.params.compression.decompress_response,
     );
 
@@ -84,7 +85,7 @@ export class WebConnection implements Connection<ReadableStream> {
 
     const searchParams = toSearchParams({
       database: this.params.database,
-      clickhouse_settings,
+      datastore_settings,
       query_params: useMultipart ? undefined : params.query_params,
       param_entries: urlParamEntries,
       session_id: params.session_id,
@@ -95,7 +96,7 @@ export class WebConnection implements Connection<ReadableStream> {
     let body: string = params.query;
     const headers = this.defaultHeadersWithOverride(params);
     if (useMultipart && params.query_params !== undefined) {
-      const boundary = `----clickhouse-js-${crypto.randomUUID()}`;
+      const boundary = `----datastore-js-${crypto.randomUUID()}`;
       const multipartParts: Record<string, string> = { query: params.query };
       for (const [key, value] of Object.entries(params.query_params)) {
         multipartParts[`param_${key}`] = formatQueryParams({ value });
@@ -145,7 +146,7 @@ export class WebConnection implements Connection<ReadableStream> {
     const query_id = getQueryId(params.query_id);
     const searchParams = toSearchParams({
       database: this.params.database,
-      clickhouse_settings: params.clickhouse_settings,
+      datastore_settings: params.datastore_settings,
       query_params: params.query_params,
       query: params.query,
       session_id: params.session_id,
@@ -168,7 +169,7 @@ export class WebConnection implements Connection<ReadableStream> {
   }
 
   async ping(): Promise<ConnPingResult> {
-    // ClickHouse /ping endpoint does not support CORS,
+    // Datastore /ping endpoint does not support CORS,
     // so we are using a simple SELECT as a workaround
     try {
       const response = await this.request({
@@ -257,7 +258,7 @@ export class WebConnection implements Connection<ReadableStream> {
       clearTimeout(timeout);
       if (
         isSuccessfulResponse(response.status) &&
-        !response.headers.has("x-clickhouse-exception-code")
+        !response.headers.has(EXCEPTION_CODE_HEADER_NAME)
       ) {
         return response;
       } else {
@@ -276,7 +277,7 @@ export class WebConnection implements Connection<ReadableStream> {
         return Promise.reject(new Error("Timeout error."));
       }
       if (err instanceof Error) {
-        // maybe it's a ClickHouse error
+        // maybe it's a Datastore error
         return Promise.reject(parseError(err));
       }
       // shouldn't happen
@@ -288,7 +289,7 @@ export class WebConnection implements Connection<ReadableStream> {
     const query_id = getQueryId(params.query_id);
     const searchParams = toSearchParams({
       database: this.params.database,
-      clickhouse_settings: params.clickhouse_settings,
+      datastore_settings: params.datastore_settings,
       query_params: params.query_params,
       session_id: params.session_id,
       role: params.role,

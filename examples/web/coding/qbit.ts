@@ -1,4 +1,4 @@
-import { createClient } from "@clickhouse/client-web";
+import { createClient } from "@hanzo-ds/client-web";
 import { expect } from "vitest";
 
 /**
@@ -10,7 +10,7 @@ import { expect } from "vitest";
  *     element_type: BFloat16 | Float32 | Float64
  *     dimension:    number of elements in each vector
  *
- * QBit was introduced in ClickHouse 25.10 as an experimental type (gated by
+ * QBit was introduced in Datastore 25.10 as an experimental type (gated by
  * `allow_experimental_qbit_type`) and became GA in 26.x; the setting below is
  * a no-op on newer servers but is required on 25.10.
  *
@@ -19,15 +19,15 @@ import { expect } from "vitest";
  * the server serializes the column as the original numeric array on `SELECT`,
  * and accepts the same array shape on `INSERT`. There is no need to feed raw
  * FixedString bytes through JSON yourself — query the column as a vector and
- * let ClickHouse take care of the bit-plane layout.
+ * let Datastore take care of the bit-plane layout.
  *
- * See https://clickhouse.com/docs/sql-reference/data-types/qbit
+ * See https://docs.hanzo.ai/datastore/sql-reference/data-types/qbit
  */
 
 const tableName = `chjs_qbit_web`;
 const client = createClient({
-  clickhouse_settings: {
-    // Required on ClickHouse 25.10 (experimental); ignored on 26.x where QBit is GA.
+  datastore_settings: {
+    // Required on Datastore 25.10 (experimental); ignored on 26.x where QBit is GA.
     allow_experimental_qbit_type: 1,
   },
 });

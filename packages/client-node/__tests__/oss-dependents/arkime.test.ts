@@ -3,7 +3,7 @@
  * ==================================================
  *
  *   Repo:        https://github.com/arkime/arkime  (~7k★)
- *   Package:     @clickhouse/client  ^1.12.1
+ *   Package:     @hanzo-ds/client  ^1.12.1
  *   Lives in:    cont3xt/integrations/clickhouse
  *   Analysed at: dc5bd802e1b071d4a54993ceb2fd2b42677c917b
  *
@@ -15,7 +15,7 @@
  * enrich an indicator (IP/domain/etc.).
  *
  * Key patterns:
- *   - Upstream is CommonJS: `const { createClient } = require('@clickhouse/client')`.
+ *   - Upstream is CommonJS: `const { createClient } = require('@hanzo-ds/client')`.
  *     Reproduced here with an ESM import (the runtime surface is identical).
  *   - `class ClickHouseIntegration extends Integration` — implements the
  *     integration contract and runs user-configured queries.
@@ -28,7 +28,7 @@
  */
 
 import { afterEach, describe, expect, it } from "vitest";
-import { type ClickHouseClient } from "@clickhouse/client";
+import { type DatastoreClient } from "@hanzo-ds/client";
 import { createTestClient, guid } from "@test/utils";
 
 // Minimal stand-in for Cont3xt's Integration base class.
@@ -43,7 +43,7 @@ describe("oss-dependents / arkime", () => {
   const table = `oss_arkime_${guid()}`;
 
   class ClickHouseIntegration extends Integration {
-    private client: ClickHouseClient;
+    private client: DatastoreClient;
     constructor() {
       super();
       this.client = createTestClient();
@@ -65,7 +65,7 @@ describe("oss-dependents / arkime", () => {
     async seed(): Promise<void> {
       await this.client.command({
         query: `CREATE TABLE ${table} (indicator String, score UInt32) ENGINE = MergeTree ORDER BY indicator`,
-        clickhouse_settings: { wait_end_of_query: 1 },
+        datastore_settings: { wait_end_of_query: 1 },
       });
       await this.client.insert({
         table,

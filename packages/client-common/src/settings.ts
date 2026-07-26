@@ -1,14 +1,14 @@
 import type { DataFormat } from "./data_formatter";
 
 /**
- * @see {@link https://github.com/ClickHouse/ClickHouse/blob/46ed4f6cdf68fbbdc59fbe0f0bfa9a361cc0dec1/src/Core/Settings.h}
- * @see {@link https://github.com/ClickHouse/ClickHouse/blob/eae2667a1c29565c801be0ffd465f8bfcffe77ef/src/Storages/MergeTree/MergeTreeSettings.h}
+ * @see {@link https://github.com/hanzoai/datastore/blob/46ed4f6cdf68fbbdc59fbe0f0bfa9a361cc0dec1/src/Core/Settings.h}
+ * @see {@link https://github.com/hanzoai/datastore/blob/eae2667a1c29565c801be0ffd465f8bfcffe77ef/src/Storages/MergeTree/MergeTreeSettings.h}
  */
 
 /////   regex / replace for common and format settings entries
 /////   M\((?<type>.+?), {0,1}(?<name>.+?), {0,1}(?<default_value>.+?), {0,1}"{0,1}(?<description>.+)"{0,1}?,.*
 /////   /** $4 */\n$2?: $1,\n
-interface ClickHouseServerSettings {
+interface DatastoreServerSettings {
   /** Write add http CORS header. */
   add_http_cors_header?: Bool;
   /** Additional filter expression which would be applied to query result */
@@ -79,15 +79,15 @@ interface ClickHouseServerSettings {
   allow_experimental_window_view?: Bool;
   /** Support join with inequal conditions which involve columns from both left and right table. e.g. t1.y < t2.y. */
   allow_experimental_join_condition?: Bool;
-  /** Since ClickHouse 24.1 */
+  /** Since Datastore 24.1 */
   allow_experimental_variant_type?: Bool;
-  /** Since ClickHouse 24.5 */
+  /** Since Datastore 24.5 */
   allow_experimental_dynamic_type?: Bool;
-  /** Since ClickHouse 24.8 */
+  /** Since Datastore 24.8 */
   allow_experimental_json_type?: Bool;
-  /** Since ClickHouse 25.3 */
+  /** Since Datastore 25.3 */
   enable_json_type?: Bool;
-  /** Since ClickHouse 25.6 */
+  /** Since Datastore 25.6 */
   enable_time_time64_type?: Bool;
   /** Allow functions that use Hyperscan library. Disable to avoid potentially long compilation times and excessive resource usage. */
   allow_hyperscan?: Bool;
@@ -137,7 +137,7 @@ interface ClickHouseServerSettings {
   async_insert?: Bool;
   /** Maximum time to wait before dumping collected data per query since the first data appeared.
    *
-   *  @see https://clickhouse.com/docs/operations/settings/settings#async_insert_busy_timeout_max_ms
+   *  @see https://docs.hanzo.ai/datastore/operations/settings/settings#async_insert_busy_timeout_max_ms
    */
   async_insert_busy_timeout_max_ms?: Milliseconds;
   /** For async INSERT queries in the replicated table, specifies that deduplication of insertings blocks should be performed */
@@ -181,7 +181,7 @@ interface ClickHouseServerSettings {
   /** Calculate text stack trace in case of exceptions during query execution. This is the default. It requires symbol lookups that may slow down fuzzing tests when huge amount of wrong queries are executed. In normal cases you should not disable this option. */
   calculate_text_stack_trace?: Bool;
   /** Cancel HTTP readonly queries when a client closes the connection without waiting for response.
-   * @see https://clickhouse.com/docs/operations/settings/settings#cancel_http_readonly_queries_on_client_close
+   * @see https://docs.hanzo.ai/datastore/operations/settings/settings#cancel_http_readonly_queries_on_client_close
    */
   cancel_http_readonly_queries_on_client_close?: Bool;
   /** CAST operator into IPv4, CAST operator into IPV6 type, toIPv4, toIPv6 functions will return default value instead of throwing exception on conversion error. */
@@ -202,7 +202,7 @@ interface ClickHouseServerSettings {
   collect_hash_table_stats_during_aggregation?: Bool;
   /** The list of column names to use in schema inference for formats without column names. The format: 'column1,column2,column3,...' */
   column_names_for_schema_inference?: string;
-  /** Changes other settings according to provided ClickHouse version. If we know that we changed some behaviour in ClickHouse by changing some settings in some version, this compatibility setting will control these settings */
+  /** Changes other settings according to provided Datastore version. If we know that we changed some behaviour in Datastore by changing some settings in some version, this compatibility setting will control these settings */
   compatibility?: string;
   /** Ignore AUTO_INCREMENT keyword in column declaration if true, otherwise return error. It simplifies migration from MySQL */
   compatibility_ignore_auto_increment_in_create_table?: Bool;
@@ -266,7 +266,7 @@ interface ClickHouseServerSettings {
   describe_include_subcolumns?: Bool;
   /** Which dialect will be used to parse query */
   dialect?: Dialect;
-  /** Execute a pipeline for reading from a dictionary with several threads. It's supported only by DIRECT dictionary with CLICKHOUSE source. */
+  /** Execute a pipeline for reading from a dictionary with several threads. It's supported only by DIRECT dictionary with DATASTORE source. */
   dictionary_use_async_executor?: Bool;
   /**  Allows to disable decoding/encoding path in uri in URL table engine */
   disable_url_encoding?: Bool;
@@ -366,7 +366,7 @@ interface ClickHouseServerSettings {
   engine_url_skip_empty_files?: Bool;
   /** Method to write Errors to text output. */
   errors_output_format?: string;
-  /** When enabled, ClickHouse will provide exact value for rows_before_limit_at_least statistic, but with the cost that the data before limit will have to be read completely */
+  /** When enabled, Datastore will provide exact value for rows_before_limit_at_least statistic, but with the cost that the data before limit will have to be read completely */
   exact_rows_before_limit?: Bool;
   /** Set default mode in EXCEPT query. Possible values: empty string, 'ALL', 'DISTINCT'. If empty, query without mode will throw exception. */
   except_default_mode?: SetOperationMode;
@@ -430,7 +430,7 @@ interface ClickHouseServerSettings {
   format_binary_max_array_size?: UInt64;
   /** The maximum allowed size for String in RowBinary format. It prevents allocating large amount of memory in case of corrupted data. 0 means there is no limit */
   format_binary_max_string_size?: UInt64;
-  /** How to map ClickHouse Enum and CapnProto Enum */
+  /** How to map Datastore Enum and CapnProto Enum */
   format_capn_proto_enum_comparising_mode?: CapnProtoEnumComparingMode;
   /** If it is set to true, allow strings in double quotes. */
   format_csv_allow_double_quotes?: Bool;
@@ -520,7 +520,7 @@ interface ClickHouseServerSettings {
   hsts_max_age?: UInt64;
   /** HTTP connection timeout. */
   http_connection_timeout?: Seconds;
-  /** Do not send HTTP headers X-ClickHouse-Progress more frequently than at each specified interval. */
+  /** Do not send HTTP headers X-Datastore-Progress more frequently than at each specified interval. */
   http_headers_progress_interval_ms?: UInt64;
   /** Maximum value of a chunk size in HTTP chunked transfer encoding */
   http_max_chunk_size?: UInt64;
@@ -648,7 +648,7 @@ interface ClickHouseServerSettings {
   input_format_max_rows_to_read_for_schema_inference?: UInt64;
   /** The number of columns in inserted MsgPack data. Used for automatic schema inference from data. */
   input_format_msgpack_number_of_columns?: UInt64;
-  /** Match columns from table in MySQL dump and columns from ClickHouse table by names */
+  /** Match columns from table in MySQL dump and columns from Datastore table by names */
   input_format_mysql_dump_map_column_names?: Bool;
   /** Name of the table in MySQL dump from which to read data */
   input_format_mysql_dump_table_name?: string;
@@ -1064,7 +1064,7 @@ interface ClickHouseServerSettings {
   multiple_joins_try_to_keep_original_names?: Bool;
   /** Wait for synchronous execution of ALTER TABLE UPDATE/DELETE queries (mutations). 0 - execute asynchronously. 1 - wait current server. 2 - wait all replicas if they exist. */
   mutations_sync?: UInt64;
-  /** Which MySQL types should be converted to corresponding ClickHouse types (rather than being represented as String). Can be empty or any combination of 'decimal', 'datetime64', 'date2Date32' or 'date2String'. When empty MySQL's DECIMAL and DATETIME/TIMESTAMP with non-zero precision are seen as String on ClickHouse's side. */
+  /** Which MySQL types should be converted to corresponding Datastore types (rather than being represented as String). Can be empty or any combination of 'decimal', 'datetime64', 'date2Date32' or 'date2String'. When empty MySQL's DECIMAL and DATETIME/TIMESTAMP with non-zero precision are seen as String on Datastore's side. */
   mysql_datatypes_support_level?: MySQLDataTypesSupport;
   /** The maximum number of rows in MySQL batch insertion of the MySQL storage engine */
   mysql_max_rows_to_insert?: UInt64;
@@ -1272,7 +1272,7 @@ interface ClickHouseServerSettings {
   parallel_replicas_custom_key?: string;
   /** Type of filter to use with custom key for parallel replicas. default - use modulo operation on the custom key, range - use range filter on custom key using all possible values for the value type of custom key. */
   parallel_replicas_custom_key_filter_type?: ParallelReplicasCustomKeyFilterType;
-  /** If true, ClickHouse will use parallel replicas algorithm also for non-replicated MergeTree tables */
+  /** If true, Datastore will use parallel replicas algorithm also for non-replicated MergeTree tables */
   parallel_replicas_for_non_replicated_merge_tree?: Bool;
   /** If the number of marks to read is less than the value of this setting - parallel replicas will be disabled */
   parallel_replicas_min_number_of_granules_to_enable?: UInt64;
@@ -1484,7 +1484,7 @@ interface ClickHouseServerSettings {
   send_logs_level?: LogsLevel;
   /** Send server text logs with specified regexp to match log source name. Empty means all sources. */
   send_logs_source_regexp?: string;
-  /** Send progress notifications using X-ClickHouse-Progress headers. Some clients do not support high amount of HTTP headers (Python requests in particular), so it is disabled by default. */
+  /** Send progress notifications using X-Datastore-Progress headers. Some clients do not support high amount of HTTP headers (Python requests in particular), so it is disabled by default. */
   send_progress_in_http_headers?: Bool;
   /** Timeout for sending data to network, in seconds. If client needs to sent some data, but it did not able to send any bytes in this interval, exception is thrown. If you set this setting on client, the 'receive_timeout' for the socket will be also set on the corresponding connection end on the server. */
   send_timeout?: Seconds;
@@ -1500,7 +1500,7 @@ interface ClickHouseServerSettings {
   single_join_prefer_left_table?: Bool;
   /** Skip download from remote filesystem if exceeds query cache size */
   skip_download_if_exceeds_query_cache?: Bool;
-  /** If true, ClickHouse silently skips unavailable shards and nodes unresolvable through DNS. Shard is marked as unavailable when none of the replicas can be reached. */
+  /** If true, Datastore silently skips unavailable shards and nodes unresolvable through DNS. Shard is marked as unavailable when none of the replicas can be reached. */
   skip_unavailable_shards?: Bool;
   /** Time to sleep after receiving query in TCPHandler */
   sleep_after_receiving_query_ms?: Milliseconds;
@@ -1510,7 +1510,7 @@ interface ClickHouseServerSettings {
   sleep_in_send_tables_status_ms?: Milliseconds;
   /** What to do when the limit is exceeded. */
   sort_overflow_mode?: OverflowMode;
-  /** Method of reading data from storage file, one of: read, pread, mmap. The mmap method does not apply to clickhouse-server (it's intended for clickhouse-local). */
+  /** Method of reading data from storage file, one of: read, pread, mmap. The mmap method does not apply to datastore-server (it's intended for datastore-local). */
   storage_file_read_method?: LocalFSReadMethod;
   /** Maximum time to read from a pipe for receiving information from the threads when querying the `system.stack_trace` table. This setting is used for testing purposes and not meant to be changed by users. */
   storage_system_stack_trace_pipe_read_timeout_ms?: Milliseconds;
@@ -1600,8 +1600,8 @@ interface ClickHouseServerSettings {
   zstd_window_log_max?: Int64;
 }
 
-/** @see https://clickhouse.com/docs/en/interfaces/http */
-interface ClickHouseHTTPSettings {
+/** @see https://docs.hanzo.ai/datastore/en/interfaces/http */
+interface DatastoreHTTPSettings {
   /** Ensures that the entire response is buffered.
    *  In this case, the data that is not stored in memory will be buffered in a temporary server file.
    *  This could help prevent errors that might occur during the streaming of SELECT queries.
@@ -1612,56 +1612,56 @@ interface ClickHouseHTTPSettings {
    *  If the result body is larger than this threshold, the buffer is written to the HTTP channel,
    *  and the remaining data is sent directly to the HTTP channel. */
   buffer_size: UInt64;
-  /** If enabled, the server compresses the data it sends to the client using the internal ClickHouse
+  /** If enabled, the server compresses the data it sends to the client using the internal Datastore
    *  compression format (not a standard HTTP one). The compressed data has a non-standard format,
-   *  and the `clickhouse-compressor` program is required to work with it.
+   *  and the `datastore-compressor` program is required to work with it.
    *  For standard HTTP (gzip) compression, use the `compression` client configuration option instead. */
   compress: Bool;
   /** If enabled, the server decompresses the data passed in the POST request body, expecting it to be
-   *  compressed using the internal ClickHouse compression format (not a standard HTTP one). */
+   *  compressed using the internal Datastore compression format (not a standard HTTP one). */
   decompress: Bool;
   /** Can be passed as the quota key (any string).
-   *  @see https://clickhouse.com/docs/operations/quotas */
+   *  @see https://docs.hanzo.ai/datastore/operations/quotas */
   quota_key: string;
   /** If enabled, include the stack trace in the response body when an exception occurs. */
   stacktrace: Bool;
   /** Format to use if a SELECT query is executed without a FORMAT clause.
-   *  Only useful for the {@link ClickHouseClient.exec} method,
-   *  as {@link ClickHouseClient.query} method always attaches this clause. */
+   *  Only useful for the {@link DatastoreClient.exec} method,
+   *  as {@link DatastoreClient.query} method always attaches this clause. */
   default_format: DataFormat;
   /** By default, the session is terminated after 60 seconds of inactivity
    *  This is regulated by the `default_session_timeout` server setting. */
   session_timeout: UInt64;
   /** You can use this setting to check the session status before executing the query.
    *  If a session is expired or cannot be found, the server returns `SESSION_NOT_FOUND` with error code 372.
-   *  NB: the session mechanism is only reliable when you connect directly to a particular ClickHouse server node.
+   *  NB: the session mechanism is only reliable when you connect directly to a particular Datastore server node.
    *  Due to each particular session not being shared across the cluster, sessions won't work well in a multi-node environment with a load balancer,
    *  as there will be no guarantee that each consequent request will be received on the same node. */
   session_check: Bool;
 }
 
-export type ClickHouseSettings = Partial<ClickHouseServerSettings> &
-  Partial<ClickHouseHTTPSettings> &
+export type DatastoreSettings = Partial<DatastoreServerSettings> &
+  Partial<DatastoreHTTPSettings> &
   Record<string, number | string | boolean | SettingsMap | undefined>;
 
 /**
- * A package-neutral, structural view of {@link ClickHouseSettings}.
+ * A package-neutral, structural view of {@link DatastoreSettings}.
  *
- * Identical to {@link ClickHouseSettings} except that the index signature does
+ * Identical to {@link DatastoreSettings} except that the index signature does
  * not include {@link SettingsMap}. `SettingsMap` is a class with a private
- * member, so TypeScript compares it nominally; because `@clickhouse/client` and
- * `@clickhouse/client-web` each bundle their own copy of this module, their
- * `ClickHouseSettings` types are mutually unassignable. This interface omits the
+ * member, so TypeScript compares it nominally; because `@hanzo-ds/client` and
+ * `@hanzo-ds/client-web` each bundle their own copy of this module, their
+ * `DatastoreSettings` types are mutually unassignable. This interface omits the
  * only nominal member, so it is structurally identical across all three packages
- * and assignable into each package's `ClickHouseSettings`.
+ * and assignable into each package's `DatastoreSettings`.
  *
  * Intended for consumers that share a single settings-producing helper across
  * both the Node.js and Web clients and therefore cannot import a single concrete
- * `ClickHouseSettings`. Note: values typed as {@link SettingsMap} cannot be
- * carried through this type — use {@link ClickHouseSettings} if you need them.
+ * `DatastoreSettings`. Note: values typed as {@link SettingsMap} cannot be
+ * carried through this type — use {@link DatastoreSettings} if you need them.
  */
-export type ClickHouseSettingsInterface = Partial<ClickHouseServerSettings> &
-  Partial<ClickHouseHTTPSettings> &
+export type DatastoreSettingsInterface = Partial<DatastoreServerSettings> &
+  Partial<DatastoreHTTPSettings> &
   Record<string, number | string | boolean | undefined>;
 
 export interface MergeTreeSettings {
@@ -2068,15 +2068,15 @@ export type DefaultTableEngine =
 export type MySQLDataTypesSupport =
   // default
   | ""
-  // convert MySQL date type to ClickHouse String
+  // convert MySQL date type to Datastore String
   // (This is usually used when your mysql date is less than 1925)
   | "date2String"
-  // convert MySQL date type to ClickHouse Date32
+  // convert MySQL date type to Datastore Date32
   | "date2Date32"
-  // convert MySQL DATETIME and TIMESTAMP and ClickHouse DateTime64
+  // convert MySQL DATETIME and TIMESTAMP and Datastore DateTime64
   // if precision is > 0 or range is greater that for DateTime.
   | "datetime64"
-  // convert MySQL decimal and number to ClickHouse Decimal when applicable
+  // convert MySQL decimal and number to Datastore Decimal when applicable
   | "decimal";
 
 export type DistributedDDLOutputMode =
@@ -2158,7 +2158,7 @@ export type JoinAlgorithm =
   | "full_sorting_merge"
   | "grace_hash";
 
-export type Dialect = "clickhouse" | "kusto" | "kusto_auto" | "prql";
+export type Dialect = "datastore" | "kusto" | "kusto_auto" | "prql";
 
 export type CapnProtoEnumComparingMode =
   | "by_names"

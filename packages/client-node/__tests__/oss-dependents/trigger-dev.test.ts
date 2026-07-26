@@ -3,7 +3,7 @@
  * ==============================================================
  *
  *   Repo:        https://github.com/triggerdotdev/trigger.dev  (~15k★)
- *   Package:     @clickhouse/client  ^1.12.1
+ *   Package:     @hanzo-ds/client  ^1.12.1
  *   Lives in:    internal-packages/clickhouse
  *   Analysed at: ae08c9cb600b00256440bccb336745f01acdf60b
  *
@@ -30,7 +30,7 @@
  */
 
 import { afterEach, describe, expect, it } from "vitest";
-import { type ClickHouseClient } from "@clickhouse/client";
+import { type DatastoreClient } from "@hanzo-ds/client";
 import { createTestClient, guid } from "@test/utils";
 
 describe("oss-dependents / trigger.dev", () => {
@@ -38,8 +38,8 @@ describe("oss-dependents / trigger.dev", () => {
 
   // Reader/writer split so reads can target a replica.
   class ClickHouse {
-    readonly reader: ClickHouseClient;
-    readonly writer: ClickHouseClient;
+    readonly reader: DatastoreClient;
+    readonly writer: DatastoreClient;
 
     constructor() {
       this.writer = createTestClient();
@@ -49,7 +49,7 @@ describe("oss-dependents / trigger.dev", () => {
     async createSchema(): Promise<void> {
       await this.writer.command({
         query: `CREATE TABLE ${table} (runId String, event String) ENGINE = MergeTree ORDER BY runId`,
-        clickhouse_settings: { wait_end_of_query: 1 },
+        datastore_settings: { wait_end_of_query: 1 },
       });
     }
 

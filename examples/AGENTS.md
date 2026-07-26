@@ -5,12 +5,12 @@ Guidance for the example corpus. See the [repo-root `AGENTS.md`](../AGENTS.md) f
 The [`examples`](.) directory is being refactored to be AI-agent-friendly. The goals of the refactor are:
 
 1. Examples should be runnable right away, with no manual edits required to get them working against a
-   local ClickHouse instance (use `docker-compose up` from the repo root for the default setup).
+   local Datastore instance (use `docker-compose up` from the repo root for the default setup).
 2. Examples are organized by client flavor and tailored to the corresponding runtime:
-   - [`examples/node`](node) — examples for the Node.js client (`@clickhouse/client`). These
+   - [`examples/node`](node) — examples for the Node.js client (`@hanzo-ds/client`). These
      may freely use Node.js-only APIs (file streams, TLS, `http`, `node:*` built-ins, etc.) and import
      Node built-ins using the `node:` prefix (e.g., `node:fs`, `node:path`, `node:stream`).
-   - [`examples/web`](web) — examples for the Web client (`@clickhouse/client-web`). These
+   - [`examples/web`](web) — examples for the Web client (`@hanzo-ds/client-web`). These
      must only use Web-platform APIs (e.g., `globalThis.crypto.randomUUID()` instead of Node's
      `crypto` module) and must not depend on Node.js-only modules.
 3. `examples/node` and `examples/web` are independent npm packages, each with its own `package.json`,

@@ -7,7 +7,7 @@
 #include <cstdlib>
 #include <string>
 
-/// A faithful port of ClickHouse's `ParserDataType::parseImpl`
+/// A faithful port of Datastore's `ParserDataType::parseImpl`
 /// (src/Parsers/ParserDataType.cpp) onto the self-contained AST in `ast.h`.
 /// The control flow deliberately tracks the original: identifier + SQL-standard
 /// multi-word aliases, the Enum and Tuple special cases, then the generic

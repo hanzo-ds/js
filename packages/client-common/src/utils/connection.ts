@@ -1,5 +1,5 @@
 import type { CompressionMethod } from "../connection";
-import type { ClickHouseSettings } from "../settings";
+import type { DatastoreSettings } from "../settings";
 
 export type HttpHeader = number | string | string[];
 export type HttpHeaders = Record<string, HttpHeader | undefined>;
@@ -27,16 +27,16 @@ export function withCompressionHeaders({
 }
 
 export function withHttpSettings(
-  clickhouse_settings?: ClickHouseSettings,
+  datastore_settings?: DatastoreSettings,
   compression?: { codec: CompressionMethod } | undefined,
-): ClickHouseSettings {
+): DatastoreSettings {
   return {
     ...(compression
       ? {
           enable_http_compression: 1,
         }
       : {}),
-    ...clickhouse_settings,
+    ...datastore_settings,
   };
 }
 
@@ -58,5 +58,3 @@ export function isCredentialsAuth(
     "password" in auth
   );
 }
-
-export const EXCEPTION_TAG_HEADER_NAME = "x-clickhouse-exception-tag";

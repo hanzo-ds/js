@@ -2,7 +2,7 @@ import { describe, it, expect, vi, afterEach } from "vitest";
 import Stream from "stream";
 import { ResultSet } from "../../src";
 import { guid } from "../../../client-common/__tests__/utils/guid";
-import type { DataFormat } from "@clickhouse/client-common";
+import type { DataFormat } from "@hanzo-ds/client-common";
 
 describe("[Node.js] ResultSet (extra coverage)", () => {
   afterEach(() => {

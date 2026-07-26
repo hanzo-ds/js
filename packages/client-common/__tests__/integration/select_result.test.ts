@@ -1,9 +1,9 @@
 import { describe, it, expect, afterEach, beforeEach } from "vitest";
-import type { ClickHouseClient } from "@clickhouse/client-common";
+import type { DatastoreClient } from "@hanzo-ds/client-common";
 import { createTestClient } from "../utils";
 
 describe("Select ResultSet", () => {
-  let client: ClickHouseClient;
+  let client: DatastoreClient;
   afterEach(async () => {
     await client.close();
   });

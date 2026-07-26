@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import type { Row } from "@clickhouse/client-common";
+import type { Row } from "@hanzo-ds/client-common";
 import { guid } from "@test/utils";
 import { ResultSet } from "../../src";
 import { isAwaitUsingStatementSupported } from "../utils/feature_detection";

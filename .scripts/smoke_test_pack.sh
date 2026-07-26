@@ -9,12 +9,12 @@
 # package is published to npm, rather than after.
 #
 # Usage: .scripts/smoke_test_pack.sh [workspace]
-#   workspace defaults to @clickhouse/client.
+#   workspace defaults to @hanzo-ds/client.
 #
 # Run from the repository root, after `npm run build` (or a per-workspace build).
 set -euo pipefail
 
-WORKSPACE="${1:-@clickhouse/client}"
+WORKSPACE="${1:-@hanzo-ds/client}"
 REPO="$(pwd)"
 SMOKE_DIR="$REPO/tests/e2e/smoke"
 
@@ -32,8 +32,8 @@ cd "$APP"
 npm init -y >/dev/null
 npm install "./$TARBALL"
 
-echo "--- installed @clickhouse packages ---"
-ls node_modules/@clickhouse/
+echo "--- installed @datastore packages ---"
+ls node_modules/@hanzo-ds/
 
 echo "--- ESM check ---"
 node check.mjs

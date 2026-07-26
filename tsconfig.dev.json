@@ -9,7 +9,7 @@
     "outDir": "out",
     "paths": {
       "@test/*": ["./packages/client-common/__tests__/*"],
-      "@clickhouse/client-common": ["./packages/client-common/src/index.ts"]
+      "@hanzo-ds/client-common": ["./packages/client-common/src/index.ts"]
     }
   }
 }

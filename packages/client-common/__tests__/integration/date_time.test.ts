@@ -1,10 +1,10 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import type { ClickHouseClient } from "@clickhouse/client-common";
+import type { DatastoreClient } from "@hanzo-ds/client-common";
 import { createTableWithFields } from "../fixtures/table_with_fields";
 import { createTestClient } from "../utils";
 
 describe("DateTime", () => {
-  let client: ClickHouseClient;
+  let client: DatastoreClient;
   beforeEach(() => {
     client = createTestClient();
   });

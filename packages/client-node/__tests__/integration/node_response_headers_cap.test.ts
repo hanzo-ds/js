@@ -8,7 +8,7 @@ import { describe, it } from "vitest";
 // limit and emit a hand-crafted HTTP/1.1 response, mirroring the experiment
 // captured in the test plan.
 //
-// This is a pure Node.js behavior check; the ClickHouse client is intentionally
+// This is a pure Node.js behavior check; the Datastore client is intentionally
 // not involved here.
 describe("[Node.js] http client maxHeaderSize behavior", () => {
   // Build enough X-H-NNNN headers to roughly reach `targetBytes`.

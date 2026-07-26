@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/// Regenerate the static oracle snapshots from a real ClickHouse server.
+/// Regenerate the static oracle snapshots from a real Datastore server.
 ///
 /// For every candidate type (existing cases.txt entries + the candidates file)
 /// this:
@@ -12,11 +12,11 @@
 /// diverges, are dropped and listed in a report (never silently added).
 ///
 /// Usage:
-///   tsx test/update_snapshots.ts --clickhouse /path/to/clickhouse \
+///   tsx test/update_snapshots.ts --datastore /path/to/datastore \
 ///       [--candidates test/candidates.txt] [--cases test/cases.txt]
 ///
-/// The clickhouse binary must be built from
-/// https://github.com/peter-leonov-ch/ClickHouse/pull/1.
+/// The datastore binary must be built from
+/// https://github.com/peter-leonov-ch/Datastore/pull/1.
 
 import {
   existsSync,
@@ -41,25 +41,25 @@ import {
 const here = dirname(fileURLToPath(import.meta.url));
 
 interface Args {
-  clickhouse: string;
+  datastore: string;
   cases: string;
   candidates: string;
 }
 
 function parseArgs(argv: string[]): Args {
-  let clickhouse = "";
+  let datastore = "";
   let cases = join(here, "cases.txt");
   let candidates = join(here, "candidates.txt");
   for (let i = 0; i < argv.length; i++) {
-    if (argv[i] === "--clickhouse") clickhouse = argv[++i] ?? "";
+    if (argv[i] === "--datastore") datastore = argv[++i] ?? "";
     else if (argv[i] === "--cases") cases = argv[++i] ?? cases;
     else if (argv[i] === "--candidates") candidates = argv[++i] ?? candidates;
   }
-  if (!clickhouse) {
-    console.error("error: --clickhouse <path> is required");
+  if (!datastore) {
+    console.error("error: --datastore <path> is required");
     process.exit(2);
   }
-  return { clickhouse, cases, candidates };
+  return { datastore, cases, candidates };
 }
 
 function main(): number {
@@ -95,7 +95,7 @@ function main(): number {
 
     let expected: unknown;
     try {
-      expected = serverDataType(args.clickhouse, typeStr);
+      expected = serverDataType(args.datastore, typeStr);
     } catch (exc) {
       rejected.push({
         type: typeStr,

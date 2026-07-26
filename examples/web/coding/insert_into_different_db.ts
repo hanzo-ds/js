@@ -1,9 +1,9 @@
-import { createClient } from "@clickhouse/client-web";
+import { createClient } from "@hanzo-ds/client-web";
 
 // Writing to a table that lives in a database other than the client's default `database`.
 // Pass a fully qualified `database.table` name to `client.insert`/`client.query`/`client.command`
 // when you need to address a different database without recreating the client.
-const dbName = "clickhouse_js_examples_web";
+const dbName = "datastore_js_examples_web";
 const tableName = `test_table_${Math.random().toString(36).slice(2, 8)}`;
 const client = createClient({
   database: "system",

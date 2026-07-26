@@ -1,11 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { ClickHouseError } from "@clickhouse/client-common";
+import { DatastoreError } from "@hanzo-ds/client-common";
 import { createSimpleWebTestClient } from "../utils/simple_web_client";
 
-// ClickHouse can respond with HTTP 200 but still report an exception via the
-// `X-ClickHouse-Exception-Code` header (e.g., when an error occurs while the
-// response is being streamed). See https://github.com/ClickHouse/ClickHouse/pull/8786
-describe("[Web] 200 response with X-ClickHouse-Exception-Code header", () => {
+// Datastore can respond with HTTP 200 but still report an exception via the
+// `X-Datastore-Exception-Code` header (e.g., when an error occurs while the
+// response is being streamed). See https://github.com/hanzoai/datastore/pull/8786
+describe("[Web] 200 response with X-Datastore-Exception-Code header", () => {
   const errorMessage =
     "Code: 395. DB::Exception: Value passed to 'throwIf' function is non-zero: " +
     "while executing 'FUNCTION throwIf(equals(number, 3) :: 1) -> throwIf(equals(number, 3))'. " +
@@ -17,7 +17,7 @@ describe("[Web] 200 response with X-ClickHouse-Exception-Code header", () => {
         status: 200,
         headers: {
           "Content-Type": "text/plain; charset=UTF-8",
-          "X-ClickHouse-Exception-Code": "395",
+          "X-Datastore-Exception-Code": "395",
         },
       });
     return createSimpleWebTestClient({
@@ -26,7 +26,7 @@ describe("[Web] 200 response with X-ClickHouse-Exception-Code header", () => {
     });
   }
 
-  it("should reject a query with a parsed ClickHouseError", async () => {
+  it("should reject a query with a parsed DatastoreError", async () => {
     const client = createClientWithMockedFetch();
     await expect(
       client.query({ query: "SELECT throwIf(number = 3) FROM numbers(10)" }),
@@ -42,10 +42,10 @@ describe("[Web] 200 response with X-ClickHouse-Exception-Code header", () => {
     await client.close();
   });
 
-  it("should reject with a ClickHouseError instance", async () => {
+  it("should reject with a DatastoreError instance", async () => {
     const client = createClientWithMockedFetch();
     await expect(client.query({ query: "SELECT 1" })).rejects.toBeInstanceOf(
-      ClickHouseError,
+      DatastoreError,
     );
     await client.close();
   });
@@ -58,12 +58,12 @@ describe("[Web] 200 response with X-ClickHouse-Exception-Code header", () => {
         values: [{ x: 1 }],
         format: "JSONEachRow",
       }),
-    ).rejects.toBeInstanceOf(ClickHouseError);
+    ).rejects.toBeInstanceOf(DatastoreError);
     await expect(
       client.command({ query: "OPTIMIZE TABLE test" }),
-    ).rejects.toBeInstanceOf(ClickHouseError);
+    ).rejects.toBeInstanceOf(DatastoreError);
     await expect(client.exec({ query: "SELECT 1" })).rejects.toBeInstanceOf(
-      ClickHouseError,
+      DatastoreError,
     );
     await client.close();
   });

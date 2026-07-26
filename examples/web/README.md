@@ -1,4 +1,4 @@
-# `@clickhouse/client-web` examples
+# `@hanzo-ds/client-web` examples
 
 Examples for the Web client. They may only use Web-platform APIs (e.g.
 `globalThis.crypto.randomUUID()` instead of Node's `crypto` module) and must
@@ -14,7 +14,7 @@ backing a focused AI agent skill:
 - [`security/`](security/) — RBAC (roles and read-only users) and
   SQL-injection-safe parameter binding.
 - [`schema-and-deployments/`](schema-and-deployments/) — `CREATE TABLE` for
-  single-node, on-prem cluster, and ClickHouse Cloud, plus column-shape
+  single-node, on-prem cluster, and Datastore Cloud, plus column-shape
   features and deployment-shaped connection strings.
 
 There is no `performance/` folder for the Web client because every performance

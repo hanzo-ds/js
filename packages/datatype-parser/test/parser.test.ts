@@ -1,4 +1,4 @@
-/// Dependency-free unit tests (no ClickHouse binary required).
+/// Dependency-free unit tests (no Datastore binary required).
 /// Run with: npm test   (vitest run)
 ///
 /// The exhaustive server-equivalence check lives in oracle_compare.ts; these

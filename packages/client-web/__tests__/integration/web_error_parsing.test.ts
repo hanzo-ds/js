@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { createClient } from "@clickhouse/client-web";
+import { createClient } from "@hanzo-ds/client-web";
 
 describe("[Web] errors parsing", () => {
   it("should return an error when URL is unreachable", async () => {

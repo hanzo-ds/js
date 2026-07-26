@@ -7,7 +7,7 @@
  *
  *   1. When a `Connection` is injected, the default HTTP factory
  *      (`NodeConnectionFactory.create`) is NOT invoked.
- *   2. The shared `ClickHouseClient` routes its public methods
+ *   2. The shared `DatastoreClient` routes its public methods
  *      (`query`, `insert`, `command`, `exec`, `ping`, `close`) through
  *      the injected connection.
  */

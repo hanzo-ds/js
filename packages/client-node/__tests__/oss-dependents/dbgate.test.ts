@@ -3,7 +3,7 @@
  * ==================================================
  *
  *   Repo:        https://github.com/dbgate/dbgate  (~7k★)
- *   Package:     @clickhouse/client  ^1.5.0
+ *   Package:     @hanzo-ds/client  ^1.5.0
  *   Lives in:    plugins/dbgate-plugin-clickhouse
  *   Analysed at: 6bacb1c81e8e330ca0ee163ec06202b68a1e0591
  *
@@ -14,7 +14,7 @@
  * analysis and bulk inserts.
  *
  * Key patterns:
- *   - Upstream is CommonJS: `const { createClient } = require('@clickhouse/client')`
+ *   - Upstream is CommonJS: `const { createClient } = require('@hanzo-ds/client')`
  *     implementing DbGate's `EngineDriver`. Reproduced here with an ESM import.
  *   - A custom `createBulkInsertStream` for efficient bulk loading — reproduced
  *     using the client's streaming insert (an async row generator as `values`).
@@ -31,16 +31,16 @@
 
 import { Readable } from "node:stream";
 import { afterEach, describe, expect, it } from "vitest";
-import { type ClickHouseClient } from "@clickhouse/client";
+import { type DatastoreClient } from "@hanzo-ds/client";
 import { createTestClient, guid } from "@test/utils";
 
 describe("oss-dependents / dbgate", () => {
-  let client: ClickHouseClient;
+  let client: DatastoreClient;
   const table = `oss_dbgate_${guid()}`;
 
   // Querying surface used by the GUI grid.
   async function runQuery(
-    c: ClickHouseClient,
+    c: DatastoreClient,
     query: string,
   ): Promise<unknown[]> {
     const result = await c.query({ query, format: "JSONEachRow" });
@@ -48,10 +48,7 @@ describe("oss-dependents / dbgate", () => {
   }
 
   // createBulkInsertStream — efficient bulk loading from a streamed row source.
-  async function bulkInsert(
-    c: ClickHouseClient,
-    rows: Readable,
-  ): Promise<void> {
+  async function bulkInsert(c: DatastoreClient, rows: Readable): Promise<void> {
     await c.insert({ table, values: rows, format: "JSONEachRow" });
   }
 
@@ -70,7 +67,7 @@ describe("oss-dependents / dbgate", () => {
     client = createTestClient();
     await client.command({
       query: `CREATE TABLE ${table} (id UInt32, name String) ENGINE = MergeTree ORDER BY id`,
-      clickhouse_settings: { wait_end_of_query: 1 },
+      datastore_settings: { wait_end_of_query: 1 },
     });
     await bulkInsert(client, Readable.from(sampleRows()));
 

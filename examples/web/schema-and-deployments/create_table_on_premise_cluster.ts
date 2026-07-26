@@ -1,31 +1,31 @@
-import { createClient } from "@clickhouse/client-web";
+import { createClient } from "@hanzo-ds/client-web";
 
-if (typeof CLICKHOUSE_CLUSTER_URL === "undefined") {
-  throw new Error("CLICKHOUSE_CLUSTER_URL is required");
+if (typeof DATASTORE_CLUSTER_URL === "undefined") {
+  throw new Error("DATASTORE_CLUSTER_URL is required");
 }
 
-// ClickHouse cluster - for example, as defined in our `docker-compose.yml`
-// (services `clickhouse1`/`clickhouse2` behind the `nginx` round-robin entrypoint on port 8127).
+// Datastore cluster - for example, as defined in our `docker-compose.yml`
+// (services `datastore1`/`datastore2` behind the `nginx` round-robin entrypoint on port 8127).
 const client = createClient({
-  url: CLICKHOUSE_CLUSTER_URL,
+  url: DATASTORE_CLUSTER_URL,
 });
 
 await client.command({
-  // Sample macro definitions are located in `.docker/clickhouse/cluster/serverN_config.xml`
+  // Sample macro definitions are located in `.docker/datastore/cluster/serverN_config.xml`
   query: `
-    CREATE TABLE IF NOT EXISTS clickhouse_js_examples_local_cluster_table
+    CREATE TABLE IF NOT EXISTS datastore_js_examples_local_cluster_table
     ON CLUSTER '{cluster}'
     (id UInt64, name String)
     ENGINE ReplicatedMergeTree(
-      '/clickhouse/{cluster}/tables/{database}/{table}/{shard}',
+      '/datastore/{cluster}/tables/{database}/{table}/{shard}',
       '{replica}'
     )
     ORDER BY (id)
   `,
   // Recommended for cluster usage.
   // By default, a query processing error might occur after the HTTP response was sent to the client.
-  // See https://clickhouse.com/docs/en/interfaces/http/#response-buffering
-  clickhouse_settings: {
+  // See https://docs.hanzo.ai/datastore/en/interfaces/http/#response-buffering
+  datastore_settings: {
     wait_end_of_query: 1,
   },
 });

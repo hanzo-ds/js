@@ -50,9 +50,9 @@ jobs:
         working-directory: tests/e2e/skills
         run: |
           npm install \
-            ../../../packages/client-common/clickhouse-client-common-*.tgz \
-            ../../../packages/client-node/clickhouse-client-*.tgz \
-            ../../../packages/client-web/clickhouse-client-web-*.tgz
+            ../../../packages/client-common/datastore-client-common-*.tgz \
+            ../../../packages/client-node/datastore-client-*.tgz \
+            ../../../packages/client-web/datastore-client-web-*.tgz
 
       - name: Install test dependencies
         working-directory: tests/e2e/skills

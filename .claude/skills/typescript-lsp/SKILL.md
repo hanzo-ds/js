@@ -2,7 +2,7 @@
 name: typescript-lsp
 description: >
   Use the TypeScript language server (`typescript-language-server`) for precise
-  code intelligence in the `clickhouse-js` repository: go-to-definition, find
+  code intelligence in the `datastore-js` repository: go-to-definition, find
   references, hover (type signatures and JSDoc, including `@deprecated` info),
   workspace-wide symbol search, completions, and per-file type diagnostics.
   Prefer this over grep when you need to resolve a symbol's actual definition,
@@ -10,10 +10,10 @@ description: >
   `packages/*` workspaces. The server is preinstalled as a root devDependency —
   run the repository `setup` skill (`npm install`) first so `node_modules` is
   populated. Do NOT use this skill for downstream projects that merely depend
-  on `@clickhouse/client`; it is specific to working inside this repo.
+  on `@hanzo-ds/client`; it is specific to working inside this repo.
 ---
 
-# TypeScript Language Server in clickhouse-js
+# TypeScript Language Server in datastore-js
 
 `typescript-language-server` is declared as a root devDependency, so after
 `npm install` (see the `setup` skill) it is available via `npx` and uses the
@@ -28,7 +28,7 @@ npx typescript-language-server --stdio
 ```
 
 It speaks LSP (JSON-RPC, `Content-Length`-framed) over stdio. There is no
-extra configuration: each `packages/*` workspace, `tests/clickhouse-test-runner`,
+extra configuration: each `packages/*` workspace, `tests/datastore-test-runner`,
 `examples/node`, and `examples/web` has its own `tsconfig.json`, and the
 server picks the nearest one per opened file automatically.
 
@@ -48,7 +48,7 @@ server picks the nearest one per opened file automatically.
 | `textDocument/hover`      | Returns the full inferred signature + JSDoc markdown                                                                                                                                                            |
 | `textDocument/definition` | Resolves across workspace packages via source, not `dist/`                                                                                                                                                      |
 | `textDocument/references` | Within the opened file's project                                                                                                                                                                                |
-| `workspace/symbol`        | e.g. query `ClickHouseClient` finds class + re-exports                                                                                                                                                          |
+| `workspace/symbol`        | e.g. query `DatastoreClient` finds class + re-exports                                                                                                                                                           |
 | `textDocument/completion` | Context-aware member completions                                                                                                                                                                                |
 | Diagnostics               | **Push only** (`textDocument/publishDiagnostics` notifications, sent ~1–3s after `didOpen`). The pull `textDocument/diagnostic` request is _not_ supported (`-32601`) — wait for the push notification instead. |
 

@@ -7,13 +7,13 @@ import {
   beforeEach,
   afterEach,
 } from "vitest";
-import { type ClickHouseClient } from "@clickhouse/client-common";
+import { type DatastoreClient } from "@hanzo-ds/client-common";
 import { createSimpleTable } from "@test/fixtures/simple_table";
 import { getAuthFromEnv } from "@test/utils/env";
 import { createTestClient, guid } from "../utils";
 
 describe("authentication", () => {
-  let invalidAuthClient: ClickHouseClient;
+  let invalidAuthClient: DatastoreClient;
   beforeEach(() => {
     invalidAuthClient = createTestClient({
       username: "gibberish",
@@ -37,7 +37,7 @@ describe("authentication", () => {
   });
 
   describe("request auth override", () => {
-    let defaultClient: ClickHouseClient;
+    let defaultClient: DatastoreClient;
     beforeAll(() => {
       defaultClient = createTestClient();
     });

@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import type { ClickHouseClient } from "@clickhouse/client-common";
+import type { DatastoreClient } from "@hanzo-ds/client-common";
 import { createTestClient } from "@test/utils";
 import { getAsText } from "../utils/stream";
-import { ResultSet } from "@clickhouse/client-web";
+import { ResultSet } from "@hanzo-ds/client-web";
 
 describe("[Web] exec result streaming", () => {
-  let client: ClickHouseClient<ReadableStream>;
+  let client: DatastoreClient<ReadableStream>;
   beforeEach(() => {
     client = createTestClient();
   });
@@ -50,7 +50,7 @@ describe("[Web] exec result streaming", () => {
       const format = "JSONEachRow";
       const { stream, query_id } = await client.exec({
         query: "SELECT number FROM system.numbers LIMIT 1",
-        clickhouse_settings: {
+        datastore_settings: {
           default_format: format,
         },
       });

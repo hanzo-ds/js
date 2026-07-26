@@ -1,12 +1,12 @@
 // See also:
-//  - https://clickhouse.com/docs/sql-reference/data-types/time
-//  - https://clickhouse.com/docs/sql-reference/data-types/time64
-import { createClient } from "@clickhouse/client";
+//  - https://docs.hanzo.ai/datastore/sql-reference/data-types/time
+//  - https://docs.hanzo.ai/datastore/sql-reference/data-types/time64
+import { createClient } from "@hanzo-ds/client";
 
 const tableName = `chjs_time_time64`;
 const client = createClient({
-  clickhouse_settings: {
-    // Since ClickHouse 25.6
+  datastore_settings: {
+    // Since Datastore 25.6
     enable_time_time64_type: 1,
   },
 });

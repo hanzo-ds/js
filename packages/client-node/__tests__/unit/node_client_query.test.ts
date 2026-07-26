@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import Http from "http";
-import { NodeClickHouseClient } from "../../src/client";
+import { NodeDatastoreClient } from "../../src/client";
 import { NodeConfigImpl } from "../../src/config";
 import { emitResponseBody, stubClientRequest } from "../utils/http_stubs";
 
@@ -11,10 +11,10 @@ beforeEach(() => {
   vi.clearAllMocks();
 });
 
-describe("[Node.js] NodeClickHouseClient query method", () => {
+describe("[Node.js] NodeDatastoreClient query method", () => {
   it("should call query method and return ResultSet", async () => {
     // Create a client instance using the internal constructor
-    const client = new NodeClickHouseClient({
+    const client = new NodeDatastoreClient({
       impl: NodeConfigImpl,
       url: "http://localhost:8123",
     });
@@ -53,7 +53,7 @@ describe("[Node.js] NodeClickHouseClient query method", () => {
   });
 
   it("should handle query with different format parameter", async () => {
-    const client = new NodeClickHouseClient({
+    const client = new NodeDatastoreClient({
       impl: NodeConfigImpl,
       url: "http://localhost:8123",
     });
@@ -80,7 +80,7 @@ describe("[Node.js] NodeClickHouseClient query method", () => {
   });
 
   it("should maintain type safety with query format", async () => {
-    const client = new NodeClickHouseClient({
+    const client = new NodeDatastoreClient({
       impl: NodeConfigImpl,
       url: "http://localhost:8123",
     });

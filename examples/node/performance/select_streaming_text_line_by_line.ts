@@ -1,4 +1,4 @@
-import { createClient, type Row } from "@clickhouse/client";
+import { createClient, type Row } from "@hanzo-ds/client";
 
 /**
  * Can be used for consuming large datasets for reducing memory overhead,
@@ -22,7 +22,7 @@ import { createClient, type Row } from "@clickhouse/client";
  *  - Parquet (see also: select_parquet_as_file.ts)
  *
  * See other supported formats for streaming:
- * https://clickhouse.com/docs/en/integrations/language-clients/javascript#supported-data-formats
+ * https://docs.hanzo.ai/datastore/en/integrations/language-clients/javascript#supported-data-formats
  */
 const client = createClient();
 const rows = await client.query({

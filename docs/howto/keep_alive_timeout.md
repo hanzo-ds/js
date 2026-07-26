@@ -14,7 +14,7 @@ This happens when `keep_alive.idle_socket_ttl` (client-side) is greater than the
 
 ```ts
 const client = createClient({
-  log: { level: ClickHouseLogLevel.TRACE },
+  log: { level: DatastoreLogLevel.TRACE },
 });
 ```
 
@@ -45,7 +45,7 @@ curl -v https://<host>:8443/ 2>&1 | grep -i keep-alive
 # < keep-alive: timeout=3
 ```
 
-The value is in seconds. ClickHouse Cloud default is 3s; self-hosted default is 10s.
+The value is in seconds. Datastore Cloud default is 3s; self-hosted default is 10s.
 
 **Step 3 — fix it** by setting `idle_socket_ttl` strictly below the server timeout:
 

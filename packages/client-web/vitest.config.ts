@@ -26,14 +26,14 @@ if (
   );
 }
 
-// Which build of the client the `@clickhouse/*` specifiers resolve to:
+// Which build of the client the `@hanzo-ds/*` specifiers resolve to:
 //   src  (default) - the raw TypeScript sources (via the `unittest` export
 //                    condition), for a fast, build-free loop.
 //   dist           - the compiled packages, exactly as a published consumer
 //                    sees them (run `npm run build` first). An e2e-style guard
 //                    against the built artifact / public surface.
 // TEST_TARGET is orthogonal to TEST_MODE (which only selects the spec files).
-// Caveat: only specs that import EXCLUSIVELY via the `@clickhouse/*` names
+// Caveat: only specs that import EXCLUSIVELY via the `@hanzo-ds/*` names
 // retarget cleanly; specs that also reach into `../../src` directly keep
 // importing source for those paths regardless.
 const testTarget = process.env.TEST_TARGET ?? "src";
@@ -92,7 +92,7 @@ export default defineConfig({
       ],
       exclude: [
         "packages/**/version.ts",
-        "packages/client-common/src/clickhouse_types.ts",
+        "packages/client-common/src/datastore_types.ts",
         "packages/client-common/src/connection.ts",
         "packages/client-common/src/result.ts",
         "packages/client-common/src/ts_utils.ts",
@@ -100,12 +100,12 @@ export default defineConfig({
       ],
     },
     env: {
-      CLICKHOUSE_CLOUD_HOST: process.env.CLICKHOUSE_CLOUD_HOST,
-      CLICKHOUSE_CLOUD_PASSWORD: process.env.CLICKHOUSE_CLOUD_PASSWORD,
-      CLICKHOUSE_CLOUD_JWT_ACCESS_TOKEN:
-        process.env.CLICKHOUSE_CLOUD_JWT_ACCESS_TOKEN,
-      CLICKHOUSE_TEST_SKIP_INIT: process.env.CLICKHOUSE_TEST_SKIP_INIT,
-      CLICKHOUSE_TEST_ENVIRONMENT: process.env.CLICKHOUSE_TEST_ENVIRONMENT,
+      DATASTORE_CLOUD_HOST: process.env.DATASTORE_CLOUD_HOST,
+      DATASTORE_CLOUD_PASSWORD: process.env.DATASTORE_CLOUD_PASSWORD,
+      DATASTORE_CLOUD_JWT_ACCESS_TOKEN:
+        process.env.DATASTORE_CLOUD_JWT_ACCESS_TOKEN,
+      DATASTORE_TEST_SKIP_INIT: process.env.DATASTORE_TEST_SKIP_INIT,
+      DATASTORE_TEST_ENVIRONMENT: process.env.DATASTORE_TEST_ENVIRONMENT,
       OTEL_SERVICE_NAME: process.env.OTEL_SERVICE_NAME,
       OTEL_EXPORTER_OTLP_ENDPOINT: process.env.OTEL_EXPORTER_OTLP_ENDPOINT,
       OTEL_EXPORTER_OTLP_HEADERS: process.env.OTEL_EXPORTER_OTLP_HEADERS,
@@ -143,7 +143,7 @@ export default defineConfig({
   // Vite to pre-bundle it (as a real bundler-based consumer would) so its named
   // exports are exposed to the browser ESM imports.
   optimizeDeps:
-    testTarget === "dist" ? { include: ["@clickhouse/client-web"] } : undefined,
+    testTarget === "dist" ? { include: ["@hanzo-ds/client-web"] } : undefined,
   resolve: {
     // Driven by TEST_TARGET (see above). With `src` (default), the `unittest`
     // export condition + aliases resolve the raw sources. With `dist`, we drop
@@ -154,8 +154,8 @@ export default defineConfig({
     // Under `dist`, both client specifiers resolve to the web client's own
     // bundle. The web client bundles the common sources (client-common is
     // deprecated and not a runtime dep), so a real consumer gets common-origin
-    // symbols — value classes like `SettingsMap`/`TupleParam`, `ClickHouseError`
-    // — from `@clickhouse/client-web`. Pointing both at one bundle keeps a
+    // symbols — value classes like `SettingsMap`/`TupleParam`, `DatastoreError`
+    // — from `@hanzo-ds/client-web`. Pointing both at one bundle keeps a
     // single class identity, so `instanceof` checks (the client's internal ones
     // on test-provided values, and the tests' own) hold.
     alias:
@@ -165,16 +165,16 @@ export default defineConfig({
             // package NAME (not a path) so it resolves through the published
             // entry — Vite pre-bundles the CJS dist and its named exports stay
             // intact, and common-origin symbols share the client's one bundle.
-            "@clickhouse/client-common": "@clickhouse/client-web",
+            "@hanzo-ds/client-common": "@hanzo-ds/client-web",
             "@test": fileURLToPath(
               new URL("packages/client-common/__tests__", `file://${root}/`),
             ),
           }
         : {
-            "@clickhouse/client-common": fileURLToPath(
+            "@hanzo-ds/client-common": fileURLToPath(
               new URL("packages/client-common/src", `file://${root}/`),
             ),
-            "@clickhouse/client-web": fileURLToPath(
+            "@hanzo-ds/client-web": fileURLToPath(
               new URL("packages/client-web", `file://${root}/`),
             ),
             "@test": fileURLToPath(

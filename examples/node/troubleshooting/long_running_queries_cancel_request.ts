@@ -1,4 +1,4 @@
-import { type ClickHouseClient, createClient } from "@clickhouse/client";
+import { type DatastoreClient, createClient } from "@hanzo-ds/client";
 import * as crypto from "node:crypto";
 import { setTimeout as sleep } from "node:timers/promises";
 
@@ -14,10 +14,10 @@ import { setTimeout as sleep } from "node:timers/promises";
  * While this is hacky, it is also less prone to network errors, as we only periodically poll the query status,
  * instead of waiting on the other side of the connection for the entire time.
  *
- * Inspired by https://github.com/ClickHouse/clickhouse-js/issues/244 and the discussion in this issue.
- * See also: https://github.com/ClickHouse/ClickHouse/issues/49683 - once implemented, we will not need this hack.
+ * Inspired by https://github.com/hanzo-ds/js/issues/244 and the discussion in this issue.
+ * See also: https://github.com/hanzoai/datastore/issues/49683 - once implemented, we will not need this hack.
  *
- * @see https://clickhouse.com/docs/en/interfaces/http
+ * @see https://docs.hanzo.ai/datastore/en/interfaces/http
  */
 const client = createClient({
   // we don't need any extra settings here.
@@ -50,7 +50,7 @@ const longRunningQueryPromise = client.command({
         INSERT INTO ${tableName}
         SELECT number, sleepEachRow(1) FROM system.numbers LIMIT 10
       `,
-  clickhouse_settings: {
+  datastore_settings: {
     function_sleep_max_microseconds_per_block: "100000000", // 100 seconds per block
   },
   abort_signal: abortController.signal,
@@ -125,7 +125,7 @@ interface QueryLogInfo {
 }
 
 async function getQueryStatus(
-  client: ClickHouseClient,
+  client: DatastoreClient,
   queryId: string,
 ): Promise<QueryLogInfo["type"] | null> {
   const resultSet = await client.query({

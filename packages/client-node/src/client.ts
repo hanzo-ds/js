@@ -1,7 +1,7 @@
 import type { DataFormat, IsSame, QueryParamsWithFormat } from "./common/index";
-import { ClickHouseClient } from "./common/index";
+import { DatastoreClient } from "./common/index";
 import type Stream from "stream";
-import type { NodeClickHouseClientConfigOptions } from "./config";
+import type { NodeDatastoreClientConfigOptions } from "./config";
 import { NodeConfigImpl } from "./config";
 import type { ResultSet } from "./result_set";
 
@@ -13,8 +13,8 @@ export type QueryResult<Format extends DataFormat> =
     ? ResultSet<unknown>
     : ResultSet<Format>;
 
-export class NodeClickHouseClient extends ClickHouseClient<Stream.Readable> {
-  /** See {@link ClickHouseClient.query}. */
+export class NodeDatastoreClient extends DatastoreClient<Stream.Readable> {
+  /** See {@link DatastoreClient.query}. */
   override query<Format extends DataFormat = "JSON">(
     params: QueryParamsWithFormat<Format>,
   ): Promise<QueryResult<Format>> {
@@ -23,8 +23,8 @@ export class NodeClickHouseClient extends ClickHouseClient<Stream.Readable> {
 }
 
 export function createClient(
-  config?: NodeClickHouseClientConfigOptions,
-): NodeClickHouseClient {
+  config?: NodeDatastoreClientConfigOptions,
+): NodeDatastoreClient {
   // If the caller injected a pre-built Connection, override the
   // default HTTP make_connection factory to return THAT connection
   // instead. Used for the experimental integration with chDB only.
@@ -33,8 +33,8 @@ export function createClient(
     injected !== undefined
       ? { ...NodeConfigImpl, make_connection: () => injected }
       : NodeConfigImpl;
-  return new ClickHouseClient<Stream.Readable>({
+  return new DatastoreClient<Stream.Readable>({
     impl,
     ...(config || {}),
-  }) as NodeClickHouseClient;
+  }) as NodeDatastoreClient;
 }

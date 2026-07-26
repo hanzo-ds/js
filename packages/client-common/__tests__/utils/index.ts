@@ -7,7 +7,7 @@ export {
   getTestDatabaseName,
 } from "./client";
 export { guid, validateUUID } from "./guid";
-export { getClickHouseTestEnvironment } from "./test_env";
+export { getDatastoreTestEnvironment } from "./test_env";
 export { TestEnv, isOnEnv } from "./test_env";
 export { sleep } from "./sleep";
 export { getRandomInt } from "./random";

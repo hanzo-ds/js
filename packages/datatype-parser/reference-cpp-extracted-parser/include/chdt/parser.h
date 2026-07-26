@@ -1,7 +1,7 @@
 #pragma once
 
-/// Public entry point: parse a ClickHouse data-type string into the AST in
-/// `ast.h`. Self-contained — no dependency on the ClickHouse source tree.
+/// Public entry point: parse a Datastore data-type string into the AST in
+/// `ast.h`. Self-contained — no dependency on the Datastore source tree.
 ///
 /// Coverage mirrors the server's `ParserDataType` (`src/Parsers/ParserDataType.cpp`)
 /// with two deliberate omissions, deferred for now:

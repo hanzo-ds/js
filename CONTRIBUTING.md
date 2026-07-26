@@ -1,6 +1,6 @@
 ## Getting started
 
-ClickHouse js client is an open-source project,
+Datastore js client is an open-source project,
 and we welcome any contributions from the community.
 Please share your ideas, contribute to the codebase,
 and help us maintain up-to-date documentation.
@@ -15,8 +15,8 @@ You have installed:
 ### Create a fork of the repository and clone it
 
 ```bash
-git clone https://github.com/[YOUR_USERNAME]/clickhouse-js
-cd clickhouse-js
+git clone https://github.com/[YOUR_USERNAME]/datastore-js
+cd datastore-js
 ```
 
 ### Install dependencies
@@ -28,11 +28,11 @@ npm i
 ### Add /etc/hosts entry
 
 Required for TLS tests.
-The generated certificates assume TLS requests use `server.clickhouseconnect.test` as the hostname.
+The generated certificates assume TLS requests use `server.datastoreconnect.test` as the hostname.
 See [tls.test.ts](packages/client-node/__tests__/tls/tls.test.ts) for more details.
 
 ```bash
-sudo -- sh -c "echo 127.0.0.1 server.clickhouseconnect.test >> /etc/hosts"
+sudo -- sh -c "echo 127.0.0.1 server.datastoreconnect.test >> /etc/hosts"
 ```
 
 ## Style Guide
@@ -85,7 +85,7 @@ treat all warnings as errors that must be fixed before merging.
 
 ### Running unit tests
 
-Does not require a running ClickHouse server.
+Does not require a running Datastore server.
 
 ```bash
 # Run Node.js unit tests (also runs the common unit tests)
@@ -97,9 +97,9 @@ npm run test:web:unit
 
 ### Running integration tests
 
-Integration tests use a running ClickHouse server in Docker or the Cloud.
+Integration tests use a running Datastore server in Docker or the Cloud.
 
-`CLICKHOUSE_TEST_ENVIRONMENT` environment variable is used to switch between testing modes.
+`DATASTORE_TEST_ENVIRONMENT` environment variable is used to switch between testing modes.
 
 There are three possible options:
 
@@ -115,9 +115,9 @@ as we need credentials.
 
 #### Local single node integration tests
 
-Used when `CLICKHOUSE_TEST_ENVIRONMENT` is omitted or set to `local_single_node`.
+Used when `DATASTORE_TEST_ENVIRONMENT` is omitted or set to `local_single_node`.
 
-Start a single ClickHouse server using Docker compose:
+Start a single Datastore server using Docker compose:
 
 ```bash
 docker-compose up -d
@@ -137,7 +137,7 @@ npm run test:web
 
 #### Running TLS integration tests
 
-Basic and mutual TLS certificates tests, using `clickhouse_tls` server container.
+Basic and mutual TLS certificates tests, using `datastore_tls` server container.
 
 Start the containers first:
 
@@ -153,7 +153,7 @@ npm run test:node:integration:tls
 
 #### Local two nodes cluster integration tests
 
-Used when `CLICKHOUSE_TEST_ENVIRONMENT` is set to `local_cluster`.
+Used when `DATASTORE_TEST_ENVIRONMENT` is set to `local_cluster`.
 
 Run the tests (Node.js):
 
@@ -169,14 +169,14 @@ npm run test:web:integration:local_cluster
 
 #### Cloud integration tests
 
-Used when `CLICKHOUSE_TEST_ENVIRONMENT` is set to `cloud`.
+Used when `DATASTORE_TEST_ENVIRONMENT` is set to `cloud`.
 
 Two environment variables will be required to connect to the cluster in the Cloud.
 You can obtain it after creating an instance in the Control Plane.
 
 ```bash
-CLICKHOUSE_CLOUD_HOST=<host>
-CLICKHOUSE_CLOUD_PASSWORD=<password>;
+DATASTORE_CLOUD_HOST=<host>
+DATASTORE_CLOUD_PASSWORD=<password>;
 ```
 
 With these environment variables set, you can run the tests.
@@ -213,8 +213,8 @@ Typecheck + Lint + Node.js client unit tests
 The average reported test coverage is above 90%. We generally aim towards this threshold, if it deems reasonable.
 
 Currently, automatic coverage reports are disabled.
-See [#177](https://github.com/ClickHouse/clickhouse-js/issues/177), as it should be restored in the scope of that issue.
+See [#177](https://github.com/hanzo-ds/js/issues/177), as it should be restored in the scope of that issue.
 
-## Running upstream ClickHouse SQL tests
+## Running upstream Datastore SQL tests
 
-The [`tests/clickhouse-test-runner`](tests/clickhouse-test-runner) directory contains a Node.js port of `clickhouse-client` that lets `tests/clickhouse-test` from `ClickHouse/ClickHouse` exercise the JS client against the upstream SQL test suite. This harness helps validate that `@clickhouse/client` behaves correctly against real ClickHouse tests. See the [clickhouse-test-runner README](tests/clickhouse-test-runner/README.md) for setup and usage instructions.
+The [`tests/datastore-test-runner`](tests/datastore-test-runner) directory contains a Node.js port of `datastore-client` that lets `tests/datastore-test` from `Datastore/Datastore` exercise the JS client against the upstream SQL test suite. This harness helps validate that `@hanzo-ds/client` behaves correctly against real Datastore tests. See the [datastore-test-runner README](tests/datastore-test-runner/README.md) for setup and usage instructions.

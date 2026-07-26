@@ -1,14 +1,14 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import type {
-  ClickHouseClient,
-  ClickHouseSettings,
-} from "@clickhouse/client-common";
+  DatastoreClient,
+  DatastoreSettings,
+} from "@hanzo-ds/client-common";
 import { randomUUID } from "@test/utils/guid";
 import { createTableWithFields } from "../fixtures/table_with_fields";
 import { createTestClient, getRandomInt, TestEnv, isOnEnv } from "../utils";
 
 describe("data types", () => {
-  let client: ClickHouseClient;
+  let client: DatastoreClient;
   beforeEach(() => {
     client = createTestClient();
   });
@@ -263,8 +263,8 @@ describe("data types", () => {
 
     await insertAndAssert(table, values, {}, [
       {
-        dt: TEST_DATE.toISOString().replace("T", " ").replace("Z", ""), // clickhouse returns DateTime64 in UTC without timezone info
-        big_id: TEST_BIGINT.toString(), // clickhouse by default returns UInt64 as string to be safe
+        dt: TEST_DATE.toISOString().replace("T", " ").replace("Z", ""), // datastore returns DateTime64 in UTC without timezone info
+        big_id: TEST_BIGINT.toString(), // datastore by default returns UInt64 as string to be safe
       },
     ]);
   });
@@ -567,7 +567,7 @@ describe("data types", () => {
   });
 
   // New experimental JSON type
-  // https://clickhouse.com/docs/en/sql-reference/data-types/newjson
+  // https://docs.hanzo.ai/datastore/en/sql-reference/data-types/newjson
   it.skipIf(!isOnEnv(TestEnv.LocalSingleNode, TestEnv.LocalCluster))(
     "should work with (new) JSON",
     async () => {
@@ -589,7 +589,7 @@ describe("data types", () => {
   );
 
   // New experimental Variant type
-  // https://clickhouse.com/docs/en/sql-reference/data-types/variant
+  // https://docs.hanzo.ai/datastore/en/sql-reference/data-types/variant
   it.skipIf(!isOnEnv(TestEnv.LocalSingleNode, TestEnv.LocalCluster))(
     "should work with Variant",
     async () => {
@@ -606,7 +606,7 @@ describe("data types", () => {
   );
 
   // New experimental Dynamic type
-  // https://clickhouse.com/docs/en/sql-reference/data-types/dynamic
+  // https://docs.hanzo.ai/datastore/en/sql-reference/data-types/dynamic
   it.skipIf(!isOnEnv(TestEnv.LocalSingleNode, TestEnv.LocalCluster))(
     "should work with Dynamic",
     async () => {
@@ -733,8 +733,8 @@ describe("data types", () => {
 
     async function insertAndAssertNestedValues(
       values: unknown[],
-      createTableSettings: ClickHouseSettings,
-      insertSettings: ClickHouseSettings,
+      createTableSettings: DatastoreSettings,
+      insertSettings: DatastoreSettings,
     ) {
       const table = await createTableWithFields(
         client,
@@ -745,7 +745,7 @@ describe("data types", () => {
       await client.insert({
         table,
         values,
-        clickhouse_settings: insertSettings,
+        datastore_settings: insertSettings,
         format: "JSONEachRow",
       });
       const result = await client
@@ -776,21 +776,21 @@ describe("data types", () => {
   async function insertData<T>(
     table: string,
     data: T[],
-    clickhouse_settings?: ClickHouseSettings,
+    datastore_settings?: DatastoreSettings,
   ) {
     const values = data.map((v, i) => ({ ...v, id: i + 1 }));
     await client.insert({
       format: "JSONEachRow",
       table,
       values,
-      clickhouse_settings,
+      datastore_settings,
     });
   }
 
   async function assertData<T>(
     table: string,
     data: T[],
-    clickhouse_settings: ClickHouseSettings = {},
+    datastore_settings: DatastoreSettings = {},
   ) {
     const result = await client
       .query({
@@ -798,7 +798,7 @@ describe("data types", () => {
                 FROM ${table}
                 ORDER BY id ASC`,
         format: "JSONEachRow",
-        clickhouse_settings,
+        datastore_settings,
       })
       .then((r) => r.json());
     expect(result).toEqual(data);
@@ -807,10 +807,10 @@ describe("data types", () => {
   async function insertAndAssert<T>(
     table: string,
     data: T[],
-    clickhouse_settings: ClickHouseSettings = {},
+    datastore_settings: DatastoreSettings = {},
     expectedDataBack?: unknown[],
   ) {
-    await insertData(table, data, clickhouse_settings);
-    await assertData(table, expectedDataBack ?? data, clickhouse_settings);
+    await insertData(table, data, datastore_settings);
+    await assertData(table, expectedDataBack ?? data, datastore_settings);
   }
 });

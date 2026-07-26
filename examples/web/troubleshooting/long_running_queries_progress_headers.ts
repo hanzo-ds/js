@@ -1,9 +1,9 @@
-import { type ClickHouseClient, createClient } from "@clickhouse/client-web";
+import { type DatastoreClient, createClient } from "@hanzo-ds/client-web";
 
 /**
  * If you execute a long-running query without data coming in from the client,
  * and your LB has idle connection timeout set to a value less than the query execution time,
- * there is a workaround to trigger ClickHouse to send progress HTTP headers and make LB think that the connection is alive.
+ * there is a workaround to trigger Datastore to send progress HTTP headers and make LB think that the connection is alive.
  *
  * This is the combination of `send_progress_in_http_headers` + `http_headers_progress_interval_ms` settings.
  *
@@ -13,8 +13,8 @@ import { type ClickHouseClient, createClient } from "@clickhouse/client-web";
  * In this example we wait for the entire time of the query execution.
  * This is susceptible to transient network errors.
  *
- * @see https://clickhouse.com/docs/en/operations/settings/settings#send_progress_in_http_headers
- * @see https://clickhouse.com/docs/en/interfaces/http
+ * @see https://docs.hanzo.ai/datastore/en/operations/settings/settings#send_progress_in_http_headers
+ * @see https://docs.hanzo.ai/datastore/en/interfaces/http
  */
 const tableName = "long_running_queries_progress_headers_web";
 const client = createClient({
@@ -29,8 +29,8 @@ const client = createClient({
 
   Of course, the exact settings values will depend on your infrastructure configuration. */
   request_timeout: 400_000,
-  clickhouse_settings: {
-    // Ask ClickHouse to periodically send query execution progress in HTTP headers, creating some activity in the connection.
+  datastore_settings: {
+    // Ask Datastore to periodically send query execution progress in HTTP headers, creating some activity in the connection.
     // 1 here is a boolean value (true).
     send_progress_in_http_headers: 1,
     // The interval of sending these progress headers. Here it is less than 120s,
@@ -56,7 +56,7 @@ const rows = await client.query({
 console.info("Inserted data:", await rows.json());
 await client.close();
 
-async function createTestTable(client: ClickHouseClient, tableName: string) {
+async function createTestTable(client: DatastoreClient, tableName: string) {
   try {
     await client.command({
       query: `

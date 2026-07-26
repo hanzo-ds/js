@@ -6,7 +6,7 @@ export type TestConnectionType =
   (typeof TestConnectionType)[keyof typeof TestConnectionType];
 export function getTestConnectionType(): TestConnectionType {
   let connectionType;
-  switch (process.env["CLICKHOUSE_TEST_CONNECTION_TYPE"]) {
+  switch (process.env["DATASTORE_TEST_CONNECTION_TYPE"]) {
     case "browser":
       connectionType = TestConnectionType.Browser;
       break;
@@ -16,7 +16,7 @@ export function getTestConnectionType(): TestConnectionType {
       break;
     default:
       throw new Error(
-        "Unexpected CLICKHOUSE_TEST_CONNECTION_TYPE value. " +
+        "Unexpected DATASTORE_TEST_CONNECTION_TYPE value. " +
           "Possible options: `node`, `browser` " +
           "or keep it unset to fall back to `node`",
       );

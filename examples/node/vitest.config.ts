@@ -24,7 +24,7 @@ export default defineConfig({
       "schema-and-deployments/url_configuration.ts",
       // Duplicate of `security/read_only_user.ts`
       "troubleshooting/read_only_user.ts",
-      // TODO: stop excluding once @clickhouse/client@1.20.0 (which adds the
+      // TODO: stop excluding once @hanzo-ds/client@1.20.0 (which adds the
       //  `tracer` config option) is published to npm.
       "coding/otel_tracing.ts",
     ],
@@ -35,10 +35,10 @@ export default defineConfig({
     passWithNoTests: true,
     reporters: ["verbose"],
     env: {
-      CLICKHOUSE_URL: process.env["CLICKHOUSE_URL"] ?? "http://localhost:8123",
-      CLICKHOUSE_PASSWORD: process.env["CLICKHOUSE_PASSWORD"] ?? "",
-      CLICKHOUSE_CLUSTER_URL:
-        process.env["CLICKHOUSE_CLUSTER_URL"] ?? "http://localhost:8127",
+      DATASTORE_URL: process.env["DATASTORE_URL"] ?? "http://localhost:8123",
+      DATASTORE_PASSWORD: process.env["DATASTORE_PASSWORD"] ?? "",
+      DATASTORE_CLUSTER_URL:
+        process.env["DATASTORE_CLUSTER_URL"] ?? "http://localhost:8127",
     },
   },
 });

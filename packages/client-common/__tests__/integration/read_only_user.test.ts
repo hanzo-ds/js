@@ -1,13 +1,13 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import type { ClickHouseClient } from "@clickhouse/client-common";
+import type { DatastoreClient } from "@hanzo-ds/client-common";
 import { isCloudTestEnv } from "@test/utils/test_env";
 import { createReadOnlyUser } from "../fixtures/read_only_user";
 import { createSimpleTable } from "../fixtures/simple_table";
 import { createTestClient, getTestDatabaseName, guid } from "../utils";
 
 describe("read only user", () => {
-  let defaultClient: ClickHouseClient;
-  let client: ClickHouseClient;
+  let defaultClient: DatastoreClient;
+  let client: DatastoreClient;
   let tableName: string;
   let userName: string;
 
@@ -31,9 +31,9 @@ describe("read only user", () => {
       database,
       username: credentials.username,
       password: credentials.password,
-      clickhouse_settings: {
+      datastore_settings: {
         // readonly user cannot adjust settings. reset the default ones set by fixtures.
-        // might be fixed by https://github.com/ClickHouse/ClickHouse/issues/40244
+        // might be fixed by https://github.com/hanzoai/datastore/issues/40244
         insert_quorum: undefined,
         database_replicated_enforce_synchronous_settings: undefined,
         output_format_json_quote_64bit_integers: undefined,

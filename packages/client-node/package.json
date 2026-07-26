@@ -1,17 +1,17 @@
 {
-  "name": "@clickhouse/client",
-  "description": "Official JS client for ClickHouse DB - Node.js implementation",
-  "homepage": "https://clickhouse.com",
+  "name": "@hanzo-ds/client",
+  "description": "Official JS client for Hanzo Datastore - Node.js implementation",
+  "homepage": "https://docs.hanzo.ai/datastore",
   "version": "1.23.1",
   "license": "Apache-2.0",
   "keywords": [
-    "clickhouse",
+    "datastore",
     "sql",
     "client"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ClickHouse/clickhouse-js.git"
+    "url": "git+https://github.com/hanzo-ds/js.git"
   },
   "private": false,
   "engines": {
@@ -27,33 +27,33 @@
   "agents": {
     "skills": [
       {
-        "name": "clickhouse-js-node-coding",
-        "path": "./skills/clickhouse-js-node-coding"
+        "name": "datastore-js-node-coding",
+        "path": "./skills/datastore-js-node-coding"
       },
       {
-        "name": "clickhouse-js-node-troubleshooting",
-        "path": "./skills/clickhouse-js-node-troubleshooting"
+        "name": "datastore-js-node-troubleshooting",
+        "path": "./skills/datastore-js-node-troubleshooting"
       },
       {
-        "name": "clickhouse-js-node-rowbinary",
-        "path": "./skills/clickhouse-js-node-rowbinary"
+        "name": "datastore-js-node-rowbinary",
+        "path": "./skills/datastore-js-node-rowbinary"
       }
     ]
   },
   "scripts": {
     "pack": "npm pack",
-    "prepack": "rm -rf skills && cp ../../LICENSE . && cp -r ../../skills . && RBP=skills/clickhouse-js-node-rowbinary && rm -rf $RBP/tests $RBP/node_modules $RBP/dist $RBP/package.json $RBP/package-lock.json $RBP/tsconfig.json $RBP/tsconfig.build.json $RBP/vitest.config.ts $RBP/.gitignore $RBP/LICENSE $RBP/eval_result*.md",
+    "prepack": "rm -rf skills && cp ../../LICENSE . && cp -r ../../skills . && RBP=skills/datastore-js-node-rowbinary && rm -rf $RBP/tests $RBP/node_modules $RBP/dist $RBP/package.json $RBP/package-lock.json $RBP/tsconfig.json $RBP/tsconfig.build.json $RBP/vitest.config.ts $RBP/.gitignore $RBP/LICENSE $RBP/eval_result*.md",
     "typecheck": "tsc --noEmit",
     "lint": "eslint --max-warnings=0 .",
     "lint:fix": "eslint . --fix",
     "build": "rm -rf dist; tsc",
-    "test:unit": "CLICKHOUSE_TEST_SKIP_INIT=1 TEST_MODE=unit vitest",
-    "test:unit:bun": "CLICKHOUSE_TEST_SKIP_INIT=1 TEST_MODE=unit bun --bun vitest",
+    "test:unit": "DATASTORE_TEST_SKIP_INIT=1 TEST_MODE=unit vitest",
+    "test:unit:bun": "DATASTORE_TEST_SKIP_INIT=1 TEST_MODE=unit bun --bun vitest",
     "test:integration": "TEST_MODE=integration vitest",
     "test:integration:tls": "TEST_MODE=tls vitest",
     "test:integration:dist": "npm --prefix ../.. run build && TEST_TARGET=dist TEST_MODE=integration vitest",
-    "test:integration:local_cluster": "CLICKHOUSE_TEST_ENVIRONMENT=local_cluster TEST_MODE=integration vitest",
-    "test:integration:cloud": "CLICKHOUSE_TEST_ENVIRONMENT=cloud TEST_MODE=integration vitest",
+    "test:integration:local_cluster": "DATASTORE_TEST_ENVIRONMENT=local_cluster TEST_MODE=integration vitest",
+    "test:integration:cloud": "DATASTORE_TEST_ENVIRONMENT=cloud TEST_MODE=integration vitest",
     "test:oss-dependents": "TEST_MODE=oss-dependents vitest",
     "test:all": "TEST_MODE=all vitest",
     "test:coverage": "VITEST_COVERAGE=true TEST_MODE=all vitest"

@@ -7,7 +7,7 @@ For that, we can have various tests with periodical memory usage logging such as
 
 NB: we supposedly avoid using `tsx` as it adds some runtime overhead.
 
-Every test requires a local ClickHouse instance running.
+Every test requires a local Datastore instance running.
 
 You can just use docker-compose.yml from the root directory:
 
@@ -20,7 +20,7 @@ docker-compose up -d
 ---
 
 See `memory_leak_brown.ts`.
-You will need to prepare the input data and have a local ClickHouse instance running
+You will need to prepare the input data and have a local Datastore instance running
 (just use `docker-compose.yml` from the root).
 
 All commands assume that you are in the root project directory.
@@ -34,7 +34,7 @@ mkdir -p benchmarks/leaks/input \
 && mv mgbench1.csv benchmarks/leaks/input
 ```
 
-See [official examples](https://clickhouse.com/docs/en/getting-started/example-datasets/brown-benchmark/) for more information.
+See [official examples](https://docs.hanzo.ai/datastore/en/getting-started/example-datasets/brown-benchmark/) for more information.
 
 #### Run the test
 
@@ -52,8 +52,8 @@ This test creates a simple table with two integer columns and sends one stream p
 
 Configuration can be done via env variables:
 
-- `BATCH_SIZE` - number of random rows within one stream before sending it to ClickHouse (default: 10000)
-- `ITERATIONS` - number of streams (batches) to be sent to ClickHouse (default: 10000)
+- `BATCH_SIZE` - number of random rows within one stream before sending it to Datastore (default: 10000)
+- `ITERATIONS` - number of streams (batches) to be sent to Datastore (default: 10000)
 - `LOG_INTERVAL` - memory usage will be logged every Nth iteration, where N is the number specified (default: 1000)
 
 #### Run the test
@@ -81,8 +81,8 @@ This test does not use any streaming and supposed to do a lot of allocations and
 
 Configuration is the same as the previous test, but with different default values as it is much slower due to the random data generation for the entire batch in advance, using arrays of strings and maps of arrays of strings:
 
-- `BATCH_SIZE` - number of random rows within one stream before sending it to ClickHouse (default: 1000)
-- `ITERATIONS` - number of streams (batches) to be sent to ClickHouse (default: 1000)
+- `BATCH_SIZE` - number of random rows within one stream before sending it to Datastore (default: 1000)
+- `ITERATIONS` - number of streams (batches) to be sent to Datastore (default: 1000)
 - `LOG_INTERVAL` - memory usage will be logged every Nth iteration, where N is the number specified (default: 100)
 
 #### Run the test

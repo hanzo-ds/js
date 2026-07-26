@@ -1,9 +1,9 @@
-import type { ClickHouseClient } from "@clickhouse/client-common";
+import type { DatastoreClient } from "@hanzo-ds/client-common";
 import { fakerRU } from "@faker-js/faker";
 import { createTableWithFields } from "@test/fixtures/table_with_fields";
 
 export async function genLargeStringsDataset<Stream = unknown>(
-  client: ClickHouseClient<Stream>,
+  client: DatastoreClient<Stream>,
   {
     rows,
     words,
@@ -16,7 +16,7 @@ export async function genLargeStringsDataset<Stream = unknown>(
   values: { id: number; sentence: string; timestamp: string }[];
 }> {
   const table = await createTableWithFields(
-    client as ClickHouseClient,
+    client as DatastoreClient,
     `sentence String, timestamp String`,
   );
   const values = [...new Array(rows)].map((_, id) => ({

@@ -1,5 +1,5 @@
-import type { PingResult } from "@clickhouse/client";
-import { createClient } from "@clickhouse/client";
+import type { PingResult } from "@hanzo-ds/client";
+import { createClient } from "@hanzo-ds/client";
 
 /**
  * This example assumes that your local port 8100 is free.

@@ -1,11 +1,11 @@
 import { describe, it, expect, afterEach, beforeEach } from "vitest";
-import type { ClickHouseClient, Row } from "@clickhouse/client-common";
-import { isProgressRow } from "@clickhouse/client-common";
+import type { DatastoreClient, Row } from "@hanzo-ds/client-common";
+import { isProgressRow } from "@hanzo-ds/client-common";
 import { createTestClient } from "@test/utils";
 import { genLargeStringsDataset } from "@test/utils/datasets";
 
 describe("[Web] SELECT streaming", () => {
-  let client: ClickHouseClient<ReadableStream<Row[]>>;
+  let client: DatastoreClient<ReadableStream<Row[]>>;
   afterEach(async () => {
     await client.close();
   });
@@ -133,7 +133,7 @@ describe("[Web] SELECT streaming", () => {
       const rs = await client.query({
         query: `SELECT * FROM system.numbers LIMIT ${limit}`,
         format: "JSONEachRowWithProgress",
-        clickhouse_settings: {
+        datastore_settings: {
           max_block_size: "1", // reduce the block size, so the progress is reported more frequently
         },
       });
@@ -228,7 +228,7 @@ describe("[Web] SELECT streaming", () => {
     });
   });
 
-  // See https://github.com/ClickHouse/clickhouse-js/issues/171 for more details
+  // See https://github.com/hanzo-ds/js/issues/171 for more details
   // Here we generate a large enough dataset to break into multiple chunks while streaming,
   // effectively testing the implementation of incomplete rows handling
   describe("should correctly process multiple chunks", () => {

@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import type { Row } from "@clickhouse/client-common";
+import type { Row } from "@hanzo-ds/client-common";
 import {
-  type ClickHouseClient,
-  type ClickHouseSettings,
-} from "@clickhouse/client-common";
+  type DatastoreClient,
+  type DatastoreSettings,
+} from "@hanzo-ds/client-common";
 import { createSimpleTable } from "@test/fixtures/simple_table";
 import { createTestClient } from "@test/utils/client";
 import { guid } from "@test/utils/guid";
@@ -19,7 +19,7 @@ import Stream from "stream";
 
 describe("[Node.js] streaming e2e", () => {
   let tableName: string;
-  let client: ClickHouseClient<Stream.Readable>;
+  let client: DatastoreClient<Stream.Readable>;
   beforeEach(async () => {
     client = createTestClient();
 
@@ -65,12 +65,12 @@ describe("[Node.js] streaming e2e", () => {
   });
 
   it("should stream a Parquet file", async () => {
-    const streamParquetSettings: ClickHouseSettings = {
+    const streamParquetSettings: DatastoreSettings = {
       output_format_parquet_compression_method: "none",
       output_format_parquet_version: "2.6",
       // 24.3+ has this enabled by default; prior versions need this setting to be enforced for consistent assertions
       // Otherwise, the string type for Parquet will be Binary (24.3+) vs Utf8 (24.3-).
-      // https://github.com/ClickHouse/ClickHouse/pull/61817/files#diff-aa3c979016a9f8c6ab5a51560411afa3f4cef55d34c899a2b1e7aff38aca4076R1097
+      // https://github.com/hanzoai/datastore/pull/61817/files#diff-aa3c979016a9f8c6ab5a51560411afa3f4cef55d34c899a2b1e7aff38aca4076R1097
       output_format_parquet_string_as_string: 1,
     };
 
@@ -100,7 +100,7 @@ describe("[Node.js] streaming e2e", () => {
     const stream = await client
       .exec({
         query: `SELECT * from ${tableName} FORMAT Parquet`,
-        clickhouse_settings: streamParquetSettings,
+        datastore_settings: streamParquetSettings,
       })
       .then((r) => r.stream);
 
@@ -151,7 +151,7 @@ describe("[Node.js] streaming e2e", () => {
     expect(actual).toEqual(expected);
   });
 
-  // See https://github.com/ClickHouse/clickhouse-js/issues/171 for more details
+  // See https://github.com/hanzo-ds/js/issues/171 for more details
   // Here we generate a large enough dataset to break into multiple chunks while streaming,
   // effectively testing the implementation of incomplete rows handling
   describe("should correctly process multiple chunks", () => {

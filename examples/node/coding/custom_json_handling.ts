@@ -4,7 +4,7 @@
 // a custom serializer before passing it to the JSON.stringify function.
 //
 // This example also shows how you can serialize Date objects in a custom way.
-import { createClient } from "@clickhouse/client";
+import { createClient } from "@hanzo-ds/client";
 
 const valueSerializer = (value: unknown): unknown => {
   if (value instanceof Date) {

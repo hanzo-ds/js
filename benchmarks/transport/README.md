@@ -3,11 +3,11 @@
 ---
 
 This benchmark provides reproducible numbers for the proposal in
-[#511](https://github.com/ClickHouse/clickhouse-js/issues/511): replacing the
-legacy `node:http` / `node:https` transport used by `@clickhouse/client` with
+[#511](https://github.com/hanzo-ds/js/issues/511): replacing the
+legacy `node:http` / `node:https` transport used by `@hanzo-ds/client` with
 `undici`.
 
-It compares `@clickhouse/client` **as built from this repository** (resolved via
+It compares `@hanzo-ds/client` **as built from this repository** (resolved via
 the npm workspace symlink, which uses `http`/`https` internally) against a
 **trivial `undici.request()`-based stub** over the exact same HTTP requests, so
 the difference reflects raw transport cost rather than client-side parsing or
@@ -17,7 +17,7 @@ configuration.
 > response body through the WebStreams (`ReadableStream`) layer, which is a known
 > Node.js-core bottleneck ([nodejs/undici#1203](https://github.com/nodejs/undici/issues/1203))
 > and drains large bodies several times slower than native streams. `request()`
-> returns a native Node `Readable` — the same stream type `@clickhouse/client`
+> returns a native Node `Readable` — the same stream type `@hanzo-ds/client`
 > drains — so this is an apples-to-apples transport comparison and reflects the
 > API a real migration would actually adopt. An earlier revision of this
 > benchmark used `fetch()` and showed it losing the download scenario by ~5×;
@@ -37,18 +37,18 @@ latency distribution (`min`/`mean`/`p50`/`p90`/`p99`/`max`).
 
 All commands assume you are in the repository root.
 
-Start a local ClickHouse instance (the default `docker-compose.yml` works):
+Start a local Datastore instance (the default `docker-compose.yml` works):
 
 ```sh
 docker-compose up -d
 ```
 
-The benchmark drives `@clickhouse/client` through the compiled workspace package
+The benchmark drives `@hanzo-ds/client` through the compiled workspace package
 (`packages/client-node/dist`), so build the workspace packages first, then run
 the benchmark with `tsx`:
 
 ```sh
-# 1. Build the workspace packages so `@clickhouse/client` resolves at runtime.
+# 1. Build the workspace packages so `@hanzo-ds/client` resolves at runtime.
 npm run build
 
 # 2. Run the benchmark.
@@ -63,7 +63,7 @@ throughput).
 
 All parameters are optional and provided via environment variables:
 
-- `CLICKHOUSE_URL` — server URL (default: `http://localhost:8123`)
+- `DATASTORE_URL` — server URL (default: `http://localhost:8123`)
 - `LATENCY_REQUESTS` — number of sequential `SELECT 1` requests (default: `200`)
 - `DOWNLOAD_ROWS` — rows in the download result set (default: `1000000`)
 - `UPLOAD_ROWS` — rows in the upload body (default: `1000000`)
@@ -81,17 +81,17 @@ npx tsx benchmarks/transport/index.ts
 ## Sample results
 
 Indicative numbers from a single local run (macOS / Apple Silicon,
-Node.js v24.6.0, ClickHouse `head`, `docker-compose` single node, loopback
+Node.js v24.6.0, Datastore `head`, `docker-compose` single node, loopback
 networking, **default configuration**: `LATENCY_REQUESTS=200
 DOWNLOAD_ROWS=1000000 UPLOAD_ROWS=1000000 ITERATIONS=10 WARMUP=3`). **Reproduce
 on your own hardware before drawing conclusions** — absolute values are
 environment-specific.
 
-| Scenario                  | `@clickhouse/client` (http/https) | `undici.request()` stub |
-| ------------------------- | --------------------------------- | ----------------------- |
-| `SELECT 1` latency (mean) | ~2.1–2.7 ms                       | ~0.50 ms                |
-| Download throughput       | ~1310–1440 MiB/s                  | ~1850–1920 MiB/s        |
-| Upload throughput         | ~223–225 MiB/s                    | ~241–245 MiB/s          |
+| Scenario                  | `@hanzo-ds/client` (http/https) | `undici.request()` stub |
+| ------------------------- | ------------------------------- | ----------------------- |
+| `SELECT 1` latency (mean) | ~2.1–2.7 ms                     | ~0.50 ms                |
+| Download throughput       | ~1310–1440 MiB/s                | ~1850–1920 MiB/s        |
+| Upload throughput         | ~223–225 MiB/s                  | ~241–245 MiB/s          |
 
 In this run `undici.request()` was faster across the board: markedly lower
 small-request latency (~4–5×), faster large-result draining (~1.3–1.4×), and a
@@ -105,7 +105,7 @@ omits everything the real client does (see below).
 
 - Run against a **local** server to minimise network noise; for a more
   realistic picture, also run it against a remote/cloud endpoint via
-  `CLICKHOUSE_URL`.
+  `DATASTORE_URL`.
 - The `undici.request()` stub intentionally omits everything the real client
   does (request settings, retries, keep-alive tuning, compression, abort
   handling, logging). It is a transport baseline, **not** a drop-in replacement,
@@ -114,6 +114,6 @@ omits everything the real client does (see below).
   WebStreams response body drains large payloads several times slower
   ([nodejs/undici#1203](https://github.com/nodejs/undici/issues/1203)) and would
   misrepresent what an undici-based transport can achieve.
-- Numbers vary by machine, Node.js version, and ClickHouse version. Always
+- Numbers vary by machine, Node.js version, and Datastore version. Always
   capture `process.version` (printed in the header) alongside the results when
   sharing them.

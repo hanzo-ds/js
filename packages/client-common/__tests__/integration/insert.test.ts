@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { type ClickHouseClient } from "@clickhouse/client-common";
+import { type DatastoreClient } from "@hanzo-ds/client-common";
 import { createSimpleTable } from "../fixtures/simple_table";
 import { assertJsonValues, jsonValues } from "../fixtures/test_data";
 import { createTestClient, guid, validateUUID } from "../utils";
 
 describe("insert", () => {
-  let client: ClickHouseClient;
+  let client: DatastoreClient;
   let tableName: string;
 
   beforeEach(async () => {
@@ -128,13 +128,13 @@ describe("insert", () => {
     await assertJsonValues(client, tableName);
   });
 
-  it("should provide error details when sending a request with an unknown clickhouse settings", async () => {
+  it("should provide error details when sending a request with an unknown datastore settings", async () => {
     await expect(
       client.insert({
         table: tableName,
         values: jsonValues,
         format: "JSONEachRow",
-        clickhouse_settings: { foobar: 1 } as any,
+        datastore_settings: { foobar: 1 } as any,
       }),
     ).rejects.toMatchObject(
       expect.objectContaining({
@@ -153,8 +153,8 @@ describe("insert", () => {
       table: tableName,
       values: jsonValues,
       format: "JSONEachRow",
-      // See https://clickhouse.com/docs/en/optimize/asynchronous-inserts
-      clickhouse_settings: {
+      // See https://docs.hanzo.ai/datastore/en/optimize/asynchronous-inserts
+      datastore_settings: {
         insert_quorum: "0",
         async_insert: 1,
         wait_for_async_insert: 1,

@@ -2,7 +2,7 @@
 
 ## The problem
 
-When executing a long-running query (e.g. `INSERT FROM SELECT`) that does not send or receive data over HTTP, the client sends the statement and then waits for a response. If a load balancer sits between the client and ClickHouse server and has an idle connection timeout shorter than the query execution time, the LB will close the connection before the query finishes. This happens even when the LB is stateful and correctly understands that the connection is in use — it simply considers it idle because no data is flowing for a longer time.
+When executing a long-running query (e.g. `INSERT FROM SELECT`) that does not send or receive data over HTTP, the client sends the statement and then waits for a response. If a load balancer sits between the client and Datastore server and has an idle connection timeout shorter than the query execution time, the LB will close the connection before the query finishes. This happens even when the LB is stateful and correctly understands that the connection is in use — it simply considers it idle because no data is flowing for a longer time.
 
 ## How to diagnose
 
@@ -25,7 +25,7 @@ LIMIT 5
 
 ## Approach 1 — Keep the connection alive with progress headers (recommended)
 
-Ask ClickHouse to periodically send query progress in HTTP response headers. This creates network activity that prevents the LB from treating the connection as idle.
+Ask Datastore to periodically send query progress in HTTP response headers. This creates network activity that prevents the LB from treating the connection as idle.
 
 Example curl request to test with a long-running query (adjust the query as needed):
 
@@ -38,15 +38,15 @@ curl -v "http://localhost:8123/?wait_end_of_query=1&send_progress_in_http_header
 - `send_progress_in_http_headers` — enables progress headers (boolean, pass as `1`)
 - `http_headers_progress_interval_ms` — how often to send them (UInt64, pass as a string)
 
-The default value for `http_headers_progress_interval_ms` is defined by how often ClickHouse sends progress updates for the query type. For some queries, this may be too frequent (causing unnecessary overhead and/or HTTP client headers buffer overflow) or too infrequent (failing to keep the LB connection alive). Therefore, it's recommended to set it explicitly when using `send_progress_in_http_headers`.
+The default value for `http_headers_progress_interval_ms` is defined by how often Datastore sends progress updates for the query type. For some queries, this may be too frequent (causing unnecessary overhead and/or HTTP client headers buffer overflow) or too infrequent (failing to keep the LB connection alive). Therefore, it's recommended to set it explicitly when using `send_progress_in_http_headers`.
 
-> **Note (Node.js):** Node.js caps the total size of received HTTP headers at ~16 KB by default. Each `X-ClickHouse-Progress` header is roughly 200 bytes, so after ~75 progress headers accumulate the request fails with `HPE_HEADER_OVERFLOW`. Since `>= 1.18.5`, you can raise this limit per client (without resorting to the global `--max-http-header-size` CLI flag or `NODE_OPTIONS`) by passing `max_response_headers_size` (in bytes) to `createClient`:
+> **Note (Node.js):** Node.js caps the total size of received HTTP headers at ~16 KB by default. Each `X-Datastore-Progress` header is roughly 200 bytes, so after ~75 progress headers accumulate the request fails with `HPE_HEADER_OVERFLOW`. Since `>= 1.18.5`, you can raise this limit per client (without resorting to the global `--max-http-header-size` CLI flag or `NODE_OPTIONS`) by passing `max_response_headers_size` (in bytes) to `createClient`:
 >
 > ```ts
 > const client = createClient({
 >   request_timeout: 400_000,
 >   max_response_headers_size: 1024 * 1024, // 1 MiB
->   clickhouse_settings: {
+>   datastore_settings: {
 >     send_progress_in_http_headers: 1,
 >     http_headers_progress_interval_ms: "110000",
 >   },
@@ -62,12 +62,12 @@ The default value for `http_headers_progress_interval_ms` is defined by how ofte
 **Step 3.** Configure the client:
 
 ```ts
-import { createClient } from "@clickhouse/client";
+import { createClient } from "@hanzo-ds/client";
 
 const client = createClient({
   // Allow up to 400s for the query to complete (adjust to your estimate).
   request_timeout: 400_000,
-  clickhouse_settings: {
+  datastore_settings: {
     // Enable periodic progress headers.
     send_progress_in_http_headers: 1,
     // Send headers every 110s — just under the assumed 120s LB idle timeout.
@@ -85,7 +85,7 @@ await client.command({
 });
 ```
 
-The client will now receive periodic header frames from ClickHouse, keeping the LB idle timer reset.
+The client will now receive periodic header frames from Datastore, keeping the LB idle timer reset.
 
 **Trade-off:** The client keeps the HTTP connection open for the full duration of the query. A transient network blip during that window will still raise an error.
 
@@ -93,7 +93,7 @@ The client will now receive periodic header frames from ClickHouse, keeping the 
 
 ## Approach 2 — Fire-and-forget with server-side polling (more resilient)
 
-HTTP mutations sent to ClickHouse are **not cancelled on the server** when the client drops the connection. You can deliberately abort the outgoing request early — once you know the server has received it — and then poll `system.query_log` until the query finishes.
+HTTP mutations sent to Datastore are **not cancelled on the server** when the client drops the connection. You can deliberately abort the outgoing request early — once you know the server has received it — and then poll `system.query_log` until the query finishes.
 
 This reduces the window of exposure to network errors from "the entire query duration" down to "a short handshake phase".
 

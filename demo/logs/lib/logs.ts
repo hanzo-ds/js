@@ -13,9 +13,9 @@ import {
   readUInt16,
   readFloat64,
   type Reader,
-} from "@clickhouse/rowbinary";
+} from "@hanzo-ds/rowbinary";
 
-import { queryRowBinary } from "./clickhouse";
+import { queryRowBinary } from "./datastore";
 
 export const LOGS_TABLE = "demo_logs";
 
@@ -53,7 +53,7 @@ const LEVEL_BY_ID: Record<number, LogLevel> = {
 /**
  * Read exactly one log row from the cursor.
  *
- * This is the clear, API-combinator form the `@clickhouse/rowbinary` README calls
+ * This is the clear, API-combinator form the `@hanzo-ds/rowbinary` README calls
  * "correct, clear, and a fine default" — one leaf read per column, in wire order.
  * The row mixes fixed-width columns (DateTime64, Enum8, IPv4, UUID, UInt16,
  * Float64) with variable-width ones (the two Strings), so it is a natural fit for

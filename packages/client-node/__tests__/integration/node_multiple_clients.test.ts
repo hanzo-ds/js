@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import type { ClickHouseClient } from "@clickhouse/client-common";
+import type { DatastoreClient } from "@hanzo-ds/client-common";
 import { createSimpleTable } from "@test/fixtures/simple_table";
 import { createTestClient } from "@test/utils/client";
 import { guid } from "@test/utils/guid";
@@ -8,7 +8,7 @@ import Stream from "stream";
 const CLIENTS_COUNT = 5;
 
 describe("[Node.js] multiple clients", () => {
-  const clients: ClickHouseClient[] = Array(CLIENTS_COUNT);
+  const clients: DatastoreClient[] = Array(CLIENTS_COUNT);
 
   beforeEach(() => {
     for (let i = 0; i < CLIENTS_COUNT; i++) {

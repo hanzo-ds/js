@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Server-only Next.js demo that pages through a ClickHouse logs table, decoded with @clickhouse/rowbinary.",
+  "description": "Server-only Next.js demo that pages through a Datastore logs table, decoded with @hanzo-ds/rowbinary.",
   "scripts": {
     "seed": "node scripts/seed.mjs",
     "dev": "next dev -p 3000",
@@ -11,7 +11,7 @@
     "start": "next start -p 3000"
   },
   "dependencies": {
-    "@clickhouse/rowbinary": "file:./vendor/clickhouse-rowbinary-0.1.0.tgz",
+    "@hanzo-ds/rowbinary": "file:./vendor/rowbinary-0.2.0.tgz",
     "next": "^15.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

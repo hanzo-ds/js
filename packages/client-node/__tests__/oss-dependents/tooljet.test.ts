@@ -3,7 +3,7 @@
  * ====================================================
  *
  *   Repo:        https://github.com/ToolJet/ToolJet  (~38k★)
- *   Package:     @clickhouse/client  ^1.14.0
+ *   Package:     @hanzo-ds/client  ^1.14.0
  *   Lives in:    plugins/packages/clickhouse
  *   Analysed at: 2eb07546370d1c4959f16ab16a4d96cbea79a7e1
  *
@@ -14,7 +14,7 @@
  * builders can run arbitrary ClickHouse queries from the visual editor.
  *
  * Key patterns:
- *   - `import { createClient } from '@clickhouse/client'`.
+ *   - `import { createClient } from '@hanzo-ds/client'`.
  *   - Implements `QueryService` with `run()` and a `testConnection()`
  *     (`ConnectionTestResult`).
  *   - Uses `node-sql-parser` alongside the client to inspect/route SQL (omitted
@@ -28,7 +28,7 @@
  */
 
 import { afterEach, describe, expect, it } from "vitest";
-import { type ClickHouseClient } from "@clickhouse/client";
+import { type DatastoreClient } from "@hanzo-ds/client";
 import { createTestClient } from "@test/utils";
 
 interface ConnectionTestResult {
@@ -41,8 +41,8 @@ describe("oss-dependents / tooljet", () => {
   // The service holds one pooled client for its lifetime; `run`/`testConnection`
   // exercise the query/ping surface and the client is closed once on teardown.
   class ClickhouseQueryService {
-    private client: ClickHouseClient | undefined;
-    private getConnection(): ClickHouseClient {
+    private client: DatastoreClient | undefined;
+    private getConnection(): DatastoreClient {
       if (!this.client) this.client = createTestClient();
       return this.client;
     }

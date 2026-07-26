@@ -1,5 +1,5 @@
-import type { PingResult } from "@clickhouse/client";
-import { createClient } from "@clickhouse/client";
+import type { PingResult } from "@hanzo-ds/client";
+import { createClient } from "@hanzo-ds/client";
 import http from "node:http";
 
 /**
@@ -9,11 +9,11 @@ import http from "node:http";
  *
  * Illustrates ping behaviour against a server that is too slow to respond within `request_timeout`.
  * A "slow" HTTP server is started locally with Node's `http` module to simulate a
- * ClickHouse server that does not respond in time, so this example cannot run in a
+ * Datastore server that does not respond in time, so this example cannot run in a
  * browser/Web environment.
  *
  * If your application uses ping during its startup, you could retry a failed ping a few times.
- * Maybe it's a transient network issue or, in case of ClickHouse Cloud,
+ * Maybe it's a transient network issue or, in case of Datastore Cloud,
  * the instance is idling and will start waking up after a ping.
  *
  * See also:

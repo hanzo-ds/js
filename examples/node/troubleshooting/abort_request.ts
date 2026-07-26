@@ -1,4 +1,4 @@
-import { createClient } from "@clickhouse/client";
+import { createClient } from "@hanzo-ds/client";
 
 /**
  * Cancelling a request in progress. By default, this does not cancel the query on the server, only the request itself.
@@ -14,8 +14,8 @@ import { createClient } from "@clickhouse/client";
  * For query cancellation, see `cancel_query.ts` example.
  */
 const client = createClient({
-  clickhouse_settings: {
-    // https://clickhouse.com/docs/operations/settings/settings#cancel_http_readonly_queries_on_client_close
+  datastore_settings: {
+    // https://docs.hanzo.ai/datastore/operations/settings/settings#cancel_http_readonly_queries_on_client_close
     cancel_http_readonly_queries_on_client_close: 1,
   },
 });

@@ -1,15 +1,15 @@
-import type { ClickHouseClient } from "@clickhouse/client-common";
+import type { DatastoreClient } from "@hanzo-ds/client-common";
 import { describe, it, beforeEach, afterEach, expect } from "vitest";
 import { createSimpleTable } from "@test/fixtures/simple_table";
 import { createTestClient } from "@test/utils/client";
 import { guid } from "@test/utils/guid";
 import Stream from "stream";
 import Zlib from "zlib";
-import { ResultSet, drainStream } from "@clickhouse/client";
+import { ResultSet, drainStream } from "@hanzo-ds/client";
 import { getAsText } from "../utils/stream";
 
 describe("[Node.js] exec", () => {
-  let client: ClickHouseClient<Stream.Readable>;
+  let client: DatastoreClient<Stream.Readable>;
   beforeEach(() => {
     client = createTestClient();
   });
@@ -54,7 +54,7 @@ describe("[Node.js] exec", () => {
       const format = "JSONEachRow";
       const { stream, query_id } = await client.exec({
         query: "SELECT number FROM system.numbers LIMIT 1",
-        clickhouse_settings: {
+        datastore_settings: {
           default_format: format,
         },
       });

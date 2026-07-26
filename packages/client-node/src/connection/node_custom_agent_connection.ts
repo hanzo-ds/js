@@ -15,7 +15,7 @@ export class NodeCustomAgentConnection extends NodeBaseConnection {
     }
     super(params, params.http_agent);
 
-    // See https://github.com/ClickHouse/clickhouse-js/issues/352
+    // See https://github.com/hanzo-ds/js/issues/352
     if (params.url.protocol.startsWith("https")) {
       this.httpRequestFn = Https.request;
     } else {

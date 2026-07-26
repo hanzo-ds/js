@@ -1,7 +1,7 @@
 name: "skill: rowbinary benchmarks"
 
 # Runs the RowBinary skill's benchmark suite (npm run bench) against a live
-# ClickHouse server so the numbers cited externally (e.g. the @clickhouse/rowbinary
+# Datastore server so the numbers cited externally (e.g. the @hanzo-ds/rowbinary
 # blog post: RowBinary vs JSON, monomorphized vs API-combinator readers) have a
 # timestamped, third-party-reproducible CI log + a machine-readable JSON artifact
 # behind them — not just a maintainer's laptop.
@@ -17,7 +17,7 @@ on:
   pull_request:
     paths:
       - .github/workflows/bench-skill-rowbinary.yml
-      - skills/clickhouse-js-node-rowbinary/**
+      - skills/datastore-js-node-rowbinary/**
       - packages/datatype-parser/**
 
 concurrency:
@@ -38,18 +38,18 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: skills/clickhouse-js-node-rowbinary
+        working-directory: skills/datastore-js-node-rowbinary
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
-      - name: Start ClickHouse (latest) in Docker
+      - name: Start Datastore (latest) in Docker
         uses: hoverkraft-tech/compose-action@11beaa1c2dae4e8ed7b1665aa074723b6cecb0e4 # v3.0.0
         env:
-          CLICKHOUSE_VERSION: latest
+          DATASTORE_VERSION: latest
         with:
           # The benchmarks only need the single-node HTTP server on :8123.
           compose-file: "docker-compose.yml"
-          services: "clickhouse"
+          services: "datastore"
           down-flags: "--volumes"
 
       - name: Setup NodeJS
@@ -57,7 +57,7 @@ jobs:
         with:
           node-version: 24
 
-      - name: Record environment (CPU, Node, ClickHouse version)
+      - name: Record environment (CPU, Node, Datastore version)
         run: |
           echo "Node:       $(node -v)"
           echo "CPU cores:  $(nproc)"
@@ -68,23 +68,23 @@ jobs:
             [ -n "$chv" ] && break
             sleep 1
           done
-          echo "ClickHouse: ${chv:-<unavailable>}"
+          echo "Datastore: ${chv:-<unavailable>}"
 
-      # Build + pack the in-repo @clickhouse/datatype-parser so the skill is
+      # Build + pack the in-repo @hanzo-ds/datatype-parser so the skill is
       # benchmarked against THIS checkout, not the version published to npm. The
       # committed package.json keeps a published range for end users; we only
       # override node_modules below (`npm install <tarball> --no-save`).
-      - name: Pack local @clickhouse/datatype-parser
+      - name: Pack local @hanzo-ds/datatype-parser
         working-directory: ${{ github.workspace }}
         run: |
           npm ci
-          npm pack --workspace @clickhouse/datatype-parser --pack-destination "${{ runner.temp }}"
+          npm pack --workspace @hanzo-ds/datatype-parser --pack-destination "${{ runner.temp }}"
 
       - name: Install dependencies
         run: npm ci
 
       - name: Use the local datatype-parser build
-        run: npm install "${{ runner.temp }}"/clickhouse-datatype-parser-*.tgz --no-save
+        run: npm install "${{ runner.temp }}"/datastore-datatype-parser-*.tgz --no-save
 
       # Prints the human-readable tinybench summary (per-bench hz + "Nx faster"
       # lines, incl. the ledger RowBinary-vs-JSON comparison) to the job log, and

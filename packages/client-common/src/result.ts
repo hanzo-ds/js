@@ -3,7 +3,7 @@ import type {
   ResponseHeaders,
   ResponseJSON,
   SpecialEventRow,
-} from "./clickhouse_types";
+} from "./datastore_types";
 import type {
   DataFormat,
   RawDataFormat,
@@ -144,7 +144,7 @@ export interface BaseResultSet<Stream, Format extends DataFormat | unknown> {
   /** Close the underlying stream. */
   close(): void;
 
-  /** ClickHouse server QueryID. */
+  /** Datastore server QueryID. */
   query_id: string;
 
   /** Response headers. */

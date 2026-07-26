@@ -1,4 +1,4 @@
-import { createClient } from "@clickhouse/client";
+import { createClient } from "@hanzo-ds/client";
 import Fs from "fs";
 import Path from "path";
 import { v4 as uuid_v4 } from "uuid";
@@ -42,7 +42,7 @@ const program = async () => {
       ENGINE = MergeTree()
       ORDER BY (machine_group, machine_name, log_time)
     `,
-    clickhouse_settings: {
+    datastore_settings: {
       wait_end_of_query: 1,
     },
   });

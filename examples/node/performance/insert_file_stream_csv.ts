@@ -1,4 +1,4 @@
-import { createClient, type Row } from "@clickhouse/client";
+import { createClient, type Row } from "@hanzo-ds/client";
 import Fs from "node:fs";
 import { cwd } from "node:process";
 import Path from "node:path";
@@ -25,8 +25,8 @@ await client.insert({
   table: tableName,
   values: fileStream,
   format: "CSV",
-  clickhouse_settings: {
-    /** See also: https://clickhouse.com/docs/en/interfaces/formats#csv-format-settings.
+  datastore_settings: {
+    /** See also: https://docs.hanzo.ai/datastore/en/interfaces/formats#csv-format-settings.
      *  You could specify these (and other settings) here. */
   },
 });

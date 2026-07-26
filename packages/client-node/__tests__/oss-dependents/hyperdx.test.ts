@@ -3,7 +3,7 @@
  * ======================================================
  *
  *   Repo:        https://github.com/hyperdxio/hyperdx  (~9k★)
- *   Packages:    @clickhouse/client, @clickhouse/client-web, @clickhouse/client-common
+ *   Packages:    @hanzo-ds/client, @hanzo-ds/client-web, @hanzo-ds/client-common
  *                — all ^1.12.1
  *   Lives in:    packages/common-utils/src/clickhouse
  *   Analysed at: 34aa906f0a102acbb66a49e91b1a5267070d3546
@@ -13,15 +13,15 @@
  * How the client is used
  * ----------------------
  * HyperDX is an observability UI over ClickHouse and is the ONLY repo in this
- * set that uses the BROWSER client (@clickhouse/client-web). The `common-utils`
+ * set that uses the BROWSER client (@hanzo-ds/client-web). The `common-utils`
  * package deliberately decouples node and browser implementations behind a
- * shared base, using common types from @clickhouse/client-common.
+ * shared base, using common types from @hanzo-ds/client-common.
  *
  * Key patterns:
- *   - clickhouse/node.ts    -> createClient from @clickhouse/client
- *   - clickhouse/browser.ts -> createClient from @clickhouse/client-web
- *   - index.ts unifies both (NodeClickHouseClient vs WebClickHouseClient) using
- *     shared types from @clickhouse/client-common.
+ *   - clickhouse/node.ts    -> createClient from @hanzo-ds/client
+ *   - clickhouse/browser.ts -> createClient from @hanzo-ds/client-web
+ *   - index.ts unifies both (NodeDatastoreClient vs WebDatastoreClient) using
+ *     shared types from @hanzo-ds/client-common.
  *   - A `getJSNativeCreateClient` indirection so app/api packages don't import
  *     the client directly.
  *
@@ -33,43 +33,43 @@
  *
  * Reproduction note: the node path runs through the shared `createTestClient`
  * (works on every test environment). The browser path is constructed from the
- * public `@clickhouse/client-web` surface and, on local environments, also runs a
+ * public `@hanzo-ds/client-web` surface and, on local environments, also runs a
  * trivial query (the web client works under Node via global `fetch`).
  */
 
 import { afterEach, describe, expect, it } from "vitest";
 // Shared, environment-agnostic types come from the -common package.
-import type { ClickHouseSettings } from "@clickhouse/client-common";
-import { type ClickHouseClient as NodeClickHouseClient } from "@clickhouse/client";
+import type { DatastoreSettings } from "@hanzo-ds/client-common";
+import { type DatastoreClient as NodeDatastoreClient } from "@hanzo-ds/client";
 import {
   createClient as createWebClient,
-  type ClickHouseClient as WebClickHouseClient,
-} from "@clickhouse/client-web";
+  type DatastoreClient as WebDatastoreClient,
+} from "@hanzo-ds/client-web";
 import {
   createTestClient,
-  getClickHouseTestEnvironment,
+  getDatastoreTestEnvironment,
   TestEnv,
 } from "@test/utils";
 
 interface BaseClientOptions {
   url: string;
   database?: string;
-  clickhouse_settings?: ClickHouseSettings;
+  datastore_settings?: DatastoreSettings;
 }
 
 describe("oss-dependents / hyperdx", () => {
-  let nodeClient: NodeClickHouseClient;
-  let webClient: WebClickHouseClient | undefined;
+  let nodeClient: NodeDatastoreClient;
+  let webClient: WebDatastoreClient | undefined;
 
   // clickhouse/node.ts — node path uses the shared test client.
-  function createNodeClickHouseClient(): NodeClickHouseClient {
+  function createNodeDatastoreClient(): NodeDatastoreClient {
     return createTestClient();
   }
 
-  // clickhouse/browser.ts — browser path uses @clickhouse/client-web.
-  function createBrowserClickHouseClient(
+  // clickhouse/browser.ts — browser path uses @hanzo-ds/client-web.
+  function createBrowserDatastoreClient(
     options: BaseClientOptions,
-  ): WebClickHouseClient {
+  ): WebDatastoreClient {
     return createWebClient(options);
   }
 
@@ -80,19 +80,19 @@ describe("oss-dependents / hyperdx", () => {
 
   it("unifies node + browser clients behind a shared surface", async () => {
     // Node path (runs on every environment).
-    nodeClient = createNodeClickHouseClient();
+    nodeClient = createNodeDatastoreClient();
     const nodeRows = await (
       await nodeClient.query({ query: "SELECT 1 AS ok", format: "JSONEachRow" })
     ).json<{ ok: number }>();
     expect(nodeRows).toEqual([{ ok: 1 }]);
 
     // Browser path: construct from the public web surface to guard its exports.
-    const env = getClickHouseTestEnvironment();
+    const env = getDatastoreTestEnvironment();
     const url =
       env === TestEnv.LocalCluster
         ? "http://127.0.0.1:8127"
         : "http://127.0.0.1:8123";
-    webClient = createBrowserClickHouseClient({ url });
+    webClient = createBrowserDatastoreClient({ url });
     expect(webClient).toBeDefined();
 
     // The web client also runs under Node, so exercise it on local environments.

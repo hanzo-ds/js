@@ -2,7 +2,7 @@
 name: fix-release-pr
 description: >
   Fix CI failures and address code-review comments on a pull request that
-  targets the protected `release` branch of `ClickHouse/clickhouse-js`. Release
+  targets the protected `release` branch of `hanzo-ds/js`. Release
   PRs are snapshots of `main` (their head branch is usually `main` itself) and
   cannot be edited directly — branch protection blocks pushing fixes onto them.
   Use this skill whenever the work is "fix the CI / address the review comments
@@ -19,7 +19,7 @@ description: >
 
 ## Why this skill exists
 
-In `clickhouse-js`, the `release` branch receives **release PRs** — snapshots of
+In `datastore-js`, the `release` branch receives **release PRs** — snapshots of
 `main` opened to cut a version (e.g. titled "1.23 beta2"). Two properties make
 them special:
 
@@ -64,12 +64,12 @@ thread node IDs (you need both: REST `id` to reply, thread node `id` to resolve)
 
 ```bash
 # Inline comments: REST id + location + author + body
-gh api repos/ClickHouse/clickhouse-js/pulls/<N>/comments \
+gh api repos/hanzo-ds/js/pulls/<N>/comments \
   -q '.[] | "\(.id)\t\(.path):\(.line)\t\(.user.login)\n\(.body)\n---"'
 
 # Review threads: node id (PRRT_…), resolved state, and first comment's databaseId
 gh api graphql -f query='
-{ repository(owner:"ClickHouse", name:"clickhouse-js") {
+{ repository(owner:"Datastore", name:"datastore-js") {
     pullRequest(number: <N>) {
       reviewThreads(first: 50) { nodes {
         id isResolved
@@ -145,7 +145,7 @@ the thread.
 
 ```bash
 # Reply (use the REST comment id from Step 2)
-gh api repos/ClickHouse/clickhouse-js/pulls/<N>/comments/<COMMENT_ID>/replies \
+gh api repos/hanzo-ds/js/pulls/<N>/comments/<COMMENT_ID>/replies \
   -f body='Fixed in #<NEW_PR>. <one line on what changed>. (Lands on `main` separately since this PR targets the protected `release` branch.)' \
   -q '.html_url'
 

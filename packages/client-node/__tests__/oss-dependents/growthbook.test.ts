@@ -3,7 +3,7 @@
  * ==========================================================
  *
  *   Repo:        https://github.com/growthbook/growthbook  (~8k★)
- *   Package:     @clickhouse/client  ^1.0.1
+ *   Package:     @hanzo-ds/client  ^1.0.1
  *   Lives in:    packages/back-end/src/integrations/ClickHouse.ts
  *   Analysed at: 50f46e2a978e5ef4e321be3a8d11f551d00815b8
  *
@@ -14,7 +14,7 @@
  * results and feature-usage aggregation.
  *
  * Key patterns:
- *   - `import { createClient, ResponseJSON } from '@clickhouse/client'`.
+ *   - `import { createClient, ResponseJSON } from '@hanzo-ds/client'`.
  *   - Queries return `ResponseJSON`; results feed feature-usage diagnostics.
  *   - `date-fns` used to build time-windowed queries (omitted here).
  *
@@ -26,7 +26,7 @@
  */
 
 import { afterEach, describe, expect, it } from "vitest";
-import { type ClickHouseClient, type ResponseJSON } from "@clickhouse/client";
+import { type DatastoreClient, type ResponseJSON } from "@hanzo-ds/client";
 import { createTestClient, guid } from "@test/utils";
 
 describe("oss-dependents / growthbook", () => {
@@ -34,7 +34,7 @@ describe("oss-dependents / growthbook", () => {
 
   // Mirrors GrowthBook's data-source integration class.
   class ClickHouseIntegration {
-    private client: ClickHouseClient;
+    private client: DatastoreClient;
     constructor() {
       this.client = createTestClient();
     }
@@ -48,7 +48,7 @@ describe("oss-dependents / growthbook", () => {
     async seed(): Promise<void> {
       await this.client.command({
         query: `CREATE TABLE ${table} (user_id String) ENGINE = MergeTree ORDER BY user_id`,
-        clickhouse_settings: { wait_end_of_query: 1 },
+        datastore_settings: { wait_end_of_query: 1 },
       });
       await this.client.insert({
         table,

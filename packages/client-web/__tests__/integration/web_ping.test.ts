@@ -1,12 +1,9 @@
 import { describe, it, expect, afterEach } from "vitest";
-import type {
-  ClickHouseClient,
-  ClickHouseError,
-} from "@clickhouse/client-common";
+import type { DatastoreClient, DatastoreError } from "@hanzo-ds/client-common";
 import { createTestClient } from "@test/utils";
 
 describe("[Web] ping", () => {
-  let client: ClickHouseClient;
+  let client: DatastoreClient;
 
   afterEach(async () => {
     await client.close();
@@ -37,7 +34,7 @@ describe("[Web] ping", () => {
     });
     expect(response.success).toBe(false);
 
-    const err = (response as unknown as { error: ClickHouseError }).error;
+    const err = (response as unknown as { error: DatastoreError }).error;
     expect(err.code).toEqual("516");
     expect(err.type).toEqual("AUTHENTICATION_FAILED");
     expect(err.message).toEqual(

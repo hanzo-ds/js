@@ -1,15 +1,11 @@
 // Pre-publish smoke test (ESM).
 //
 // Imports symbols that originate in the (now bundled) `common` sources and are
-// re-exported from `@clickhouse/client` via `./common/index`. Exercising them
+// re-exported from `@hanzo-ds/client` via `./common/index`. Exercising them
 // from a tarball install proves the bundled common code is compiled into the
-// published artifact and usable by consumers - without `@clickhouse/client-common`
+// published artifact and usable by consumers - without `@hanzo-ds/client-common`
 // as a runtime dependency.
-import {
-  parseColumnType,
-  SettingsMap,
-  ClickHouseError,
-} from "@clickhouse/client";
+import { parseColumnType, SettingsMap, DatastoreError } from "@hanzo-ds/client";
 import assert from "node:assert";
 
 const t = parseColumnType("Nullable(UInt64)");
@@ -21,7 +17,7 @@ const sm = SettingsMap.from({ max_block_size: "1000" });
 console.log("SettingsMap.toString() =>", sm.toString());
 assert.strictEqual(typeof sm.toString(), "string");
 
-assert.strictEqual(typeof ClickHouseError, "function");
+assert.strictEqual(typeof DatastoreError, "function");
 
 console.log(
   "OK (ESM): all common-origin imports resolved and executed from the installed package",

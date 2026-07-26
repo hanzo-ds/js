@@ -1,6 +1,6 @@
 /// Static oracle snapshots: one JSON file per data-type string, holding the
-/// `data_type` subtree the ClickHouse server emits. These let the snapshot test
-/// run with no `clickhouse` binary — the server is only needed to (re)generate
+/// `data_type` subtree the Datastore server emits. These let the snapshot test
+/// run with no `datastore` binary — the server is only needed to (re)generate
 /// them via `update_snapshots.ts`.
 
 import { createHash } from "node:crypto";

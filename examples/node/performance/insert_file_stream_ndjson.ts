@@ -1,5 +1,5 @@
-import type { Row } from "@clickhouse/client";
-import { createClient } from "@clickhouse/client";
+import type { Row } from "@hanzo-ds/client";
+import { createClient } from "@hanzo-ds/client";
 import Fs from "node:fs";
 import { cwd } from "node:process";
 import Path from "node:path";

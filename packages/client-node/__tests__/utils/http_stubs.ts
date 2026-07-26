@@ -1,4 +1,4 @@
-import { ClickHouseLogLevel, LogWriter } from "@clickhouse/client-common";
+import { DatastoreLogLevel, LogWriter } from "@hanzo-ds/client-common";
 import { sleep } from "../../../client-common/__tests__/utils/sleep";
 import { TestLogger } from "../../../client-common/__tests__/utils/test_logger";
 import { randomUUID } from "../../../client-common/__tests__/utils/guid";
@@ -45,7 +45,7 @@ export function buildIncomingMessage({
 
   response.statusCode = statusCode;
   response.headers = {
-    "x-clickhouse-query-id": randomUUID(),
+    "x-datastore-query-id": randomUUID(),
     ...headers,
   };
   return response;
@@ -108,14 +108,14 @@ export function buildHttpConnection(config: Partial<NodeConnectionParams>) {
 
     auth: { username: "default", password: "", type: "Credentials" },
     database: "default",
-    clickhouse_settings: {},
+    datastore_settings: {},
 
     log_writer: new LogWriter(
       new TestLogger(),
       "NodeConnectionTest",
-      ClickHouseLogLevel.OFF,
+      DatastoreLogLevel.OFF,
     ),
-    log_level: ClickHouseLogLevel.OFF,
+    log_level: DatastoreLogLevel.OFF,
     keep_alive: {
       enabled: false,
       idle_socket_ttl: 2500,
@@ -134,9 +134,9 @@ export class MyTestHttpConnection extends NodeBaseConnection {
         log_writer: new LogWriter(
           new TestLogger(),
           "NodeConnectionTest",
-          ClickHouseLogLevel.OFF,
+          DatastoreLogLevel.OFF,
         ),
-        log_level: ClickHouseLogLevel.OFF,
+        log_level: DatastoreLogLevel.OFF,
         keep_alive: {
           enabled: false,
         },

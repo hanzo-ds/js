@@ -1,4 +1,4 @@
-import { createClient } from "@clickhouse/client";
+import { createClient } from "@hanzo-ds/client";
 
 /**
  * Excluding certain columns from the INSERT statement.

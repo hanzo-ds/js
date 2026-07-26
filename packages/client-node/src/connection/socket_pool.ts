@@ -3,18 +3,20 @@ import Stream from "stream";
 import type * as net from "net";
 import {
   enhanceStackTrace,
+  EXCEPTION_CODE_HEADER_NAME,
   getCurrentStackTrace,
   isSuccessfulResponse,
   parseError,
   sleep,
-  ClickHouseLogLevel,
+  DatastoreLogLevel,
   type LogWriter,
   type ConnOperation,
   type ResponseHeaders,
-  type ClickHouseSummary,
+  type DatastoreSummary,
   type JSONHandling,
   type CompressionMethod,
   type RequestCompression,
+  SUMMARY_HEADER_NAME,
 } from "../common/index";
 import { getAsText, isStream } from "../utils";
 import {
@@ -41,14 +43,14 @@ export interface RequestParams {
   query: string;
   query_id: string;
   log_writer: LogWriter;
-  log_level: ClickHouseLogLevel;
+  log_level: DatastoreLogLevel;
 }
 
 export interface RequestResult {
   stream: Stream.Readable;
   response_headers: ResponseHeaders;
   http_status_code?: number;
-  summary?: ClickHouseSummary;
+  summary?: DatastoreSummary;
 }
 
 interface SocketInfo {
@@ -107,7 +109,7 @@ export class SocketPool {
     op: ConnOperation,
   ): Promise<RequestResult> {
     // allows the event loop to process the idle socket timers, if the CPU load is high
-    // otherwise, we can occasionally get an expired socket, see https://github.com/ClickHouse/clickhouse-js/issues/294
+    // otherwise, we can occasionally get an expired socket, see https://github.com/hanzo-ds/js/issues/294
     await sleep(0);
     const { log_writer, query_id, log_level } = params;
     const currentStackTrace = this.params.capture_enhanced_stack_trace
@@ -138,7 +140,7 @@ export class SocketPool {
                   // However, this is an edge case that should be clearly visible in the
                   // application monitoring.
                   if (socketAge >= this.params.keep_alive.idle_socket_ttl) {
-                    if (log_level <= ClickHouseLogLevel.TRACE) {
+                    if (log_level <= DatastoreLogLevel.TRACE) {
                       log_writer.trace({
                         message: `${op}: socket TTL expired based on timestamp, destroying socket`,
                         args: {
@@ -171,7 +173,7 @@ export class SocketPool {
       const onError = (e: unknown): void => {
         removeRequestListeners();
         if (e instanceof Error) {
-          if (log_level <= ClickHouseLogLevel.TRACE) {
+          if (log_level <= DatastoreLogLevel.TRACE) {
             if ((e as any).code === "ECONNRESET") {
               log_writer.trace({
                 message: `${op}: connection reset by peer`,
@@ -185,7 +187,7 @@ export class SocketPool {
               });
             }
           }
-          if (log_level <= ClickHouseLogLevel.WARN) {
+          if (log_level <= DatastoreLogLevel.WARN) {
             if (this.params.keep_alive.enabled) {
               if ((e as any).code === "ECONNRESET") {
                 const socket = request.socket;
@@ -199,7 +201,7 @@ export class SocketPool {
                         this.params.keep_alive.idle_socket_ttl > serverTimeoutMs
                       ) {
                         log_writer.warn({
-                          message: `${op}: idle socket TTL is greater than server keep-alive timeout, try setting idle socket TTL to a value lower than the server keep-alive timeout to prevent unexpected connection resets, see https://github.com/ClickHouse/clickhouse-js/blob/main/docs/howto/keep_alive_timeout.md for more details.`,
+                          message: `${op}: idle socket TTL is greater than server keep-alive timeout, try setting idle socket TTL to a value lower than the server keep-alive timeout to prevent unexpected connection resets, see https://github.com/hanzo-ds/js/blob/main/docs/howto/keep_alive_timeout.md for more details.`,
                           args: {
                             operation: op,
                             connection_id: this.connectionId,
@@ -231,11 +233,11 @@ export class SocketPool {
       const onResponse = async (
         _response: Http.IncomingMessage,
       ): Promise<void> => {
-        if (this.params.log_level <= ClickHouseLogLevel.DEBUG) {
+        if (this.params.log_level <= DatastoreLogLevel.DEBUG) {
           const duration = Date.now() - start;
           this.params.log_writer.debug({
             module: "HTTP Adapter",
-            message: `${op}: got a response from ClickHouse`,
+            message: `${op}: got a response from Datastore`,
             args: {
               operation: op,
               connection_id: this.connectionId,
@@ -260,7 +262,7 @@ export class SocketPool {
               if (socketInfo) {
                 const timeoutMs = Number(timeout) * 1000;
                 socketInfo.server_keep_alive_timeout_ms = timeoutMs;
-                if (log_level <= ClickHouseLogLevel.TRACE) {
+                if (log_level <= DatastoreLogLevel.TRACE) {
                   this.params.log_writer.trace({
                     module: "HTTP Adapter",
                     message: `${op}: updated server sent socket keep-alive timeout`,
@@ -285,7 +287,7 @@ export class SocketPool {
         // even if the stream decompression is disabled, we have to decompress it in case of an error
         const isFailedResponse =
           !isSuccessfulResponse(_response.statusCode) ||
-          _response.headers["x-clickhouse-exception-code"] !== undefined;
+          _response.headers[EXCEPTION_CODE_HEADER_NAME] !== undefined;
         if (
           tryDecompressResponseStream ||
           (isFailedResponse && !ignoreErrorResponse)
@@ -307,7 +309,7 @@ export class SocketPool {
           responseStream = _response;
         }
 
-        if (log_level <= ClickHouseLogLevel.TRACE) {
+        if (log_level <= DatastoreLogLevel.TRACE) {
           log_writer.trace({
             message: `${op}: response stream created`,
             args: {
@@ -335,7 +337,7 @@ export class SocketPool {
             );
             reject(err);
           } catch (e) {
-            // If the ClickHouse response is malformed
+            // If the Datastore response is malformed
             const err = enhanceStackTrace(e as Error, currentStackTrace);
             reject(err);
           }
@@ -414,7 +416,7 @@ export class SocketPool {
             // so it doesn't have the idle timeout handler attached to it
             if (socketInfo === undefined) {
               const socket_id = this.getNewSocketId();
-              if (log_level <= ClickHouseLogLevel.TRACE) {
+              if (log_level <= DatastoreLogLevel.TRACE) {
                 log_writer.trace({
                   message: `${op}: using a fresh socket, setting up a new 'free' listener`,
                   args: {
@@ -435,7 +437,7 @@ export class SocketPool {
               // When the request is complete and the socket is released,
               // make sure that the socket is removed after `idle_socket_ttl`.
               socket.on("free", () => {
-                if (log_level <= ClickHouseLogLevel.TRACE) {
+                if (log_level <= DatastoreLogLevel.TRACE) {
                   log_writer.trace({
                     message: `${op}: socket was released`,
                     args: {
@@ -453,7 +455,7 @@ export class SocketPool {
                 // as we don't want to clash with the actual request timeout.
                 const idleTimeoutHandle = setTimeout(() => {
                   const freedAfter = Date.now() - freed_at_timestamp_ms;
-                  if (log_level <= ClickHouseLogLevel.TRACE) {
+                  if (log_level <= DatastoreLogLevel.TRACE) {
                     log_writer.trace({
                       message: `${op}: removing idle socket`,
                       args: {
@@ -480,7 +482,7 @@ export class SocketPool {
                 if (maybeSocketInfo?.idle_timeout_handle) {
                   clearTimeout(maybeSocketInfo.idle_timeout_handle);
                 }
-                if (log_level <= ClickHouseLogLevel.TRACE) {
+                if (log_level <= DatastoreLogLevel.TRACE) {
                   log_writer.trace({
                     message: `${op}: received '${eventName}' event, 'free' listener removed`,
                     args: {
@@ -494,7 +496,7 @@ export class SocketPool {
                   });
                 }
 
-                if (log_level <= ClickHouseLogLevel.WARN) {
+                if (log_level <= DatastoreLogLevel.WARN) {
                   if (responseStream && !responseStream.readableEnded) {
                     log_writer.warn({
                       message: `${op}: socket was closed or ended before the response was fully read. This can potentially result in an uncaught ECONNRESET error! Consider fully consuming, draining, or destroying the response stream.`,
@@ -525,9 +527,9 @@ export class SocketPool {
                 // Give some grace period to account for timer inaccuracy and minor
                 // event loop delays, but log if the socket is significantly overdue
                 if (overdueBy > 1000) {
-                  if (log_level <= ClickHouseLogLevel.WARN) {
+                  if (log_level <= DatastoreLogLevel.WARN) {
                     log_writer.warn({
-                      message: `${op}: reusing socket with TTL expired based on timestamp; this may indicate a starved Node.js process or delayed event loop; set keep_alive.eagerly_destroy_stale_sockets=true to mitigate, see more details at https://github.com/ClickHouse/clickhouse-js/blob/main/docs/howto/keep_alive_timeout.md`,
+                      message: `${op}: reusing socket with TTL expired based on timestamp; this may indicate a starved Node.js process or delayed event loop; set keep_alive.eagerly_destroy_stale_sockets=true to mitigate, see more details at https://github.com/hanzo-ds/js/blob/main/docs/howto/keep_alive_timeout.md`,
                       args: {
                         operation: op,
                         connection_id: this.connectionId,
@@ -544,7 +546,7 @@ export class SocketPool {
 
               clearTimeout(socketInfo.idle_timeout_handle);
               socketInfo.idle_timeout_handle = undefined;
-              if (log_level <= ClickHouseLogLevel.TRACE) {
+              if (log_level <= DatastoreLogLevel.TRACE) {
                 log_writer.trace({
                   message: `${op}: reusing socket`,
                   args: {
@@ -561,7 +563,7 @@ export class SocketPool {
             }
           }
         } catch (e) {
-          if (log_level <= ClickHouseLogLevel.ERROR) {
+          if (log_level <= DatastoreLogLevel.ERROR) {
             log_writer.error({
               message: `${op}: an error occurred while housekeeping the idle sockets`,
               err: e as Error,
@@ -580,7 +582,7 @@ export class SocketPool {
 
         // This is for request timeout only. Surprisingly, it is not always enough to set in the HTTP request.
         // The socket won't be destroyed, and it will be returned to the pool.
-        if (log_level <= ClickHouseLogLevel.TRACE) {
+        if (log_level <= DatastoreLogLevel.TRACE) {
           const socketInfo = this.knownSockets.get(socket);
           if (socketInfo) {
             log_writer.trace({
@@ -613,7 +615,7 @@ export class SocketPool {
       const onTimeout = (): void => {
         removeRequestListeners();
 
-        if (log_level <= ClickHouseLogLevel.TRACE) {
+        if (log_level <= DatastoreLogLevel.TRACE) {
           const socket = request.socket;
           const maybeSocketInfo = socket
             ? this.knownSockets.get(socket)
@@ -658,7 +660,7 @@ export class SocketPool {
         try {
           request.destroy();
         } catch (e) {
-          if (log_level <= ClickHouseLogLevel.ERROR) {
+          if (log_level <= DatastoreLogLevel.ERROR) {
             log_writer.error({
               message: `${op}: An error occurred while destroying the request`,
               err: e as Error,
@@ -703,7 +705,7 @@ export class SocketPool {
         try {
           return request.end();
         } catch (e) {
-          if (log_level <= ClickHouseLogLevel.ERROR) {
+          if (log_level <= DatastoreLogLevel.ERROR) {
             log_writer.error({
               message: `${op}: an error occurred while ending the request without body`,
               err: e as Error,
@@ -723,19 +725,19 @@ export class SocketPool {
   private parseSummary(
     op: ConnOperation,
     response: Http.IncomingMessage,
-  ): ClickHouseSummary | undefined {
-    const summaryHeader = response.headers["x-clickhouse-summary"];
+  ): DatastoreSummary | undefined {
+    const summaryHeader = response.headers[SUMMARY_HEADER_NAME];
     if (typeof summaryHeader === "string") {
       try {
         return this.jsonHandling.parse(summaryHeader);
       } catch (err) {
-        if (this.params.log_level <= ClickHouseLogLevel.ERROR) {
+        if (this.params.log_level <= DatastoreLogLevel.ERROR) {
           this.params.log_writer.error({
-            message: `${op}: failed to parse X-ClickHouse-Summary header.`,
+            message: `${op}: failed to parse ${SUMMARY_HEADER_NAME} header.`,
             args: {
               operation: op,
               connection_id: this.connectionId,
-              "X-ClickHouse-Summary": summaryHeader,
+              [SUMMARY_HEADER_NAME]: summaryHeader,
             },
             err: err as Error,
           });

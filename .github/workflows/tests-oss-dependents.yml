@@ -54,9 +54,9 @@ env:
 
 jobs:
   # Runnable reproductions of how the top OSS dependents use the client, resolved
-  # against the workspace source via the @clickhouse/client* vitest aliases. This
+  # against the workspace source via the @hanzo-ds/client* vitest aliases. This
   # is a separate workflow so a regression that breaks a known consumer is clearly
-  # attributable. It targets only the stable ClickHouse release on a local
+  # attributable. It targets only the stable Datastore release on a local
   # single-node instance, across the supported Node.js versions.
   oss-dependents-tests:
     timeout-minutes: 5
@@ -69,10 +69,10 @@ jobs:
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
-      - name: Start ClickHouse (stable) in Docker
+      - name: Start Datastore (stable) in Docker
         uses: hoverkraft-tech/compose-action@11beaa1c2dae4e8ed7b1665aa074723b6cecb0e4 # v3.0.0
         env:
-          CLICKHOUSE_VERSION: latest
+          DATASTORE_VERSION: latest
         with:
           compose-file: "docker-compose.yml"
           down-flags: "--volumes"
@@ -86,7 +86,7 @@ jobs:
         run: |
           npm ci
 
-      # The oss-dependents specs resolve `@clickhouse/client*` to the built
+      # The oss-dependents specs resolve `@hanzo-ds/client*` to the built
       # workspace packages (not `src`), so build before running them.
       - name: Build workspace packages
         run: |

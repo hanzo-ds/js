@@ -32,12 +32,12 @@ export default defineConfig({
     passWithNoTests: true,
     reporters: ["verbose"],
     env: {
-      CLICKHOUSE_URL: process.env["CLICKHOUSE_URL"] ?? "http://localhost:8123",
-      CLICKHOUSE_PASSWORD: process.env["CLICKHOUSE_PASSWORD"] ?? "",
-      CLICKHOUSE_CLUSTER_URL:
-        process.env["CLICKHOUSE_CLUSTER_URL"] ?? "http://localhost:8127",
-      CLICKHOUSE_CLOUD_URL: process.env["CLICKHOUSE_CLOUD_URL"],
-      CLICKHOUSE_CLOUD_PASSWORD: process.env["CLICKHOUSE_CLOUD_PASSWORD"],
+      DATASTORE_URL: process.env["DATASTORE_URL"] ?? "http://localhost:8123",
+      DATASTORE_PASSWORD: process.env["DATASTORE_PASSWORD"] ?? "",
+      DATASTORE_CLUSTER_URL:
+        process.env["DATASTORE_CLUSTER_URL"] ?? "http://localhost:8127",
+      DATASTORE_CLOUD_URL: process.env["DATASTORE_CLOUD_URL"],
+      DATASTORE_CLOUD_PASSWORD: process.env["DATASTORE_CLOUD_PASSWORD"],
     },
     browser: {
       enabled: true,

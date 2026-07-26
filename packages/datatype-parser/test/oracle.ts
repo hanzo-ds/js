@@ -1,4 +1,4 @@
-/// Shared oracle helpers: talk to a real ClickHouse server to obtain the
+/// Shared oracle helpers: talk to a real Datastore server to obtain the
 /// expected `data_type` subtree, and run the standalone parser. Used by the
 /// live oracle comparison and by the snapshot updater.
 
@@ -29,16 +29,12 @@ export function findColumnDataType(node: unknown, column: string): unknown {
 /// The `data_type` subtree the server produces for
 /// `EXPLAIN AST json = 1 CREATE TABLE t (c <TYPE>) ENGINE = Null`. Throws on a
 /// server error (invalid type) or an unexpected AST shape.
-export function serverDataType(clickhouse: string, typeStr: string): unknown {
+export function serverDataType(datastore: string, typeStr: string): unknown {
   const sql = `EXPLAIN AST json = 1 CREATE TABLE t (c ${typeStr}) ENGINE = Null`;
-  const out = spawnSync(
-    clickhouse,
-    ["local", "--format", "TSVRaw", "-q", sql],
-    {
-      encoding: "utf8",
-      maxBuffer: 64 * 1024 * 1024,
-    },
-  );
+  const out = spawnSync(datastore, ["local", "--format", "TSVRaw", "-q", sql], {
+    encoding: "utf8",
+    maxBuffer: 64 * 1024 * 1024,
+  });
   if (out.status !== 0) {
     throw new Error(`server failed: ${(out.stderr ?? "").trim()}`);
   }

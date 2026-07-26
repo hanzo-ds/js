@@ -1,11 +1,11 @@
-import { type ClickHouseClient } from "@clickhouse/client-common";
+import { type DatastoreClient } from "@hanzo-ds/client-common";
 import { describe, it, beforeEach, afterEach, expect } from "vitest";
 import { createSimpleTable } from "@test/fixtures/simple_table";
 import { createTestClient } from "@test/utils/client";
 import { guid } from "@test/utils/guid";
 import { makeObjectStream } from "../utils/stream";
 
-let client: ClickHouseClient;
+let client: DatastoreClient;
 let tableName: string;
 
 beforeEach(async () => {

@@ -1,4 +1,4 @@
-# `@clickhouse/client` examples (Node.js)
+# `@hanzo-ds/client` examples (Node.js)
 
 Examples for the Node.js client. They may freely use Node-only APIs (file
 streams, TLS, `http`, `node:*` built-ins, etc.).
@@ -16,7 +16,7 @@ backing a focused AI agent skill:
 - [`security/`](security/) — TLS (basic and mutual), RBAC (roles and read-only
   users), and SQL-injection-safe parameter binding.
 - [`schema-and-deployments/`](schema-and-deployments/) — `CREATE TABLE` for
-  single-node, on-prem cluster, and ClickHouse Cloud, plus column-shape
+  single-node, on-prem cluster, and Datastore Cloud, plus column-shape
   features and deployment-shaped connection strings.
 
 Some examples appear in more than one folder on purpose so each skill remains

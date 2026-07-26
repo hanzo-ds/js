@@ -1,4 +1,4 @@
-import { createClient, type Row } from "@clickhouse/client";
+import { createClient, type Row } from "@hanzo-ds/client";
 
 /**
  * Similar to `select_streaming_text_line_by_line.ts`, but using `for await const` syntax instead of `on(data)`.
@@ -10,7 +10,7 @@ const client = createClient();
 const rs = await client.query({
   query: "SELECT number FROM system.numbers LIMIT 10",
   // See all supported formats for streaming:
-  // https://clickhouse.com/docs/en/integrations/language-clients/javascript#supported-data-formats
+  // https://docs.hanzo.ai/datastore/en/integrations/language-clients/javascript#supported-data-formats
   format: "JSONEachRow",
 });
 for await (const rows of rs.stream()) {

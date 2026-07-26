@@ -1,15 +1,15 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 
 import type {
-  BaseClickHouseClientConfigOptions,
+  BaseDatastoreClientConfigOptions,
   ConnectionParams,
-} from "@clickhouse/client-common";
-import { ClickHouseLogLevel, LogWriter } from "@clickhouse/client-common";
+} from "@hanzo-ds/client-common";
+import { DatastoreLogLevel, LogWriter } from "@hanzo-ds/client-common";
 import { TestLogger } from "../../../client-common/__tests__/utils/test_logger";
 import { Buffer } from "buffer";
 import http from "http";
 import Zlib from "zlib";
-import type { NodeClickHouseClientConfigOptions } from "../../src/config";
+import type { NodeDatastoreClientConfigOptions } from "../../src/config";
 import { NodeConfigImpl } from "../../src/config";
 import {
   type CreateConnectionParams,
@@ -24,7 +24,7 @@ describe("[Node.js] Config implementation details", () => {
         "http://localhost:8123/?" +
           ["keep_alive_idle_socket_ttl=2500"].join("&"),
       );
-      const config: BaseClickHouseClientConfigOptions = {
+      const config: BaseDatastoreClientConfigOptions = {
         keep_alive: {
           enabled: false,
         },
@@ -35,14 +35,14 @@ describe("[Node.js] Config implementation details", () => {
           enabled: false, // kept the value from the initial config
           idle_socket_ttl: 2500,
         },
-      } as unknown as BaseClickHouseClientConfigOptions);
+      } as unknown as BaseDatastoreClientConfigOptions);
       expect([...res.unknown_params]).toEqual([]);
       expect([...res.handled_params]).toEqual(["keep_alive_idle_socket_ttl"]);
     });
 
     it("should indicate that one of the URL parameters is unknown without throwing an error", async () => {
       const url = new URL("http://localhost:8123?unknown_param=true");
-      const config: BaseClickHouseClientConfigOptions = {
+      const config: BaseDatastoreClientConfigOptions = {
         username: "alice",
       };
       const res = NodeConfigImpl.handle_specific_url_params(config, url);
@@ -53,13 +53,13 @@ describe("[Node.js] Config implementation details", () => {
 
     it("should do nothing if there are no parameters to parse", async () => {
       const url = new URL("http://localhost:8123");
-      const config: BaseClickHouseClientConfigOptions = {
+      const config: BaseDatastoreClientConfigOptions = {
         application: "my_app",
       };
       const res = NodeConfigImpl.handle_specific_url_params(config, url);
       expect(res.config).toEqual({
         application: "my_app",
-      } as unknown as BaseClickHouseClientConfigOptions);
+      } as unknown as BaseDatastoreClientConfigOptions);
       expect([...res.unknown_params]).toEqual([]);
       expect([...res.handled_params]).toEqual([]);
     });
@@ -80,13 +80,13 @@ describe("[Node.js] Config implementation details", () => {
         type: "Credentials",
       },
       database: "default",
-      clickhouse_settings: {},
+      datastore_settings: {},
       log_writer: new LogWriter(
         new TestLogger(),
         "MakeConnectionTest",
-        ClickHouseLogLevel.OFF,
+        DatastoreLogLevel.OFF,
       ),
-      log_level: ClickHouseLogLevel.OFF,
+      log_level: DatastoreLogLevel.OFF,
       keep_alive: { enabled: false },
     };
 
@@ -120,7 +120,7 @@ describe("[Node.js] Config implementation details", () => {
         }
       }
 
-      const nodeConfig: NodeClickHouseClientConfigOptions = {
+      const nodeConfig: NodeDatastoreClientConfigOptions = {
         url: new URL("http://localhost:8123"),
       };
 
@@ -190,7 +190,7 @@ describe("[Node.js] Config implementation details", () => {
     });
 
     it("should create a connection with default KeepAlive settings", async () => {
-      const nodeConfig: NodeClickHouseClientConfigOptions = {
+      const nodeConfig: NodeDatastoreClientConfigOptions = {
         url: new URL("http://localhost:8123"),
       };
       const res = NodeConfigImpl.make_connection(nodeConfig as any, params);
@@ -211,7 +211,7 @@ describe("[Node.js] Config implementation details", () => {
     });
 
     it("should create a connection with basic TLS", async () => {
-      const nodeConfig: NodeClickHouseClientConfigOptions = {
+      const nodeConfig: NodeDatastoreClientConfigOptions = {
         url: new URL("https://localhost:8123"),
         tls: {
           ca_cert: Buffer.from("my_ca_cert"),
@@ -238,7 +238,7 @@ describe("[Node.js] Config implementation details", () => {
     });
 
     it("should create a connection with mutual TLS", async () => {
-      const nodeConfig: NodeClickHouseClientConfigOptions = {
+      const nodeConfig: NodeDatastoreClientConfigOptions = {
         url: new URL("https://localhost:8123"),
         tls: {
           ca_cert: Buffer.from("my_ca_cert"),
@@ -269,7 +269,7 @@ describe("[Node.js] Config implementation details", () => {
     });
 
     it("should create a connection with custom KeepAlive and TLS", async () => {
-      const nodeConfig: NodeClickHouseClientConfigOptions = {
+      const nodeConfig: NodeDatastoreClientConfigOptions = {
         url: new URL("https://localhost:8123"),
         keep_alive: {
           enabled: false,
@@ -304,7 +304,7 @@ describe("[Node.js] Config implementation details", () => {
         keepAlive: true,
         maxSockets: 2,
       });
-      const nodeConfig: NodeClickHouseClientConfigOptions = {
+      const nodeConfig: NodeDatastoreClientConfigOptions = {
         url: new URL("https://localhost:8123"),
         keep_alive: {
           enabled: true,
@@ -330,7 +330,7 @@ describe("[Node.js] Config implementation details", () => {
     });
 
     it("should create a connection with enhanced stack traces option", async () => {
-      const nodeConfig: NodeClickHouseClientConfigOptions = {
+      const nodeConfig: NodeDatastoreClientConfigOptions = {
         url: new URL("https://localhost:8123"),
         capture_enhanced_stack_trace: true,
       };
@@ -352,7 +352,7 @@ describe("[Node.js] Config implementation details", () => {
     });
 
     it("should create a connection with eagerly_destroy_stale_sockets enabled", async () => {
-      const nodeConfig: NodeClickHouseClientConfigOptions = {
+      const nodeConfig: NodeDatastoreClientConfigOptions = {
         url: new URL("http://localhost:8123"),
         keep_alive: {
           eagerly_destroy_stale_sockets: true,
@@ -376,7 +376,7 @@ describe("[Node.js] Config implementation details", () => {
     });
 
     it("should forward max_response_headers_size to the connection factory", async () => {
-      const nodeConfig: NodeClickHouseClientConfigOptions = {
+      const nodeConfig: NodeDatastoreClientConfigOptions = {
         url: new URL("http://localhost:8123"),
         max_response_headers_size: 64 * 1024,
       };

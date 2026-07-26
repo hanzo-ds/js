@@ -1,4 +1,4 @@
-import { createClient } from "@clickhouse/client-web";
+import { createClient } from "@hanzo-ds/client-web";
 
 // NB: currently, JS Date objects work only with DateTime* fields
 const tableName = "insert_js_date_web";
@@ -19,7 +19,7 @@ await client.insert({
       dt: new Date(),
     },
   ],
-  clickhouse_settings: {
+  datastore_settings: {
     // Allows to insert serialized JS Dates (such as '2023-12-06T10:54:48.000Z')
     date_time_input_format: "best_effort",
   },

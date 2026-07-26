@@ -1,6 +1,9 @@
 import {
   type ConnBaseQueryParams,
   isCredentialsAuth,
+  KEY_HEADER_NAME,
+  SSL_CERTIFICATE_AUTH_HEADER_NAME,
+  USER_HEADER_NAME,
   withCompressionHeaders,
 } from "../common/index";
 import type Http from "http";
@@ -34,14 +37,14 @@ export class NodeHttpsConnection extends NodeBaseConnection {
       if (isCredentialsAuth(params?.auth)) {
         headers = {
           ...this.defaultHeadersWithOverride(params),
-          "X-ClickHouse-User": params.auth.username,
-          "X-ClickHouse-Key": params.auth.password,
+          [USER_HEADER_NAME]: params.auth.username,
+          [KEY_HEADER_NAME]: params.auth.password,
         };
       } else {
         headers = {
           ...this.defaultHeadersWithOverride(params),
-          "X-ClickHouse-User": this.params.auth.username,
-          "X-ClickHouse-Key": this.params.auth.password,
+          [USER_HEADER_NAME]: this.params.auth.username,
+          [KEY_HEADER_NAME]: this.params.auth.password,
         };
       }
       const tlsType = this.params.tls.type;
@@ -51,7 +54,7 @@ export class NodeHttpsConnection extends NodeBaseConnection {
         case "Mutual":
           return {
             ...headers,
-            "X-ClickHouse-SSL-Certificate-Auth": "on",
+            [SSL_CERTIFICATE_AUTH_HEADER_NAME]: "on",
           };
         default:
           throw new Error(`Unknown TLS type: ${tlsType}`);

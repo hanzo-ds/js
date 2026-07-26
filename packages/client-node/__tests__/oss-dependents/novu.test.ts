@@ -3,7 +3,7 @@
  * ================================================
  *
  *   Repo:        https://github.com/novuhq/novu  (~39k★)
- *   Package:     @clickhouse/client  ^1.20.0
+ *   Package:     @hanzo-ds/client  ^1.20.0
  *   Lives in:    libs/application-generic/src/services/analytic-logs
  *   Analysed at: 215418079c02fec5fbea1304835fd75985b26ae8
  *
@@ -12,10 +12,10 @@
  * ClickHouse powers Novu's ANALYTIC LOGS (workflow runs, step runs, request
  * logs, delivery-trend counts). The shared `application-generic` lib exposes a
  * NestJS `ClickHouseService` plus a batch service, and re-exports `createClient`
- * as `createClickHouseClient`.
+ * as `createDatastoreClient`.
  *
  * Key patterns:
- *   - `import { ClickHouseClient, ClickHouseSettings, createClient, PingResult }`.
+ *   - `import { DatastoreClient, DatastoreSettings, createClient, PingResult }`.
  *   - `PingResult` used for health checks; `BeforeApplicationShutdown` lifecycle
  *     to close.
  *   - An `InsertOptions` type exposing `asyncInsert` — writes use ClickHouse
@@ -35,15 +35,15 @@
 
 import { afterEach, describe, expect, it } from "vitest";
 import {
-  createClient as createClickHouseClient,
-  type ClickHouseClient,
-  type ClickHouseSettings,
+  createClient as createDatastoreClient,
+  type DatastoreClient,
+  type DatastoreSettings,
   type PingResult,
-} from "@clickhouse/client";
+} from "@hanzo-ds/client";
 import { createTestClient, guid } from "@test/utils";
 
-// Barrel re-export: `createClient` is surfaced as `createClickHouseClient`.
-export { createClickHouseClient };
+// Barrel re-export: `createClient` is surfaced as `createDatastoreClient`.
+export { createDatastoreClient };
 
 interface WorkflowRunLog {
   workflowId: string;
@@ -55,7 +55,7 @@ describe("oss-dependents / novu", () => {
   const table = `oss_novu_${guid()}`;
 
   class ClickHouseService {
-    readonly client: ClickHouseClient;
+    readonly client: DatastoreClient;
     constructor() {
       this.client = createTestClient();
     }
@@ -68,7 +68,7 @@ describe("oss-dependents / novu", () => {
 
     // Writes go through ClickHouse async inserts.
     async insertLogs(rows: WorkflowRunLog[]): Promise<void> {
-      const clickhouse_settings: ClickHouseSettings = {
+      const datastore_settings: DatastoreSettings = {
         async_insert: 1,
         wait_for_async_insert: 1,
       };
@@ -76,7 +76,7 @@ describe("oss-dependents / novu", () => {
         table,
         values: rows,
         format: "JSONEachRow",
-        clickhouse_settings,
+        datastore_settings,
       });
     }
 
@@ -93,14 +93,14 @@ describe("oss-dependents / novu", () => {
   });
 
   it("re-exports createClient, ping health check, async insert", async () => {
-    expect(typeof createClickHouseClient).toBe("function");
+    expect(typeof createDatastoreClient).toBe("function");
 
     service = new ClickHouseService();
     expect(await service.health()).toBe(true);
 
     await service.client.command({
       query: `CREATE TABLE ${table} (workflowId String, status String, timestamp DateTime) ENGINE = MergeTree ORDER BY (workflowId, timestamp)`,
-      clickhouse_settings: { wait_end_of_query: 1 },
+      datastore_settings: { wait_end_of_query: 1 },
     });
     await service.insertLogs([
       {

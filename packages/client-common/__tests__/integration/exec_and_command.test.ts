@@ -1,16 +1,16 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import type { ExecParams } from "@clickhouse/client-common";
-import { type ClickHouseClient } from "@clickhouse/client-common";
+import type { ExecParams } from "@hanzo-ds/client-common";
+import { type DatastoreClient } from "@hanzo-ds/client-common";
 import {
   createTestClient,
-  getClickHouseTestEnvironment,
+  getDatastoreTestEnvironment,
   guid,
   TestEnv,
   validateUUID,
 } from "../utils";
 
 describe("exec and command", () => {
-  let client: ClickHouseClient;
+  let client: DatastoreClient;
   beforeEach(() => {
     client = createTestClient();
   });
@@ -51,7 +51,7 @@ describe("exec and command", () => {
     });
   });
 
-  it("should not swallow ClickHouse error", async () => {
+  it("should not swallow Datastore error", async () => {
     const { ddl } = getDDL();
     const commands = async () => {
       const command = () =>
@@ -139,8 +139,8 @@ describe("exec and command", () => {
   async function runExec(params: ExecParams): Promise<{ query_id: string }> {
     const { query_id } = await client.exec({
       ...params,
-      clickhouse_settings: {
-        // ClickHouse responds to a command when it's completely finished
+      datastore_settings: {
+        // Datastore responds to a command when it's completely finished
         wait_end_of_query: 1,
       },
     });
@@ -153,7 +153,7 @@ function getDDL(): {
   tableName: string;
   engine: string;
 } {
-  const env = getClickHouseTestEnvironment();
+  const env = getDatastoreTestEnvironment();
   const tableName = `command_test_${guid()}`;
   switch (env) {
     // ENGINE and ON CLUSTER can be omitted in the cloud statements.
@@ -180,7 +180,7 @@ function getDDL(): {
       const ddl = `
         CREATE TABLE ${tableName} ON CLUSTER '{cluster}'
         (id UInt64, name String, sku Array(UInt8), timestamp DateTime)
-        ENGINE ReplicatedMergeTree('/clickhouse/{cluster}/tables/{database}/{table}/{shard}', '{replica}')
+        ENGINE ReplicatedMergeTree('/datastore/{cluster}/tables/{database}/{table}/{shard}', '{replica}')
         ORDER BY (id)
       `;
       return { ddl, tableName, engine: "ReplicatedMergeTree" };

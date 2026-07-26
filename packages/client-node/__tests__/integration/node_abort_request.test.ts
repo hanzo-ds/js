@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import type { ClickHouseClient, Row } from "@clickhouse/client-common";
+import type { DatastoreClient, Row } from "@hanzo-ds/client-common";
 import { createSimpleTable } from "@test/fixtures/simple_table";
 import { jsonValues } from "@test/fixtures/test_data";
 import { createTestClient } from "@test/utils/client";
@@ -8,7 +8,7 @@ import type Stream from "stream";
 import { makeObjectStream } from "../utils/stream";
 
 describe("[Node.js] abort request", () => {
-  let client: ClickHouseClient<Stream.Readable>;
+  let client: DatastoreClient<Stream.Readable>;
 
   beforeEach(() => {
     client = createTestClient<Stream.Readable>();

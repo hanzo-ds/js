@@ -1,23 +1,23 @@
 ---
 name: release
 description: >
-  Drive a package release of `ClickHouse/clickhouse-js` end to end: bump the
+  Drive a package release of `hanzo-ds/js` end to end: bump the
   version, sync the protected `release` branch from `main`, watch the npm
   publish (which is gated by a manual approval on the `npm-publish` environment),
   and create the GitHub Release from the CHANGELOG. Use this skill whenever the
   task is to "release", "cut a release", "publish a new version", or "ship" one
-  of the packages: `@clickhouse/client` (Node.js), `@clickhouse/client-web`
-  (Web), `@clickhouse/client-common` (deprecated, rarely released), the
-  standalone `@clickhouse/datatype-parser` (the type parser, under
-  `packages/datatype-parser`), or `@clickhouse/rowbinary` (the RowBinary codec
-  skill/package, under `skills/clickhouse-js-node-rowbinary`). The agent
+  of the packages: `@hanzo-ds/client` (Node.js), `@hanzo-ds/client-web`
+  (Web), `@hanzo-ds/client-common` (deprecated, rarely released), the
+  standalone `@hanzo-ds/datatype-parser` (the type parser, under
+  `packages/datatype-parser`), or `@hanzo-ds/rowbinary` (the RowBinary codec
+  skill/package, under `skills/datastore-js-node-rowbinary`). The agent
   drives the GitHub Actions workflows (`gh workflow run`), watches CI, pauses at
   the human-judgment points (PR review, the approval gate, GitHub Release text),
   and hands the deployment-approval link back to the human. Do NOT use this for
   fixing a failing release PR — that is the `fix-release-pr` skill.
 ---
 
-# Releasing a `clickhouse-js` package
+# Releasing a `datastore-js` package
 
 This skill is the source of truth for the release process. It supersedes the old
 `RELEASING.md` (which now just points here).
@@ -27,13 +27,13 @@ This skill is the source of truth for the release process. It supersedes the old
 1. **Releases are per package.** There is no "release everything" button. Ask the
    user **which package(s)** they want to release and confirm — the packages are
    versioned independently and ship on independent cadences:
-   - `@clickhouse/client` — Node.js client (`packages/client-node`)
-   - `@clickhouse/client-web` — Web client (`packages/client-web`)
-   - `@clickhouse/client-common` — **deprecated**, effectively frozen; only cut a
+   - `@hanzo-ds/client` — Node.js client (`packages/client-node`)
+   - `@hanzo-ds/client-web` — Web client (`packages/client-web`)
+   - `@hanzo-ds/client-common` — **deprecated**, effectively frozen; only cut a
      final standalone release if explicitly asked.
-   - `@clickhouse/datatype-parser` — standalone type parser (`packages/datatype-parser`)
-   - `@clickhouse/rowbinary` — standalone RowBinary codec skill/package
-     (`skills/clickhouse-js-node-rowbinary`)
+   - `@hanzo-ds/datatype-parser` — standalone type parser (`packages/datatype-parser`)
+   - `@hanzo-ds/rowbinary` — standalone RowBinary codec skill/package
+     (`skills/datastore-js-node-rowbinary`)
 
    The flow forks into two families — **workspace client packages** (client /
    client-web / client-common) and **standalone packages** (datatype-parser /
@@ -52,19 +52,19 @@ This skill is the source of truth for the release process. It supersedes the old
 
 > **One workflow per package.** Each package has its own publish workflow:
 >
-> - `@clickhouse/client` → `publish-client.yml`
-> - `@clickhouse/client-web` → `publish-client-web.yml`
-> - `@clickhouse/client-common` → `publish-client-common.yml`
-> - `@clickhouse/datatype-parser` → `publish-datatype-parser.yml`
-> - `@clickhouse/rowbinary` → `publish-skill-rowbinary.yml`
+> - `@hanzo-ds/client` → `publish-client.yml`
+> - `@hanzo-ds/client-web` → `publish-client-web.yml`
+> - `@hanzo-ds/client-common` → `publish-client-common.yml`
+> - `@hanzo-ds/datatype-parser` → `publish-datatype-parser.yml`
+> - `@hanzo-ds/rowbinary` → `publish-skill-rowbinary.yml`
 >
 > Each client workflow has two triggers: an automatic `head` publish on push to
 > `release` and a manual `latest` publish via `workflow_dispatch`. The standalone
 > packages have the manual trigger only.
 >
 > The client `head` triggers are path-scoped: a change touching only one client's
-> own sources no longer republishes the others. Both `@clickhouse/client` and
-> `@clickhouse/client-web` bundle the shared common sources via the `src/common`
+> own sources no longer republishes the others. Both `@hanzo-ds/client` and
+> `@hanzo-ds/client-web` bundle the shared common sources via the `src/common`
 > symlink (`packages/*/src/common` → `packages/client-common/src`), so
 > `packages/client-common/**` is also an input to both client workflows — a
 > change to the common sources publishes a new `head` for every client that
@@ -72,16 +72,16 @@ This skill is the source of truth for the release process. It supersedes the old
 
 ---
 
-## Part A — Workspace client packages (`@clickhouse/client`, `-web`, `-common`)
+## Part A — Workspace client packages (`@hanzo-ds/client`, `-web`, `-common`)
 
 ### Step 1 — Verify the package CHANGELOG on `main`
 
 Each package now keeps its **own** `CHANGELOG.md` (the repo-wide root
 `CHANGELOG.md` is frozen). The package you're releasing maps to:
 
-- `@clickhouse/client` → `packages/client-node/CHANGELOG.md`
-- `@clickhouse/client-web` → `packages/client-web/CHANGELOG.md`
-- `@clickhouse/client-common` → `packages/client-common/CHANGELOG.md`
+- `@hanzo-ds/client` → `packages/client-node/CHANGELOG.md`
+- `@hanzo-ds/client-web` → `packages/client-web/CHANGELOG.md`
+- `@hanzo-ds/client-common` → `packages/client-common/CHANGELOG.md`
 
 These are normally updated **inside feature PRs** as they merge to `main`, under
 a top `# <version>` header. A common mistake: the in-progress entries sit under
@@ -108,7 +108,7 @@ Dispatch the `bump-version` workflow. It bumps the selected package's
 
 ```bash
 gh workflow run bump-version.yml --ref main \
-  -f package='@clickhouse/client' \
+  -f package='@hanzo-ds/client' \
   -f bump_type=patch        # patch | minor | major
 ```
 
@@ -143,7 +143,7 @@ Merging into `release` pushes to `release`, which triggers the **path-scoped**
 `publish-client-web.yml`, `publish-client-common.yml`). It publishes a `head`
 pre-release build (an **internal beta — not tracked** as a GitHub Release); the
 client workflows then run an automatic `e2e` job against the published version
-and a live ClickHouse — the Node.js client installs it across Node 20/22/24/26
+and a live Datastore — the Node.js client installs it across Node 20/22/24/26
 and runs integration tests, and the Web client runs a real-browser smoke
 (chromium + firefox) via Playwright.
 
@@ -162,7 +162,7 @@ and runs integration tests, and the Web client runs a real-browser smoke
 - **If e2e fails:** the broken build is already on npm under the `head` tag.
   Suggest moving that tag out of the way so nobody installs it, e.g.:
   ```bash
-  npm dist-tag add @clickhouse/client@<broken-version> debugging
+  npm dist-tag add @hanzo-ds/client@<broken-version> debugging
   ```
   Then fix forward on `main` and re-sync `release`.
 
@@ -174,9 +174,9 @@ from the `release` branch (no inputs). This builds, publishes to the `latest` ta
 or `client-common-<ver>`):
 
 ```bash
-gh workflow run publish-client.yml --ref release          # @clickhouse/client
-# gh workflow run publish-client-web.yml --ref release     # @clickhouse/client-web
-# gh workflow run publish-client-common.yml --ref release  # @clickhouse/client-common (deprecated)
+gh workflow run publish-client.yml --ref release          # @hanzo-ds/client
+# gh workflow run publish-client-web.yml --ref release     # @hanzo-ds/client-web
+# gh workflow run publish-client-common.yml --ref release  # @hanzo-ds/client-common (deprecated)
 ```
 
 This also runs under `npm-publish` → **approval gate again**. Same drill: hand
@@ -190,7 +190,7 @@ gh run watch <run-id>
 
 Repeat for each package being released, dispatching its own workflow.
 
-For the deprecated `@clickhouse/client-common`, if you ever cut one, also confirm
+For the deprecated `@hanzo-ds/client-common`, if you ever cut one, also confirm
 its npm deprecation notice is in place (it should already be).
 
 ### Step 6 — Create the GitHub Release
@@ -198,7 +198,7 @@ its npm deprecation notice is in place (it should already be).
 The auto-published `head` betas are **not** tracked as Releases. The `latest`
 release **is**. Create a GitHub Release from the matching section of **that
 package's** `CHANGELOG.md` (e.g. `packages/client-node/CHANGELOG.md` for
-`@clickhouse/client`).
+`@hanzo-ds/client`).
 
 - The tag was pushed by the publish workflow: `client-<ver>` / `client-web-<ver>`
   / `client-common-<ver>` (note: client tags have **no** `v` prefix).
@@ -223,7 +223,7 @@ package's** `CHANGELOG.md` (e.g. `packages/client-node/CHANGELOG.md` for
 
 ---
 
-## Part B — Standalone packages (`@clickhouse/datatype-parser`, `@clickhouse/rowbinary`)
+## Part B — Standalone packages (`@hanzo-ds/datatype-parser`, `@hanzo-ds/rowbinary`)
 
 These ship independently. **There is no `bump-version` workflow and no `head`
 beta** for them.
@@ -232,14 +232,14 @@ beta** for them.
 
 Edit the version in the package's `package.json` (these have **no** `src/version.ts`):
 
-- `@clickhouse/datatype-parser` → `packages/datatype-parser/package.json`
-- `@clickhouse/rowbinary` → `skills/clickhouse-js-node-rowbinary/package.json`
+- `@hanzo-ds/datatype-parser` → `packages/datatype-parser/package.json`
+- `@hanzo-ds/rowbinary` → `skills/datastore-js-node-rowbinary/package.json`
 
 Do this in a normal PR to `main`, together with the relevant entry in **that
 package's own** `CHANGELOG.md` (verify the changelog as in Part A, Step 1):
 
-- `@clickhouse/datatype-parser` → `packages/datatype-parser/CHANGELOG.md`
-- `@clickhouse/rowbinary` → `skills/clickhouse-js-node-rowbinary/CHANGELOG.md`
+- `@hanzo-ds/datatype-parser` → `packages/datatype-parser/CHANGELOG.md`
+- `@hanzo-ds/rowbinary` → `skills/datastore-js-node-rowbinary/CHANGELOG.md`
 
 Merge it.
 
@@ -280,7 +280,7 @@ gh run watch <run-id>
 Same as Part A, Step 6, using the standalone tag (`datatype-parser-v<ver>` /
 `rowbinary-v<ver>`) and the notes from that package's own `CHANGELOG.md`
 (`packages/datatype-parser/CHANGELOG.md` or
-`skills/clickhouse-js-node-rowbinary/CHANGELOG.md`). No `--title`, no
+`skills/datastore-js-node-rowbinary/CHANGELOG.md`). No `--title`, no
 `--prerelease`. Backfill any missing releases.
 
 ---

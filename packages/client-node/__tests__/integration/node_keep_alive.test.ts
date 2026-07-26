@@ -1,14 +1,14 @@
 import { describe, it, expect, afterEach } from "vitest";
-import { ClickHouseLogLevel } from "@clickhouse/client-common";
+import { DatastoreLogLevel } from "@hanzo-ds/client-common";
 import { createSimpleTable } from "@test/fixtures/simple_table";
 import { guid } from "@test/utils/guid";
 import { sleep } from "@test/utils/sleep";
-import type { ClickHouseClient } from "@clickhouse/client";
-import type { ClickHouseClientConfigOptions } from "@clickhouse/client";
+import type { DatastoreClient } from "@hanzo-ds/client";
+import type { DatastoreClientConfigOptions } from "@hanzo-ds/client";
 import { createNodeTestClient } from "../utils/node_client";
 
 describe("[Node.js] Keep Alive", () => {
-  let client: ClickHouseClient;
+  let client: DatastoreClient;
   const socketTTL = 2500; // seems to be a sweet spot for testing Keep-Alive socket hangups with 3s in config.xml
   afterEach(async () => {
     await client.close();
@@ -22,7 +22,7 @@ describe("[Node.js] Keep Alive", () => {
           enabled: true,
           idle_socket_ttl: socketTTL,
         },
-      } as ClickHouseClientConfigOptions);
+      } as DatastoreClientConfigOptions);
       expect(await query(0)).toEqual(1);
       await sleep(socketTTL);
       // this one could've failed without idle socket release
@@ -35,7 +35,7 @@ describe("[Node.js] Keep Alive", () => {
         keep_alive: {
           enabled: true,
         },
-      } as ClickHouseClientConfigOptions);
+      } as DatastoreClientConfigOptions);
       expect(await query(0)).toEqual(1);
       await sleep(socketTTL);
       // this one won't fail cause a new socket will be assigned
@@ -48,7 +48,7 @@ describe("[Node.js] Keep Alive", () => {
           enabled: true,
           idle_socket_ttl: socketTTL,
         },
-      } as ClickHouseClientConfigOptions);
+      } as DatastoreClientConfigOptions);
 
       const results = await Promise.all(
         [...Array(4).keys()].map((n) => query(n)),
@@ -79,13 +79,13 @@ describe("[Node.js] Keep Alive", () => {
       client = createNodeTestClient({
         max_open_connections: 1,
         log: {
-          level: ClickHouseLogLevel.TRACE,
+          level: DatastoreLogLevel.TRACE,
         },
         keep_alive: {
           enabled: true,
           idle_socket_ttl: socketTTL,
         },
-      } as ClickHouseClientConfigOptions);
+      } as DatastoreClientConfigOptions);
       tableName = `keep_alive_single_connection_insert_${guid()}`;
       await createSimpleTable(client, tableName);
       await insert(0);
@@ -109,7 +109,7 @@ describe("[Node.js] Keep Alive", () => {
           enabled: true,
           idle_socket_ttl: socketTTL,
         },
-      } as ClickHouseClientConfigOptions);
+      } as DatastoreClientConfigOptions);
       tableName = `keep_alive_multiple_connection_insert_${guid()}`;
       await createSimpleTable(client, tableName);
       await Promise.all([...Array(3).keys()].map((n) => insert(n)));

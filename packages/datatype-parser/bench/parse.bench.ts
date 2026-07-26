@@ -1,6 +1,6 @@
 /**
  * Vitest benchmark for {@link parseDataType}: how fast does the parser turn a
- * ClickHouse type STRING into an AST?
+ * Datastore type STRING into an AST?
  *
  * This is the cost a `RowBinaryWithNamesAndTypes` consumer pays ONCE per column
  * when it compiles a reader from the header — so the numbers are "per

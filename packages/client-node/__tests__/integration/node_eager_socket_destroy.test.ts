@@ -1,14 +1,14 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
 import {
-  ClickHouseLogLevel,
+  DatastoreLogLevel,
   type ErrorLogParams,
   type Logger,
   type LogParams,
-} from "@clickhouse/client-common";
+} from "@hanzo-ds/client-common";
 import { createTestClient } from "@test/utils/client";
 import * as http from "http";
 import { AddressInfo } from "net";
-import type { ClickHouseClientConfigOptions } from "@clickhouse/client";
+import type { DatastoreClientConfigOptions } from "@hanzo-ds/client";
 
 describe("[Node.js] Eager socket destruction", () => {
   afterEach(() => {
@@ -50,9 +50,9 @@ describe("[Node.js] Eager socket destruction", () => {
       },
       log: {
         LoggerClass: CapturingLogger,
-        level: ClickHouseLogLevel.TRACE,
+        level: DatastoreLogLevel.TRACE,
       },
-    } as ClickHouseClientConfigOptions);
+    } as DatastoreClientConfigOptions);
 
     try {
       // Capture the current timestamp before the first request so that
@@ -128,9 +128,9 @@ describe("[Node.js] Eager socket destruction", () => {
       },
       log: {
         LoggerClass: CapturingLogger,
-        level: ClickHouseLogLevel.WARN,
+        level: DatastoreLogLevel.WARN,
       },
-    } as ClickHouseClientConfigOptions);
+    } as DatastoreClientConfigOptions);
 
     try {
       // Capture the current timestamp before the first request so that

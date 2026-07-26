@@ -4,7 +4,7 @@
 // resolve.
 const g = globalThis as Record<string, unknown>;
 
-g["CLICKHOUSE_CLUSTER_URL"] =
-  import.meta.env["CLICKHOUSE_CLUSTER_URL"] ?? "http://localhost:8127";
-g["CLICKHOUSE_CLOUD_URL"] = import.meta.env["CLICKHOUSE_CLOUD_URL"];
-g["CLICKHOUSE_CLOUD_PASSWORD"] = import.meta.env["CLICKHOUSE_CLOUD_PASSWORD"];
+g["DATASTORE_CLUSTER_URL"] =
+  import.meta.env["DATASTORE_CLUSTER_URL"] ?? "http://localhost:8127";
+g["DATASTORE_CLOUD_URL"] = import.meta.env["DATASTORE_CLOUD_URL"];
+g["DATASTORE_CLOUD_PASSWORD"] = import.meta.env["DATASTORE_CLOUD_PASSWORD"];

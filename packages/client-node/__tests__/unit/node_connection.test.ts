@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 
-import type { QueryParams } from "@clickhouse/client-common";
+import type { QueryParams } from "@hanzo-ds/client-common";
 import { guid } from "../../../client-common/__tests__/utils/guid";
 import Http from "http";
 import { getAsText } from "../../src/utils";
@@ -22,7 +22,7 @@ describe("[Node.js] Connection", () => {
       const myHttpAdapter = new MyTestHttpConnection();
       const headers = myHttpAdapter.getDefaultHeaders();
       expect(headers["User-Agent"]).toMatch(
-        /^clickhouse-js\/[0-9\\.]+-?(?:(alpha|beta)\.\d*)? \(lv:nodejs\/v[0-9\\.]+?; os:(?:linux|darwin|win32)\)$/,
+        /^datastore-js\/[0-9\\.]+-?(?:(alpha|beta)\.\d*)? \(lv:nodejs\/v[0-9\\.]+?; os:(?:linux|darwin|win32)\)$/,
       );
     });
 
@@ -30,7 +30,7 @@ describe("[Node.js] Connection", () => {
       const myHttpAdapter = new MyTestHttpConnection("MyFancyApp");
       const headers = myHttpAdapter.getDefaultHeaders();
       expect(headers["User-Agent"]).toMatch(
-        /^MyFancyApp clickhouse-js\/[0-9\\.]+-?(?:(alpha|beta)\.\d*)? \(lv:nodejs\/v[0-9\\.]+?; os:(?:linux|darwin|win32)\)$/,
+        /^MyFancyApp datastore-js\/[0-9\\.]+-?(?:(alpha|beta)\.\d*)? \(lv:nodejs\/v[0-9\\.]+?; os:(?:linux|darwin|win32)\)$/,
       );
     });
   });
@@ -338,7 +338,7 @@ describe("[Node.js] Connection", () => {
       expect(headers["tracestate"]).toBe(tracestate);
       expect(headers["op"]).toBe(op);
       // Connection + User-Agent should be enforced on the connection level
-      expect(headers["User-Agent"]).toContain("clickhouse-js/");
+      expect(headers["User-Agent"]).toContain("datastore-js/");
       // keep-alive is disabled in this test => close
       expect(headers["Connection"]).toContain("close");
     };

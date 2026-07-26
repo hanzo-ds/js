@@ -1,4 +1,4 @@
-import { createClient } from "@clickhouse/client";
+import { createClient } from "@hanzo-ds/client";
 import * as Stream from "node:stream";
 
 interface DataRow {
@@ -106,7 +106,7 @@ try {
     table: tableName,
     values: dataStream,
     format: "JSONEachRow",
-    clickhouse_settings: {
+    datastore_settings: {
       // Use async inserts to handle streaming data more efficiently
       async_insert: 1,
       wait_for_async_insert: 1,

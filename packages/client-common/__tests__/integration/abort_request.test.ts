@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import type { ClickHouseClient } from "@clickhouse/client-common";
+import type { DatastoreClient } from "@hanzo-ds/client-common";
 import { createTestClient, guid, sleep } from "../utils";
 
 describe("abort request", () => {
-  let client: ClickHouseClient;
+  let client: DatastoreClient;
 
   beforeEach(() => {
     client = createTestClient();
@@ -55,10 +55,10 @@ describe("abort request", () => {
       });
     });
 
-    // FIXME: It does not work with ClickHouse Cloud.
+    // FIXME: It does not work with Datastore Cloud.
     //  Active queries never contain the long-running query unlike local setup.
-    //  To be revisited in https://github.com/ClickHouse/clickhouse-js/issues/177
-    it.skip("ClickHouse server must cancel query on abort", async () => {
+    //  To be revisited in https://github.com/hanzo-ds/js/issues/177
+    it.skip("Datastore server must cancel query on abort", async () => {
       const controller = new AbortController();
 
       const longRunningQuery = `SELECT sleep(3), '${guid()}'`;
@@ -126,7 +126,7 @@ describe("abort request", () => {
 });
 
 async function assertActiveQueries(
-  client: ClickHouseClient,
+  client: DatastoreClient,
   assertQueries: (queries: Array<{ query: string }>) => boolean,
 ) {
   let isRunning = true;

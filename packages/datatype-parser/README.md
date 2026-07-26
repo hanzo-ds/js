@@ -1,6 +1,6 @@
-# @clickhouse/datatype-parser
+# @hanzo-ds/datatype-parser
 
-A small, self-contained TypeScript library that parses a ClickHouse **data-type
+A small, self-contained TypeScript library that parses a Datastore **data-type
 string** (the kind sent in the types row of `RowBinaryWithNamesAndTypes`, e.g.
 `Array(Nullable(UInt64))`, `Tuple(a UInt8, b String)`, `Enum8('a' = 1)`,
 `Decimal(10, 2)`) into a JSON AST.
@@ -16,7 +16,7 @@ parser's output across the full test corpus.
 ## Install & build
 
 ```bash
-npm install @clickhouse/datatype-parser
+npm install @hanzo-ds/datatype-parser
 ```
 
 ## Usage
@@ -24,7 +24,7 @@ npm install @clickhouse/datatype-parser
 Library:
 
 ```ts
-import { parseDataType, toJSON } from "@clickhouse/datatype-parser";
+import { parseDataType, toJSON } from "@hanzo-ds/datatype-parser";
 
 const r = parseDataType("Tuple(a UInt8, b String)");
 if (r.ok()) {
@@ -355,11 +355,11 @@ multi-word aliases (`DOUBLE PRECISION`, `CHAR VARYING`, `INT SIGNED`, …).
 ## Tests
 
 ```bash
-npm test                  # node:test: unit suite + snapshot corpus — NO clickhouse needed
+npm test                  # node:test: unit suite + snapshot corpus — NO datastore needed
 npm run test:unsupported  # asserts the deferred types are rejected
 ```
 
-`npm test` requires **no `clickhouse` binary** — it runs entirely against
+`npm test` requires **no `datastore` binary** — it runs entirely against
 checked-in fixtures:
 
 - **unit** (`test/parser.test.ts`) — pins representative AST shapes and all the
@@ -374,12 +374,12 @@ checked-in fixtures:
 ### Regenerating / extending the snapshot corpus
 
 The snapshots are captured from a real server by `update_snapshots.ts`, which
-needs a `clickhouse` binary built from
-https://github.com/peter-leonov-ch/ClickHouse/pull/1 (the AST-format changes
+needs a `datastore` binary built from
+https://github.com/peter-leonov-ch/Datastore/pull/1 (the AST-format changes
 this parser mirrors live in that PR; a stock build will not match):
 
 ```bash
-npm run snapshot:update -- --clickhouse /path/to/clickhouse
+npm run snapshot:update -- --datastore /path/to/datastore
 ```
 
 It validates every type in `test/cases.txt` plus any in `test/candidates.txt`
@@ -392,14 +392,14 @@ There is also a live comparison that skips the snapshots and queries the server
 directly, useful while iterating:
 
 ```bash
-npm run test:oracle -- --clickhouse /path/to/clickhouse
+npm run test:oracle -- --datastore /path/to/datastore
 ```
 
 ### Confirming the corpus is real (no invented types)
 
 The oracle compares against the server's **parser** (`ParserDataType`), which is
 what this library mirrors. To additionally confirm that every type in the corpus
-is a _real_ ClickHouse type — not just syntactically well-formed — there is a
+is a _real_ Datastore type — not just syntactically well-formed — there is a
 check that **instantiates** each type against any stock running server (no
 AST-JSON support needed; over the HTTP interface):
 

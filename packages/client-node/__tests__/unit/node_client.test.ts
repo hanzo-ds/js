@@ -1,14 +1,14 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 
 import type {
-  BaseClickHouseClientConfigOptions,
+  BaseDatastoreClientConfigOptions,
   ConnectionParams,
-} from "@clickhouse/client-common";
+} from "@hanzo-ds/client-common";
 import {
   DefaultLogger,
   LogWriter,
-  ClickHouseLogLevel,
-} from "@clickhouse/client-common";
+  DatastoreLogLevel,
+} from "@hanzo-ds/client-common";
 import { createClient } from "../../src";
 import {
   type CreateConnectionParams,
@@ -19,9 +19,9 @@ import { isAwaitUsingStatementSupported } from "../utils/feature_detection";
 import { createSimpleNodeTestClient } from "../utils/simple_node_client";
 
 describe("[Node.js] createClient", () => {
-  it("createSimpleNodeTestClient creates a client without requiring ClickHouse", async () => {
+  it("createSimpleNodeTestClient creates a client without requiring Datastore", async () => {
     // Imported from the side-effect-free `simple_node_client` module, so it does
-    // not register the shared `beforeAll` test-env init and needs no ClickHouse.
+    // not register the shared `beforeAll` test-env init and needs no Datastore.
     const client = createSimpleNodeTestClient();
     expect(client).toBeDefined();
     await client.close();
@@ -30,13 +30,13 @@ describe("[Node.js] createClient", () => {
   it('throws on incorrect "url" config value', () => {
     expect(() => createClient({ url: "foobar" })).toThrow(
       expect.objectContaining({
-        message: expect.stringContaining("ClickHouse URL is malformed."),
+        message: expect.stringContaining("Datastore URL is malformed."),
       }),
     );
   });
 
   it("should not mutate provided configuration", async () => {
-    const config: BaseClickHouseClientConfigOptions = {
+    const config: BaseDatastoreClientConfigOptions = {
       url: "https://localhost:8443",
     };
     createClient(config);
@@ -58,16 +58,16 @@ describe("[Node.js] createClient", () => {
       },
       auth: { username: "bob", password: "secret", type: "Credentials" },
       database: "analytics",
-      clickhouse_settings: {},
+      datastore_settings: {},
       log_writer: new LogWriter(
         new DefaultLogger(),
         "Connection",
-        ClickHouseLogLevel.WARN,
+        DatastoreLogLevel.WARN,
       ),
-      log_level: ClickHouseLogLevel.WARN,
+      log_level: DatastoreLogLevel.WARN,
       keep_alive: { enabled: true },
       http_headers: {
-        "X-ClickHouse-Auth": "secret_token",
+        "X-Datastore-Auth": "secret_token",
       },
       application_id: "my_app",
     };
@@ -85,7 +85,7 @@ describe("[Node.js] createClient", () => {
             // base config parameters
             "application=my_app",
             "request_timeout=42000",
-            "http_header_X-ClickHouse-Auth=secret_token",
+            "http_header_X-Datastore-Auth=secret_token",
             // Node.js specific
             "keep_alive_idle_socket_ttl=1500",
           ].join("&"),
@@ -120,7 +120,7 @@ describe("[Node.js] createClient", () => {
             "application=my_app",
             "pathname=my_proxy",
             "request_timeout=42000",
-            "http_header_X-ClickHouse-Auth=secret_token",
+            "http_header_X-Datastore-Auth=secret_token",
             // Node.js specific
             "keep_alive_idle_socket_ttl=1500",
           ].join("&"),
@@ -159,7 +159,7 @@ describe("[Node.js] createClient", () => {
             "application=my_app",
             "pathname=my_proxy",
             "request_timeout=42000",
-            "http_header_X-ClickHouse-Auth=secret_token",
+            "http_header_X-Datastore-Auth=secret_token",
             // Node.js specific
             "keep_alive_idle_socket_ttl=1500",
           ].join("&"),

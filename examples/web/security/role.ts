@@ -1,15 +1,15 @@
-import type { ClickHouseError } from "@clickhouse/client-web";
-import { createClient } from "@clickhouse/client-web";
+import type { DatastoreError } from "@hanzo-ds/client-web";
+import { createClient } from "@hanzo-ds/client-web";
 
 /**
  * An example of specifying a role using query parameters
- * See https://clickhouse.com/docs/en/interfaces/http#setting-role-with-query-parameters
+ * See https://docs.hanzo.ai/datastore/en/interfaces/http#setting-role-with-query-parameters
  */
 const format = "JSONEachRow";
-const username = "clickhouse_js_role_user_web";
+const username = "datastore_js_role_user_web";
 const password = "role_user_password";
-const table1 = "clickhouse_js_role_table_1_web";
-const table2 = "clickhouse_js_role_table_2_web";
+const table1 = "datastore_js_role_table_1_web";
+const table2 = "datastore_js_role_table_2_web";
 
 // Create 2 tables, a role for each table allowing SELECT, and a user with access to those roles
 const defaultClient = createClient();
@@ -41,7 +41,7 @@ console.log(
 // which is set by default in the client instance
 await client
   .query({ query: `select count(*) from ${table2}`, format })
-  .catch((e: ClickHouseError) => {
+  .catch((e: DatastoreError) => {
     console.error(
       `Failed to query from ${table2}, as ${table1Role} does not have sufficient privileges. Expected error:`,
       e,
@@ -66,7 +66,7 @@ await client
     role: table2Role,
     format,
   })
-  .catch((e: ClickHouseError) => {
+  .catch((e: DatastoreError) => {
     console.error(
       `Failed to query from ${table1}, as ${table2Role} does not have sufficient privileges. Expected error:`,
       e,

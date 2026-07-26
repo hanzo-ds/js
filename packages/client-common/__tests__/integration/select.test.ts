@@ -1,9 +1,9 @@
 import { describe, it, expect, afterEach, beforeEach } from "vitest";
-import { type ClickHouseClient } from "@clickhouse/client-common";
+import { type DatastoreClient } from "@hanzo-ds/client-common";
 import { createTestClient, guid, validateUUID } from "../utils";
 
 describe("select", () => {
-  let client: ClickHouseClient;
+  let client: DatastoreClient;
   afterEach(async () => {
     await client.close();
   });
@@ -114,7 +114,7 @@ describe("select", () => {
     const rs = await client.query({
       query: "SELECT number FROM system.numbers LIMIT 5",
       format: "CSV",
-      clickhouse_settings: {
+      datastore_settings: {
         limit: "2",
       },
     });
@@ -133,7 +133,7 @@ describe("select", () => {
     );
   });
 
-  it("returns an error details provided by ClickHouse", async () => {
+  it("returns an error details provided by Datastore", async () => {
     await expect(client.query({ query: "foobar" })).rejects.toMatchObject(
       expect.objectContaining({
         message: expect.stringContaining("Syntax error"),
@@ -143,11 +143,11 @@ describe("select", () => {
     );
   });
 
-  it("should provide error details when sending a request with an unknown clickhouse settings", async () => {
+  it("should provide error details when sending a request with an unknown datastore settings", async () => {
     await expect(
       client.query({
         query: "SELECT * FROM system.numbers",
-        clickhouse_settings: { foobar: 1 } as any,
+        datastore_settings: { foobar: 1 } as any,
       }),
     ).rejects.toMatchObject(
       expect.objectContaining({

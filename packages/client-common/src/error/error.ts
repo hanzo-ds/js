@@ -7,42 +7,42 @@
 // lookahead requires at least three consecutive uppercase letters so that
 // parenthesised groups like `(2)` or `(official build)` are not mistaken for it.
 //
-// NOTE: In normal usage, the string fed to `parseError` comes from ClickHouse,
+// NOTE: In normal usage, the string fed to `parseError` comes from Datastore,
 // but it may still include user-controlled fragments (e.g. parts of a query) or
-// even non-ClickHouse payloads (proxy/HTML errors) when parsing failed requests.
+// even non-Datastore payloads (proxy/HTML errors) when parsing failed requests.
 // Keep this regex simple to avoid excessive backtracking on large/unexpected input.
 // (If this ever becomes a concern, consider a non-regex parser or input length limits.)
 const errorRe =
   /(Code|Error): (?<code>\d+).*Exception: (?<message>.+?)\((?<type>(?=[A-Z0-9_]*[A-Z]{3})[A-Z0-9_]+)\)/s;
 
-interface ParsedClickHouseError {
+interface ParsedDatastoreError {
   message: string;
   code: string;
   type?: string;
 }
 
-/** An error that is thrown by the ClickHouse server. */
-export class ClickHouseError extends Error {
+/** An error that is thrown by the Datastore server. */
+export class DatastoreError extends Error {
   readonly code: string;
   readonly type: string | undefined;
-  constructor({ message, code, type }: ParsedClickHouseError) {
+  constructor({ message, code, type }: ParsedDatastoreError) {
     super(message);
     this.code = code;
     this.type = type;
 
     // Set the prototype explicitly, see:
     // https://github.com/Microsoft/TypeScript/wiki/Breaking-Changes#extending-built-ins-like-error-array-and-map-may-no-longer-work
-    Object.setPrototypeOf(this, ClickHouseError.prototype);
+    Object.setPrototypeOf(this, DatastoreError.prototype);
   }
 }
 
-export function parseError(input: string | Error): ClickHouseError | Error {
+export function parseError(input: string | Error): DatastoreError | Error {
   const inputIsError = input instanceof Error;
   const message = inputIsError ? input.message : input;
   const match = message.match(errorRe);
-  const groups = match?.groups as ParsedClickHouseError | undefined;
+  const groups = match?.groups as ParsedDatastoreError | undefined;
   if (groups) {
-    return new ClickHouseError(groups);
+    return new DatastoreError(groups);
   } else {
     return inputIsError ? input : new Error(input);
   }

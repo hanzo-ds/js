@@ -1,6 +1,6 @@
-/// Public entry point for the standalone ClickHouse data-type parser.
+/// Public entry point for the standalone Datastore data-type parser.
 ///
-/// A TypeScript port of the C++ `chdt` library: parse a ClickHouse data-type
+/// A TypeScript port of the C++ `chdt` library: parse a Datastore data-type
 /// string (the kind sent in the types row of `RowBinaryWithNamesAndTypes`, e.g.
 /// `Array(Nullable(UInt64))`, `Tuple(a UInt8, b String)`, `Enum8('a' = 1)`)
 /// into a JSON-serializable AST that mirrors the server's `EXPLAIN AST json = 1`

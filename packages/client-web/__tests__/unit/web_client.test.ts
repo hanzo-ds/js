@@ -1,14 +1,14 @@
 import { describe, it, expect, vi } from "vitest";
-import type { BaseClickHouseClientConfigOptions } from "@clickhouse/client-common";
+import type { BaseDatastoreClientConfigOptions } from "@hanzo-ds/client-common";
 import { createClient } from "../../src";
 import { isAwaitUsingStatementSupported } from "../utils/feature_detection";
 import { sleep } from "../utils/sleep";
 import { createSimpleWebTestClient } from "../utils/simple_web_client";
 
 describe("[Web] createClient", () => {
-  it("createSimpleWebTestClient creates a client without requiring ClickHouse", async () => {
+  it("createSimpleWebTestClient creates a client without requiring Datastore", async () => {
     // Imported from the side-effect-free `simple_web_client` module, so it does
-    // not register the shared `beforeAll` test-env init and needs no ClickHouse.
+    // not register the shared `beforeAll` test-env init and needs no Datastore.
     const client = createSimpleWebTestClient();
     expect(client).toBeDefined();
     await client.close();
@@ -17,7 +17,7 @@ describe("[Web] createClient", () => {
   it('throws on incorrect "url" config value', () => {
     expect(() => createClient({ url: "foo" })).toThrow(
       expect.objectContaining({
-        message: expect.stringContaining("ClickHouse URL is malformed."),
+        message: expect.stringContaining("Datastore URL is malformed."),
       }),
     );
   });
@@ -28,7 +28,7 @@ describe("[Web] createClient", () => {
     ).toThrow(
       expect.objectContaining({
         message: expect.stringContaining(
-          "zstd request compression is not supported by @clickhouse/client-web",
+          "zstd request compression is not supported by @hanzo-ds/client-web",
         ),
       }),
     );
@@ -40,7 +40,7 @@ describe("[Web] createClient", () => {
     ).toThrow(
       expect.objectContaining({
         message: expect.stringContaining(
-          "zstd response compression is not supported by @clickhouse/client-web",
+          "zstd response compression is not supported by @hanzo-ds/client-web",
         ),
       }),
     );
@@ -54,7 +54,7 @@ describe("[Web] createClient", () => {
   });
 
   it("should not mutate provided configuration", async () => {
-    const config: BaseClickHouseClientConfigOptions = {
+    const config: BaseDatastoreClientConfigOptions = {
       url: "https://localhost:8443",
     };
     createClient(config);

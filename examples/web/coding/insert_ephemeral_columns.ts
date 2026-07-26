@@ -1,6 +1,6 @@
-import { createClient } from "@clickhouse/client-web";
+import { createClient } from "@hanzo-ds/client-web";
 
-// Ephemeral columns documentation: https://clickhouse.com/docs/en/sql-reference/statements/create/table#ephemeral
+// Ephemeral columns documentation: https://docs.hanzo.ai/datastore/en/sql-reference/statements/create/table#ephemeral
 const tableName = "insert_ephemeral_columns_web";
 const client = createClient();
 

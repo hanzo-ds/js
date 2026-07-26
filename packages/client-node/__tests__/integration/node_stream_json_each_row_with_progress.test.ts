@@ -1,13 +1,13 @@
-import { type ClickHouseClient } from "@clickhouse/client-common";
+import { type DatastoreClient } from "@hanzo-ds/client-common";
 import { describe, it, beforeEach, afterEach, expect } from "vitest";
 import { createSimpleTable } from "@test/fixtures/simple_table";
 import { createTestClient } from "@test/utils/client";
-import { isClickHouseVersionAtLeast } from "@test/utils/server_version";
+import { isDatastoreVersionAtLeast } from "@test/utils/server_version";
 import { guid } from "@test/utils/guid";
 import * as simdjson from "simdjson";
 import { makeObjectStream } from "../utils/stream";
 
-let client: ClickHouseClient;
+let client: DatastoreClient;
 let tableName: string;
 
 beforeEach(async () => {
@@ -24,7 +24,7 @@ describe("JSONEachRowWithProgress", () => {
     const rs = await client.query({
       query: "SELECT sleep(0.1) AS foo FROM numbers(2)",
       format: "JSONEachRowWithProgress",
-      clickhouse_settings: {
+      datastore_settings: {
         // triggers more progress rows, as it is emitted after each block
         max_block_size: "1",
       },
@@ -53,12 +53,12 @@ describe("JSONEachRowWithProgress", () => {
     ]);
   });
 
-  // See https://github.com/ClickHouse/ClickHouse/pull/74181/files#diff-9be59e5a502cccf360c8f2b0419115cfa2513def8f964f7c24459cfa0e877578
+  // See https://github.com/hanzoai/datastore/pull/74181/files#diff-9be59e5a502cccf360c8f2b0419115cfa2513def8f964f7c24459cfa0e877578
   it("works with special events", async () => {
     const rs = await client.query({
       query: `SELECT (123 + number * 456) % 100 AS k, count() AS c, sum(number) AS s FROM numbers(100) GROUP BY ALL WITH TOTALS ORDER BY ALL LIMIT 10`,
       format: "JSONEachRowWithProgress",
-      clickhouse_settings: {
+      datastore_settings: {
         rows_before_aggregation: 1,
         extremes: 1,
       },
@@ -99,7 +99,7 @@ describe("JSONEachRowWithProgress", () => {
   });
 
   it("works with exceptions", async ({ skip }) => {
-    if (!(await isClickHouseVersionAtLeast(client, 25, 11))) {
+    if (!(await isDatastoreVersionAtLeast(client, 25, 11))) {
       skip();
     }
 
@@ -109,7 +109,7 @@ describe("JSONEachRowWithProgress", () => {
                  sleepEachRow(0.001)
           FROM system.numbers LIMIT 100`,
       format: "JSONEachRowWithProgress",
-      clickhouse_settings: {
+      datastore_settings: {
         // enforcing at least a few blocks, so that the response code is 200 OK
         max_block_size: "1",
         // Should be false by default since 25.11; but setting explicitly to make sure

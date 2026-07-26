@@ -1,14 +1,14 @@
 #pragma once
 
-/// Minimal, self-contained AST for ClickHouse data-type strings.
+/// Minimal, self-contained AST for Datastore data-type strings.
 ///
 /// The node shapes mirror the frozen `EXPLAIN AST json = 1` document
-/// (format version 2; see ClickHouse `AST.md`) so that JSON produced here is
+/// (format version 2; see Datastore `AST.md`) so that JSON produced here is
 /// a drop-in match for the data-type subtree the server emits — and a
 /// superset of it: `EnumDataType.values` and `TupleDataType.element_names`
 /// are carried here as they are in the server (since v2).
 ///
-/// This header has no dependency on the ClickHouse source tree.
+/// This header has no dependency on the Datastore source tree.
 
 #include <cstdint>
 #include <memory>

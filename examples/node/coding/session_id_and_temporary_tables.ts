@@ -1,4 +1,4 @@
-import { createClient } from "@clickhouse/client";
+import { createClient } from "@hanzo-ds/client";
 import * as crypto from "node:crypto";
 
 // Using a `session_id` so that a `TEMPORARY TABLE` created on one request is visible on the next.

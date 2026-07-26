@@ -1,14 +1,14 @@
-import type { ClickHouseClient } from "@clickhouse/client-common";
+import type { DatastoreClient } from "@hanzo-ds/client-common";
 
 interface ServerVersion {
   major: number;
   minor: number;
 }
 
-const versionCache: WeakMap<ClickHouseClient, ServerVersion> = new WeakMap();
+const versionCache: WeakMap<DatastoreClient, ServerVersion> = new WeakMap();
 
 export async function getServerVersion(
-  client: ClickHouseClient,
+  client: DatastoreClient,
 ): Promise<ServerVersion> {
   const cachedVersion = versionCache.get(client);
   if (cachedVersion) {
@@ -25,13 +25,13 @@ export async function getServerVersion(
   const firstRow = result[0];
   if (!firstRow) {
     throw new Error(
-      `Unable to determine ClickHouse server version, empty result from query`,
+      `Unable to determine Datastore server version, empty result from query`,
     );
   }
   const version = firstRow.version;
   if (!version) {
     throw new Error(
-      `Unable to determine ClickHouse server version, missing 'version' field in query result: ${JSON.stringify(
+      `Unable to determine Datastore server version, missing 'version' field in query result: ${JSON.stringify(
         firstRow,
       )}`,
     );
@@ -41,21 +41,21 @@ export async function getServerVersion(
   const versionMatch = version.match(/^(\d+)\.(\d+)/);
   if (!versionMatch) {
     throw new Error(
-      `Unable to parse ClickHouse server version from string: ${version}`,
+      `Unable to parse Datastore server version from string: ${version}`,
     );
   }
 
   const major = parseInt(versionMatch[1], 10);
   if (isNaN(major)) {
     throw new Error(
-      `Unable to parse ClickHouse server major version component from string: ${versionMatch[1]}`,
+      `Unable to parse Datastore server major version component from string: ${versionMatch[1]}`,
     );
   }
 
   const minor = parseInt(versionMatch[2], 10);
   if (isNaN(minor)) {
     throw new Error(
-      `Unable to parse ClickHouse server minor version component from string: ${versionMatch[2]}`,
+      `Unable to parse Datastore server minor version component from string: ${versionMatch[2]}`,
     );
   }
 
@@ -67,8 +67,8 @@ export async function getServerVersion(
   return serverVersion;
 }
 
-export async function isClickHouseVersionAtLeast(
-  client: ClickHouseClient,
+export async function isDatastoreVersionAtLeast(
+  client: DatastoreClient,
   major: number,
   minor: number,
 ): Promise<boolean> {
@@ -81,7 +81,7 @@ export async function isClickHouseVersionAtLeast(
     return true;
   }
   console.info(
-    `ClickHouse server version ${serverVersion.major}.${serverVersion.minor} does not meet required version ${major}.${minor}`,
+    `Datastore server version ${serverVersion.major}.${serverVersion.minor} does not meet required version ${major}.${minor}`,
   );
   return false;
 }

@@ -1,5 +1,5 @@
 import { formatQueryParams, formatQuerySettings } from "../data_formatter";
-import type { ClickHouseSettings } from "../settings";
+import type { DatastoreSettings } from "../settings";
 
 export function transformUrl({
   url,
@@ -32,7 +32,7 @@ export function transformUrl({
 
 interface ToSearchParamsOptions {
   database: string | undefined;
-  clickhouse_settings?: ClickHouseSettings;
+  datastore_settings?: DatastoreSettings;
   query_params?: Record<string, unknown>;
   /** Pre-serialized `param_*` entries (e.g. from {@link serializeQueryParamsForUrl});
    *  used as-is instead of serializing {@link query_params} again. */
@@ -48,7 +48,7 @@ export function toSearchParams({
   query,
   query_params,
   param_entries,
-  clickhouse_settings,
+  datastore_settings,
   session_id,
   query_id,
   role,
@@ -67,8 +67,8 @@ export function toSearchParams({
     }
   }
 
-  if (clickhouse_settings !== undefined) {
-    for (const [key, value] of Object.entries(clickhouse_settings)) {
+  if (datastore_settings !== undefined) {
+    for (const [key, value] of Object.entries(datastore_settings)) {
       if (value !== undefined) {
         entries.push([key, formatQuerySettings(value)]);
       }

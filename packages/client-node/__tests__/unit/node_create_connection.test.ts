@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import type { ConnectionParams } from "@clickhouse/client-common";
+import type { ConnectionParams } from "@hanzo-ds/client-common";
 import http from "http";
 import https from "node:https";
 import {

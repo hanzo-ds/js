@@ -1,16 +1,16 @@
-// This example assumes that you have a ClickHouse server running locally
+// This example assumes that you have a Datastore server running locally
 // (for example, from our root docker-compose.yml file).
 //
 // Demonstrates how to forward the client's per-operation lifecycle into
 // OpenTelemetry via the zero-dependency `tracer` config option.
 //
-// The client ships only the `ClickHouseTracer` shape (no OpenTelemetry
+// The client ships only the `DatastoreTracer` shape (no OpenTelemetry
 // dependency of its own); that shape is a structural subset of the
 // OpenTelemetry `Tracer`/`Span` APIs, so a raw OTEL tracer can be passed to
 // the client **as-is**, with no adapter and no casts. The client runs each
 // operation inside `tracer.startActiveSpan(...)`, so auto-instrumented child
 // spans (e.g. from `@opentelemetry/instrumentation-http`) nest under the
-// ClickHouse operation spans - provided the `AsyncLocalStorageContextManager`
+// Datastore operation spans - provided the `AsyncLocalStorageContextManager`
 // is registered (see step 1 below; the OpenTelemetry Node.js SDK registers it
 // by default).
 //
@@ -30,9 +30,9 @@ import {
 } from "@opentelemetry/sdk-trace-base";
 import {
   createClient,
-  type ClickHouseSpan,
-  type ClickHouseTracer,
-} from "@clickhouse/client";
+  type DatastoreSpan,
+  type DatastoreTracer,
+} from "@hanzo-ds/client";
 
 // 1. Register the AsyncLocalStorageContextManager so that the span started by
 //    `startActiveSpan` stays *active* across the `await` points inside the
@@ -50,11 +50,11 @@ const exporter = new InMemorySpanExporter();
 const provider = new BasicTracerProvider({
   spanProcessors: [new SimpleSpanProcessor(exporter)],
 });
-const otelTracer = provider.getTracer("@clickhouse/client");
+const otelTracer = provider.getTracer("@hanzo-ds/client");
 
 // 3. The zero-adapter path: a raw OpenTelemetry tracer is structurally
-//    assignable to `ClickHouseTracer` - this compiles with no casts.
-const tracer: ClickHouseTracer = otelTracer;
+//    assignable to `DatastoreTracer` - this compiles with no casts.
+const tracer: DatastoreTracer = otelTracer;
 
 // 4. Pass the tracer through the client config; from here on, every
 //    `query`/`command`/`exec`/`insert`/`ping` call is traced automatically.
@@ -62,8 +62,8 @@ const tracer: ClickHouseTracer = otelTracer;
 //    automatically by `@opentelemetry/instrumentation-http`, since the
 //    client uses the platform HTTP stack.
 const client = createClient({
-  url: process.env["CLICKHOUSE_URL"], // defaults to 'http://localhost:8123'
-  password: process.env["CLICKHOUSE_PASSWORD"], // defaults to an empty string
+  url: process.env["DATASTORE_URL"], // defaults to 'http://localhost:8123'
+  password: process.env["DATASTORE_PASSWORD"], // defaults to an empty string
   tracer,
 });
 
@@ -77,10 +77,10 @@ console.info("[OtelTracing] Query result:", await rs.json());
 await client.close();
 
 // 5. Flush and inspect the spans the client produced. Each operation yields a
-//    single CLIENT-kind span named `clickhouse.<operation>` (also exported as
-//    `ClickHouseSpanNames`) carrying OTEL-style attributes such as
+//    single CLIENT-kind span named `datastore.<operation>` (also exported as
+//    `DatastoreSpanNames`) carrying OTEL-style attributes such as
 //    `db.system.name`, `server.address`, and the server-assigned
-//    `clickhouse.request.query_id`.
+//    `datastore.request.query_id`.
 await provider.forceFlush();
 const spans = exporter.getFinishedSpans();
 for (const span of spans) {
@@ -90,15 +90,14 @@ for (const span of spans) {
     "db.system.name": span.attributes["db.system.name"],
     "server.address": span.attributes["server.address"],
     "server.port": span.attributes["server.port"],
-    "clickhouse.request.query_id":
-      span.attributes["clickhouse.request.query_id"],
+    "datastore.request.query_id": span.attributes["datastore.request.query_id"],
   });
 }
 
 const spanNames = spans.map((span) => span.name);
 if (
-  !spanNames.includes("clickhouse.ping") ||
-  !spanNames.includes("clickhouse.query")
+  !spanNames.includes("datastore.ping") ||
+  !spanNames.includes("datastore.query")
 ) {
   throw new Error(
     `[OtelTracing] Expected ping and query spans, but got: ${spanNames.join(", ")}`,
@@ -115,33 +114,33 @@ console.info("[OtelTracing] Recorded spans:", spanNames);
 // userland instead of being baked into the client.
 // ---------------------------------------------------------------------------
 
-// Recipe 1: `requireParentSpan` - only trace ClickHouse operations when there
+// Recipe 1: `requireParentSpan` - only trace Datastore operations when there
 // is already an active parent span; otherwise hand the client a no-op span.
 // Useful to suppress noise from background health checks/pings that run
 // outside any traced request.
 const noop = () => undefined;
-const noopSpan: ClickHouseSpan = {
+const noopSpan: DatastoreSpan = {
   setAttributes: noop,
   setStatus: noop,
   recordException: noop,
   end: noop,
 };
-const requireParentSpanTracer: ClickHouseTracer = {
+const requireParentSpanTracer: DatastoreTracer = {
   startActiveSpan: (name, options, fn) =>
     trace.getSpan(context.active()) === undefined
       ? fn(noopSpan) // no active parent span - skip tracing this operation
       : otelTracer.startActiveSpan(name, options, fn),
 };
 const requireParentClient = createClient({
-  url: process.env["CLICKHOUSE_URL"],
-  password: process.env["CLICKHOUSE_PASSWORD"],
+  url: process.env["DATASTORE_URL"],
+  password: process.env["DATASTORE_PASSWORD"],
   tracer: requireParentSpanTracer,
 });
 
 exporter.reset();
-// Outside any active span: no ClickHouse span is recorded.
+// Outside any active span: no Datastore span is recorded.
 await requireParentClient.ping();
-// Inside a parent span: the ClickHouse span is recorded as its child.
+// Inside a parent span: the Datastore span is recorded as its child.
 await otelTracer.startActiveSpan("parent-request", async (parent) => {
   try {
     await requireParentClient.ping();
@@ -155,7 +154,7 @@ const requireParentSpanNames = exporter
   .getFinishedSpans()
   .map((span) => span.name);
 if (
-  requireParentSpanNames.filter((name) => name === "clickhouse.ping").length !==
+  requireParentSpanNames.filter((name) => name === "datastore.ping").length !==
   1
 ) {
   throw new Error(
@@ -168,21 +167,21 @@ console.info(
 );
 
 // Recipe 2: suppress nested HTTP spans - if
-// `@opentelemetry/instrumentation-http` is registered, each ClickHouse
+// `@opentelemetry/instrumentation-http` is registered, each Datastore
 // operation span gets a duplicate child HTTP span for the underlying request.
 // Running the operation under `suppressTracing` (from `@opentelemetry/core`)
-// prevents those child spans while keeping the ClickHouse span itself.
+// prevents those child spans while keeping the Datastore span itself.
 // (Alternatively, configure the HTTP instrumentation's
-// `ignoreOutgoingRequestHook` for your ClickHouse endpoint.)
-const suppressNestedHttpTracer: ClickHouseTracer = {
+// `ignoreOutgoingRequestHook` for your Datastore endpoint.)
+const suppressNestedHttpTracer: DatastoreTracer = {
   startActiveSpan: (name, options, fn) =>
     otelTracer.startActiveSpan(name, options, (span) =>
       context.with(suppressTracing(context.active()), () => fn(span)),
     ),
 };
 const suppressNestedHttpClient = createClient({
-  url: process.env["CLICKHOUSE_URL"],
-  password: process.env["CLICKHOUSE_PASSWORD"],
+  url: process.env["DATASTORE_URL"],
+  password: process.env["DATASTORE_PASSWORD"],
   tracer: suppressNestedHttpTracer,
 });
 
@@ -193,7 +192,7 @@ await provider.forceFlush();
 const suppressedSpanNames = exporter
   .getFinishedSpans()
   .map((span) => span.name);
-if (!suppressedSpanNames.includes("clickhouse.ping")) {
+if (!suppressedSpanNames.includes("datastore.ping")) {
   throw new Error(
     `[OtelTracing] Expected a ping span from the suppressTracing recipe, but got: ${suppressedSpanNames.join(", ")}`,
   );

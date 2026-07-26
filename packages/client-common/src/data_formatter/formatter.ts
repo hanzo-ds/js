@@ -70,7 +70,7 @@ export type JSONDataFormat =
  *  * {@link StreamableJSONDataFormat}
  *  * {@link SingleDocumentJSONFormat}
  *  * {@link RecordsJSONFormat}
- *  @see https://clickhouse.com/docs/en/interfaces/formats */
+ *  @see https://docs.hanzo.ai/datastore/en/interfaces/formats */
 export type DataFormat = JSONDataFormat | RawDataFormat;
 
 /** All data formats that can be streamed, whether it can be decoded as JSON or not. */
@@ -109,9 +109,9 @@ export function validateStreamFormat(
 }
 
 /**
- * Encodes a single row of values into a string in a JSON format acceptable by ClickHouse.
+ * Encodes a single row of values into a string in a JSON format acceptable by Datastore.
  * @param value a single value to encode.
- * @param format One of the supported JSON formats: https://clickhouse.com/docs/en/interfaces/formats/
+ * @param format One of the supported JSON formats: https://docs.hanzo.ai/datastore/en/interfaces/formats/
  * @returns string
  */
 export function encodeJSON(

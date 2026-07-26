@@ -30,9 +30,9 @@ assignees: ""
 - Language version:
 - OS:
 
-#### ClickHouse server
+#### Datastore server
 
-- ClickHouse Server version:
-- ClickHouse Server non-default settings, if any:
+- Datastore Server version:
+- Datastore Server non-default settings, if any:
 - `CREATE TABLE` statements for tables involved:
-- Sample data for all these tables, use [clickhouse-obfuscator](https://github.com/ClickHouse/ClickHouse/blob/master/programs/obfuscator/Obfuscator.cpp#L42-L80) if necessary
+- Sample data for all these tables, use [datastore-obfuscator](https://github.com/hanzoai/datastore/blob/main/programs/obfuscator/Obfuscator.cpp#L42-L80) if necessary

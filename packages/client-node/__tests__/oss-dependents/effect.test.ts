@@ -3,7 +3,7 @@
  * =====================================================
  *
  *   Repo:        https://github.com/Effect-TS/effect  (~14k★)
- *   Package:     @clickhouse/client  ^1.6.0
+ *   Package:     @hanzo-ds/client  ^1.6.0
  *   Lives in:    packages/sql-clickhouse
  *   Analysed at: 18762540d77a79006a1cf88a78ef92c7e072b8e2
  *
@@ -14,7 +14,7 @@
  * Effect-native, resource-safe SQL client with streaming.
  *
  * Key patterns:
- *   - `import * as Clickhouse from "@clickhouse/client"` (whole-module import
+ *   - `import * as Clickhouse from "@hanzo-ds/client"` (whole-module import
  *     wrapped behind an Effect `Client`).
  *   - Integrates @effect/sql/SqlClient, @effect/platform-node/NodeStream and
  *     @effect/experimental/Reactivity (omitted — we reproduce the
@@ -33,22 +33,22 @@
 
 import { describe, expect, it } from "vitest";
 // Whole-module import, exactly as the @effect/sql adapter does.
-import * as Clickhouse from "@clickhouse/client";
+import * as Clickhouse from "@hanzo-ds/client";
 import { createTestClient } from "@test/utils";
 
 describe("oss-dependents / effect", () => {
   // The adapter manages the client as a scoped resource (acquire/release).
-  function acquire(): Clickhouse.ClickHouseClient {
+  function acquire(): Clickhouse.DatastoreClient {
     return createTestClient();
   }
 
-  async function release(client: Clickhouse.ClickHouseClient): Promise<void> {
+  async function release(client: Clickhouse.DatastoreClient): Promise<void> {
     await client.close();
   }
 
   // `use` runs work within the resource scope, guaranteeing release.
   async function scoped<A>(
-    use: (client: Clickhouse.ClickHouseClient) => Promise<A>,
+    use: (client: Clickhouse.DatastoreClient) => Promise<A>,
   ): Promise<A> {
     const client = acquire();
     try {

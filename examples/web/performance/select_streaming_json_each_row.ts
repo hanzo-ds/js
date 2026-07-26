@@ -21,15 +21,15 @@
 //  - JSONCompactStringsEachRowWithNamesAndTypes
 //
 // See other supported formats for streaming:
-// https://clickhouse.com/docs/en/integrations/language-clients/javascript#supported-data-formats
+// https://docs.hanzo.ai/datastore/en/integrations/language-clients/javascript#supported-data-formats
 //
 // NB: There might be confusion between JSON as a general format and the
-// ClickHouse JSON format (https://clickhouse.com/docs/en/sql-reference/formats#json).
+// Datastore JSON format (https://docs.hanzo.ai/datastore/en/sql-reference/formats#json).
 // The client supports streaming JSON objects with JSONEachRow and other
-// JSON*EachRow formats (see the list above); it's just that the ClickHouse JSON
+// JSON*EachRow formats (see the list above); it's just that the Datastore JSON
 // format and a few others are represented as a single object in the response
 // and cannot be streamed by the client.
-import { createClient } from "@clickhouse/client-web";
+import { createClient } from "@hanzo-ds/client-web";
 
 const client = createClient();
 const rows = await client.query({

@@ -1,16 +1,16 @@
-import type { ClickHouseClient } from "@clickhouse/client-common";
+import type { DatastoreClient } from "@hanzo-ds/client-common";
 import { describe, it, beforeEach, afterEach, expect } from "vitest";
 import { createTestClient } from "@test/utils/client";
 
 /**
- * {@link ClickHouseClient.command} re-introduction is the result of
- * {@link ClickHouseClient.exec} rework due to this report:
- * https://github.com/ClickHouse/clickhouse-js/issues/161
+ * {@link DatastoreClient.command} re-introduction is the result of
+ * {@link DatastoreClient.exec} rework due to this report:
+ * https://github.com/hanzo-ds/js/issues/161
  *
  * This test makes sure that the consequent requests are not blocked by command calls
  */
 describe("[Node.js] command", () => {
-  let client: ClickHouseClient;
+  let client: DatastoreClient;
   beforeEach(() => {
     client = createTestClient({
       max_open_connections: 1,

@@ -25,7 +25,7 @@ if (
   );
 }
 
-// Which build of the client the `@clickhouse/*` specifiers resolve to:
+// Which build of the client the `@hanzo-ds/*` specifiers resolve to:
 //   src  (default) - the raw TypeScript sources, for a fast, build-free loop.
 //   dist           - the compiled packages, exactly as a published consumer
 //                    sees them (run `npm run build` first). An e2e-style guard
@@ -33,7 +33,7 @@ if (
 // TEST_TARGET is orthogonal to TEST_MODE (which only selects the spec files),
 // so e.g. `TEST_TARGET=dist TEST_MODE=integration` runs the integration specs
 // against the built packages. Caveat: only specs that import EXCLUSIVELY via
-// the `@clickhouse/*` names retarget cleanly; specs that also reach into
+// the `@hanzo-ds/*` names retarget cleanly; specs that also reach into
 // `../../src` directly (most unit/integration specs do) keep importing source
 // for those paths regardless. The `oss-dependents` collection imports only the
 // published names, so it is a true built-surface guard and defaults to `dist`.
@@ -104,19 +104,19 @@ export default defineConfig({
       ],
       exclude: [
         "packages/**/version.ts",
-        "packages/client-common/src/clickhouse_types.ts",
+        "packages/client-common/src/datastore_types.ts",
         "packages/client-common/src/connection.ts",
         "packages/client-common/src/result.ts",
         "packages/client-common/src/ts_utils.ts",
       ],
     },
     env: {
-      CLICKHOUSE_CLOUD_HOST: process.env.CLICKHOUSE_CLOUD_HOST,
-      CLICKHOUSE_CLOUD_PASSWORD: process.env.CLICKHOUSE_CLOUD_PASSWORD,
-      CLICKHOUSE_CLOUD_JWT_ACCESS_TOKEN:
-        process.env.CLICKHOUSE_CLOUD_JWT_ACCESS_TOKEN,
-      CLICKHOUSE_TEST_SKIP_INIT: process.env.CLICKHOUSE_TEST_SKIP_INIT,
-      CLICKHOUSE_TEST_ENVIRONMENT: process.env.CLICKHOUSE_TEST_ENVIRONMENT,
+      DATASTORE_CLOUD_HOST: process.env.DATASTORE_CLOUD_HOST,
+      DATASTORE_CLOUD_PASSWORD: process.env.DATASTORE_CLOUD_PASSWORD,
+      DATASTORE_CLOUD_JWT_ACCESS_TOKEN:
+        process.env.DATASTORE_CLOUD_JWT_ACCESS_TOKEN,
+      DATASTORE_TEST_SKIP_INIT: process.env.DATASTORE_TEST_SKIP_INIT,
+      DATASTORE_TEST_ENVIRONMENT: process.env.DATASTORE_TEST_ENVIRONMENT,
     },
     experimental: {
       openTelemetry: {
@@ -131,40 +131,40 @@ export default defineConfig({
   },
   resolve: {
     // Driven by TEST_TARGET (see above). With `dist`, the published package
-    // names (`@clickhouse/client`, `-web`, `-common`) resolve through the
+    // names (`@hanzo-ds/client`, `-web`, `-common`) resolve through the
     // node_modules workspace symlinks to the BUILT packages (run `npm run build`
     // first) — an e2e-style guard against the published surface. With `src`,
     // they alias the workspace sources for a fast, build-free loop.
-    // `@clickhouse/client-node` is not a real package name (the node client
-    // publishes as `@clickhouse/client`); it is an internal alias the shared
+    // `@hanzo-ds/client-node` is not a real package name (the node client
+    // publishes as `@hanzo-ds/client`); it is an internal alias the shared
     // node setup/util files import, so under `dist` we repoint it at the built
     // node `dist`.
     //
     // Under `dist`, the node and common specifiers aliased below
-    // (`@clickhouse/client`, `@clickhouse/client-common`, and the internal
-    // `@clickhouse/client-node`) all resolve to the node client's own bundle.
+    // (`@hanzo-ds/client`, `@hanzo-ds/client-common`, and the internal
+    // `@hanzo-ds/client-node`) all resolve to the node client's own bundle.
     // The node client bundles the common sources (client-common is deprecated
     // and not a runtime dep), so a real consumer gets common-origin symbols —
-    // `ClickHouseError`, value classes like `SettingsMap`/`TupleParam` — from
-    // `@clickhouse/client`, not from a separate `client-common`. Pointing them
+    // `DatastoreError`, value classes like `SettingsMap`/`TupleParam` — from
+    // `@hanzo-ds/client`, not from a separate `client-common`. Pointing them
     // at one bundle keeps a single class identity, so the client's internal
     // `instanceof` checks on test-provided values (and the tests' own
-    // `instanceof` assertions) hold. (`@clickhouse/client-web`, imported by the
+    // `instanceof` assertions) hold. (`@hanzo-ds/client-web`, imported by the
     // oss-dependents suite, is not aliased here — it resolves through
     // node_modules to the web client's own dist.)
     alias:
       testTarget === "dist"
         ? {
-            "@clickhouse/client": "packages/client-node/dist",
-            "@clickhouse/client-common": "packages/client-node/dist",
-            "@clickhouse/client-node": "packages/client-node/dist",
+            "@hanzo-ds/client": "packages/client-node/dist",
+            "@hanzo-ds/client-common": "packages/client-node/dist",
+            "@hanzo-ds/client-node": "packages/client-node/dist",
             "@test": "packages/client-common/__tests__",
           }
         : {
             // The published node name, imported by the integration specs.
-            "@clickhouse/client": "packages/client-node/src",
-            "@clickhouse/client-common": "packages/client-common/src",
-            "@clickhouse/client-node": "packages/client-node/src",
+            "@hanzo-ds/client": "packages/client-node/src",
+            "@hanzo-ds/client-common": "packages/client-common/src",
+            "@hanzo-ds/client-node": "packages/client-node/src",
             "@test": "packages/client-common/__tests__",
           },
   },

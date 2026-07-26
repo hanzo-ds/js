@@ -1,4 +1,4 @@
-import { createClient } from "@clickhouse/client-web";
+import { createClient } from "@hanzo-ds/client-web";
 
 // Inserting and selecting an array of JS objects using the `JSONEachRow` format.
 // This is the most common shape for app code: pass `values` as `Array<Record<string, unknown>>`

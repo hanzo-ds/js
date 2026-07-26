@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import Http from "http";
-import { ClickHouseLogLevel, LogWriter } from "@clickhouse/client-common";
+import { DatastoreLogLevel, LogWriter } from "@hanzo-ds/client-common";
 import { TestLogger } from "../../../client-common/__tests__/utils/test_logger";
 import type { NodeConnectionParams } from "../../src/connection";
 import { NodeHttpConnection } from "../../src/connection";
@@ -27,13 +27,13 @@ function buildHttpConnectionParams(
     max_open_connections: 10,
     auth: { username: "default", password: "", type: "Credentials" },
     database: "default",
-    clickhouse_settings: {},
+    datastore_settings: {},
     log_writer: new LogWriter(
       new TestLogger(),
       "HttpConnectionTest",
-      ClickHouseLogLevel.OFF,
+      DatastoreLogLevel.OFF,
     ),
-    log_level: ClickHouseLogLevel.OFF,
+    log_level: DatastoreLogLevel.OFF,
     keep_alive: {
       enabled: true,
       idle_socket_ttl: 2500,
@@ -71,9 +71,9 @@ describe("[Node.js] NodeHttpConnection", () => {
         log_writer: new LogWriter(
           new TestLogger(),
           "HttpConnectionTest",
-          ClickHouseLogLevel.OFF,
+          DatastoreLogLevel.OFF,
         ),
-        log_level: ClickHouseLogLevel.OFF,
+        log_level: DatastoreLogLevel.OFF,
       });
 
       expect(httpRequestSpy).toHaveBeenCalledTimes(1);
@@ -106,9 +106,9 @@ describe("[Node.js] NodeHttpConnection", () => {
         log_writer: new LogWriter(
           new TestLogger(),
           "HttpConnectionTest",
-          ClickHouseLogLevel.OFF,
+          DatastoreLogLevel.OFF,
         ),
-        log_level: ClickHouseLogLevel.OFF,
+        log_level: DatastoreLogLevel.OFF,
       });
 
       expect(httpRequestSpy).toHaveBeenCalledTimes(1);

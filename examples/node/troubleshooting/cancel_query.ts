@@ -1,9 +1,9 @@
-import { createClient, ClickHouseError } from "@clickhouse/client";
+import { createClient, DatastoreError } from "@hanzo-ds/client";
 import * as crypto from "node:crypto";
 
 /**
  * An example of cancelling a long-running query on the server side.
- * See https://clickhouse.com/docs/en/sql-reference/statements/kill
+ * See https://docs.hanzo.ai/datastore/en/sql-reference/statements/kill
  */
 const client = createClient();
 const query_id = crypto.randomUUID();
@@ -16,20 +16,20 @@ const selectPromise = client
     query_id, // required in this case; should be unique.
   })
   .catch((err: unknown) => {
-    // An overview of possible error codes is available in the `system.errors` ClickHouse table.
+    // An overview of possible error codes is available in the `system.errors` Datastore table.
     // In this example, the expected error code is 394 (QUERY_WAS_CANCELLED).
-    if (err instanceof ClickHouseError && err.code === "394") {
-      console.error("Got an expected ClickHouse error:", err);
+    if (err instanceof DatastoreError && err.code === "394") {
+      console.error("Got an expected Datastore error:", err);
     } else {
       console.error("Unexpected error", err);
     }
   });
 
 // Similarly, a mutation can be cancelled.
-// See also: https://clickhouse.com/docs/en/sql-reference/statements/kill#kill-mutation
+// See also: https://docs.hanzo.ai/datastore/en/sql-reference/statements/kill#kill-mutation
 await client.command({
   query: `KILL QUERY WHERE query_id = '${query_id}'`,
-  clickhouse_settings: {
+  datastore_settings: {
     wait_end_of_query: 1,
   },
 });

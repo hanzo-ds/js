@@ -3,7 +3,7 @@
  * ======================================================================
  *
  *   Repo:        https://github.com/beekeeper-studio/beekeeper-studio  (~23k★)
- *   Package:     @clickhouse/client  ^1.8.1
+ *   Package:     @hanzo-ds/client  ^1.8.1
  *   Lives in:    apps/studio
  *   Analysed at: 2839d29c544a7a0c5c7e85f6431f7187cf311759
  *
@@ -14,7 +14,7 @@
  * dialect so the app can introspect schemas, run queries and insert data.
  *
  * Key patterns:
- *   - `import { createClient, InsertParams } from '@clickhouse/client'`.
+ *   - `import { createClient, InsertParams } from '@hanzo-ds/client'`.
  *   - A bespoke knex-clickhouse layer (TableBuilder, ViewCompiler,
  *     QueryCompiler) wrapping the driver (omitted here).
  *   - TLS handling: one-way and mutual TLS based on configured cert/key files.
@@ -32,7 +32,7 @@
 
 import type { Readable } from "node:stream";
 import { afterEach, describe, expect, it } from "vitest";
-import { type ClickHouseClient, type InsertParams } from "@clickhouse/client";
+import { type DatastoreClient, type InsertParams } from "@hanzo-ds/client";
 import { createTestClient, guid } from "@test/utils";
 
 interface DriverTLS {
@@ -42,7 +42,7 @@ interface DriverTLS {
 }
 
 describe("oss-dependents / beekeeper-studio", () => {
-  let client: ClickHouseClient;
+  let client: DatastoreClient;
   const table = `oss_beekeeper_${guid()}`;
 
   // Type-checked stand-in for the driver's one-way / mutual TLS builder. Exercises
@@ -61,7 +61,7 @@ describe("oss-dependents / beekeeper-studio", () => {
     return tls;
   }
 
-  function createDriver(): ClickHouseClient {
+  function createDriver(): DatastoreClient {
     // In a TLS deployment the result of buildTls() would be passed as `tls`.
     void buildTls;
     return createTestClient();
@@ -69,7 +69,7 @@ describe("oss-dependents / beekeeper-studio", () => {
 
   // GUI "insert rows" action maps to InsertParams.
   async function insertRows(
-    c: ClickHouseClient,
+    c: DatastoreClient,
     rows: unknown[],
   ): Promise<void> {
     const params: InsertParams<Readable> = {
@@ -89,7 +89,7 @@ describe("oss-dependents / beekeeper-studio", () => {
     client = createDriver();
     await client.command({
       query: `CREATE TABLE ${table} (id UInt32) ENGINE = MergeTree ORDER BY id`,
-      clickhouse_settings: { wait_end_of_query: 1 },
+      datastore_settings: { wait_end_of_query: 1 },
     });
     await insertRows(client, [{ id: 1 }]);
 

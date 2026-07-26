@@ -1,38 +1,38 @@
-import { createClient } from "@clickhouse/client-web";
+import { createClient } from "@hanzo-ds/client-web";
 
-// This example targets ClickHouse Cloud and requires credentials. When they are
+// This example targets Datastore Cloud and requires credentials. When they are
 // not provided (e.g. CI runs without cloud secrets, such as Dependabot PRs),
 // skip the example instead of failing so the rest of the examples still run.
 if (
-  typeof CLICKHOUSE_CLOUD_URL === "undefined" ||
-  !CLICKHOUSE_CLOUD_URL ||
-  typeof CLICKHOUSE_CLOUD_PASSWORD === "undefined" ||
-  !CLICKHOUSE_CLOUD_PASSWORD
+  typeof DATASTORE_CLOUD_URL === "undefined" ||
+  !DATASTORE_CLOUD_URL ||
+  typeof DATASTORE_CLOUD_PASSWORD === "undefined" ||
+  !DATASTORE_CLOUD_PASSWORD
 ) {
   console.warn(
-    "Skipping create_table_cloud example: set CLICKHOUSE_CLOUD_URL and " +
-      "CLICKHOUSE_CLOUD_PASSWORD to run it against ClickHouse Cloud.",
+    "Skipping create_table_cloud example: set DATASTORE_CLOUD_URL and " +
+      "DATASTORE_CLOUD_PASSWORD to run it against Datastore Cloud.",
   );
 } else {
   const client = createClient({
-    url: CLICKHOUSE_CLOUD_URL,
-    password: CLICKHOUSE_CLOUD_PASSWORD,
+    url: DATASTORE_CLOUD_URL,
+    password: DATASTORE_CLOUD_PASSWORD,
   });
 
   // Note that ENGINE and ON CLUSTER clauses can be omitted entirely here.
-  // ClickHouse cloud will automatically use ReplicatedMergeTree
+  // Datastore cloud will automatically use ReplicatedMergeTree
   // with appropriate settings in this case.
   await client.command({
     query: `
-      CREATE TABLE IF NOT EXISTS clickhouse_js_example_cloud_table_web
+      CREATE TABLE IF NOT EXISTS datastore_js_example_cloud_table_web
       (id UInt64, name String)
       ORDER BY (id)
     `,
     // Recommended for cluster usage to avoid situations
     // where a query processing error occurred after the response code
     // and HTTP headers were sent to the client.
-    // See https://clickhouse.com/docs/en/interfaces/http/#response-buffering
-    clickhouse_settings: {
+    // See https://docs.hanzo.ai/datastore/en/interfaces/http/#response-buffering
+    datastore_settings: {
       wait_end_of_query: 1,
     },
   });

@@ -1,8 +1,8 @@
 import { vi, expect, it, describe, beforeEach, afterEach } from "vitest";
 import { getHeadersTestParams } from "@test/utils/parametrized";
 import Http from "http";
-import type { ClickHouseClient } from "@clickhouse/client";
-import { createClient } from "@clickhouse/client";
+import type { DatastoreClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo-ds/client";
 import { emitResponseBody, stubClientRequest } from "../utils/http_stubs";
 
 describe("[Node.js] Client", () => {
@@ -194,7 +194,7 @@ describe("[Node.js] Client", () => {
     }
   });
 
-  async function query(client: ClickHouseClient) {
+  async function query(client: DatastoreClient) {
     const selectPromise = client.query({
       query: "SELECT * FROM system.numbers LIMIT 5",
     });
@@ -217,6 +217,6 @@ describe("[Node.js] Client", () => {
   const defaultHeaders: Record<string, string | any> = {
     Connection: "keep-alive",
     Authorization: "Basic ZGVmYXVsdDo=", // default user with empty password
-    "User-Agent": expect.stringContaining("clickhouse-js"),
+    "User-Agent": expect.stringContaining("datastore-js"),
   };
 });

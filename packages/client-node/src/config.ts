@@ -1,12 +1,12 @@
 import type {
-  ClickHouseSpan,
+  DatastoreSpan,
   DataFormat,
   ImplementationDetails,
   JSONHandling,
   ResponseHeaders,
 } from "./common/index";
 import {
-  type BaseClickHouseClientConfigOptions,
+  type BaseDatastoreClientConfigOptions,
   type CompressionMethod,
   type Connection,
   type ConnectionParams,
@@ -20,8 +20,8 @@ import { NodeConnectionFactory, type TLSParams } from "./connection";
 import { ResultSet } from "./result_set";
 import { NodeValuesEncoder } from "./utils";
 
-export type NodeClickHouseClientConfigOptions =
-  BaseClickHouseClientConfigOptions & {
+export type NodeDatastoreClientConfigOptions =
+  BaseDatastoreClientConfigOptions & {
     tls?: BasicTLSOptions | MutualTLSOptions;
     /** HTTP Keep-Alive related settings */
     keep_alive?: {
@@ -29,7 +29,7 @@ export type NodeClickHouseClientConfigOptions =
        *  @default true */
       enabled?: boolean;
       /** For how long keep a particular idle socket alive on the client side (in milliseconds).
-       *  It is supposed to be at least a second less than the ClickHouse server KeepAlive timeout,
+       *  It is supposed to be at least a second less than the Datastore server KeepAlive timeout,
        *  which is by default `3000` ms for pre-23.11 versions.
        *
        *  When set to `0`, the idle socket management feature is disabled.
@@ -42,7 +42,7 @@ export type NodeClickHouseClientConfigOptions =
       eagerly_destroy_stale_sockets?: boolean;
     };
     /** Custom HTTP agent to use for the outgoing HTTP(s) requests.
-     *  If set, {@link BaseClickHouseClientConfigOptions.max_open_connections}, {@link tls} and {@link keep_alive}
+     *  If set, {@link BaseDatastoreClientConfigOptions.max_open_connections}, {@link tls} and {@link keep_alive}
      *  options have no effect, as it is part of the default underlying agent configuration.
      *  @experimental - unstable API; it might be a subject to change in the future;
      *                  please provide your feedback in the repository.
@@ -67,7 +67,7 @@ export type NodeClickHouseClientConfigOptions =
      *  Forwarded as the `maxHeaderSize` option to {@link http.request} / {@link https.request}.
      *
      *  This is primarily useful for long-running queries that rely on
-     *  `send_progress_in_http_headers`: ClickHouse keeps appending an `X-ClickHouse-Progress`
+     *  `send_progress_in_http_headers`: Datastore keeps appending an `X-Datastore-Progress`
      *  header on every progress interval, and once the cumulative size exceeds the Node.js
      *  default (~16 KB), the request fails with `HPE_HEADER_OVERFLOW`. Setting a higher value
      *  here (e.g. `64 * 1024` or `1024 * 1024`) lifts that limit per client without requiring
@@ -168,7 +168,7 @@ export const NodeConfigImpl: Required<
   ImplementationDetails<Stream.Readable>["impl"]
 > = {
   handle_specific_url_params: (config, url) => {
-    const nodeConfig: NodeClickHouseClientConfigOptions = { ...config };
+    const nodeConfig: NodeDatastoreClientConfigOptions = { ...config };
     const unknownParams = new Set<string>();
     const handledParams = new Set<string>();
     const urlSearchParamsKeys = [...url.searchParams.keys()];
@@ -199,7 +199,7 @@ export const NodeConfigImpl: Required<
     };
   },
   make_connection: (
-    nodeConfig: NodeClickHouseClientConfigOptions,
+    nodeConfig: NodeDatastoreClientConfigOptions,
     params: ConnectionParams,
   ) => {
     const { compress_request, decompress_response } = params.compression;
@@ -250,7 +250,7 @@ export const NodeConfigImpl: Required<
     log_error: (err: Error) => void,
     response_headers: ResponseHeaders,
     jsonHandling: JSONHandling,
-    span?: ClickHouseSpan,
+    span?: DatastoreSpan,
   ) =>
     ResultSet.instance({
       stream,

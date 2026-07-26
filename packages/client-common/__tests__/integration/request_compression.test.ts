@@ -1,13 +1,13 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import {
-  type ClickHouseClient,
+  type DatastoreClient,
   type ResponseJSON,
-} from "@clickhouse/client-common";
+} from "@hanzo-ds/client-common";
 import { createSimpleTable } from "../fixtures/simple_table";
 import { createTestClient, guid } from "../utils";
 
 describe("insert compression", () => {
-  let client: ClickHouseClient;
+  let client: DatastoreClient;
   let tableName: string;
   beforeEach(async () => {
     client = await createTestClient({

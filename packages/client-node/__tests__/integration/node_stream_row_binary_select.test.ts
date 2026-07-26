@@ -1,4 +1,4 @@
-import type { ClickHouseClient } from "@clickhouse/client-common";
+import type { DatastoreClient } from "@hanzo-ds/client-common";
 import { describe, it, beforeEach, afterEach, expect } from "vitest";
 import { createSimpleTable } from "@test/fixtures/simple_table";
 import { createTestClient } from "@test/utils/client";
@@ -6,7 +6,7 @@ import { guid } from "@test/utils/guid";
 import type Stream from "stream";
 
 describe("[Node.js] stream RowBinary select", () => {
-  let client: ClickHouseClient<Stream.Readable>;
+  let client: DatastoreClient<Stream.Readable>;
   let tableName: string;
 
   beforeEach(async () => {
@@ -75,7 +75,7 @@ class BufferReader {
     return value;
   }
 
-  // LEB128 unsigned varint, used by ClickHouse for length prefixes in RowBinary.
+  // LEB128 unsigned varint, used by Datastore for length prefixes in RowBinary.
   readVarUInt(): number {
     let value = 0;
     let shift = 0;

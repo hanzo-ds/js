@@ -4,7 +4,7 @@ import type {
   DataFormat,
   InputJSON,
   InputJSONObjectEachRow,
-} from "@clickhouse/client-common";
+} from "@hanzo-ds/client-common";
 import Stream from "stream";
 import { NodeValuesEncoder } from "../../src/utils";
 import * as simdjson from "simdjson";

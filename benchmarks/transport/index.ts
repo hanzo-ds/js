@@ -13,10 +13,10 @@ import {
 } from "./stats";
 
 /*
- * Transport benchmark: `@clickhouse/client` (legacy `http`/`https`) vs a trivial
+ * Transport benchmark: `@hanzo-ds/client` (legacy `http`/`https`) vs a trivial
  * `undici.request()` stub.
  *
- * Motivation: https://github.com/ClickHouse/clickhouse-js/issues/511 proposes
+ * Motivation: https://github.com/hanzo-ds/js/issues/511 proposes
  * replacing the legacy `http`/`https` modules with `fetch`/`undici`. We compare
  * against `undici.request()` rather than the global `fetch()` deliberately:
  * `request()` returns a native Node `Readable`, while `fetch()` routes the body
@@ -25,7 +25,7 @@ import {
  * committing to such a change we want trustworthy, reproducible numbers for a
  * few representative use cases. This benchmark provides exactly that: an
  * apples-to-apples comparison over the same HTTP requests against a local
- * ClickHouse instance.
+ * Datastore instance.
  *
  * Scenarios:
  *   1. Single-request latency  - many small sequential `SELECT 1` requests.
@@ -35,7 +35,7 @@ import {
  * Run instructions and caveats are documented in README.md.
  */
 
-const url = process.env["CLICKHOUSE_URL"] ?? "http://localhost:8123";
+const url = process.env["DATASTORE_URL"] ?? "http://localhost:8123";
 const latencyRequests = intEnv("LATENCY_REQUESTS", 200);
 const downloadRows = intEnv("DOWNLOAD_ROWS", 1_000_000);
 const uploadRows = intEnv("UPLOAD_ROWS", 1_000_000);
@@ -150,7 +150,7 @@ async function run(): Promise<void> {
   attachExceptionHandlers();
 
   console.log(
-    "Transport benchmark: @clickhouse/client (http/https) vs undici.request()",
+    "Transport benchmark: @hanzo-ds/client (http/https) vs undici.request()",
   );
   console.log("Configuration:");
   console.log(`  url:              ${url}`);

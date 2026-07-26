@@ -7,15 +7,15 @@ import {
   beforeAll,
   afterAll,
 } from "vitest";
-import type { ClickHouseClient } from "@clickhouse/client-common";
+import type { DatastoreClient } from "@hanzo-ds/client-common";
 import { createTestClient, TestEnv, isOnEnv } from "@test/utils";
 import { createSimpleTable } from "../fixtures/simple_table";
 import { assertJsonValues, jsonValues } from "../fixtures/test_data";
 import { getTestDatabaseName, guid } from "../utils";
 
 describe.skipIf(!isOnEnv(TestEnv.LocalSingleNode))("role settings", () => {
-  let defaultClient: ClickHouseClient;
-  let client: ClickHouseClient;
+  let defaultClient: DatastoreClient;
+  let client: DatastoreClient;
 
   let database: string;
   let username: string;
@@ -25,7 +25,7 @@ describe.skipIf(!isOnEnv(TestEnv.LocalSingleNode))("role settings", () => {
 
   beforeAll(async () => {
     defaultClient = createTestClient();
-    username = `clickhousejs__user_with_roles_${guid()}`;
+    username = `datastorejs__user_with_roles_${guid()}`;
     password = `CHJS_${guid()}`;
     roleName1 = `TEST_ROLE_${guid()}`;
     roleName2 = `TEST_ROLE_${guid()}`;

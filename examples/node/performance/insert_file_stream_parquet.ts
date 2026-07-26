@@ -1,9 +1,9 @@
-import { createClient, type Row } from "@clickhouse/client";
+import { createClient, type Row } from "@hanzo-ds/client";
 import Fs from "node:fs";
 import { cwd } from "node:process";
 import Path from "node:path";
 
-/** See also: https://clickhouse.com/docs/en/interfaces/formats#parquet-format-settings */
+/** See also: https://docs.hanzo.ai/datastore/en/interfaces/formats#parquet-format-settings */
 const client = createClient();
 const tableName = "insert_file_stream_parquet";
 await client.command({
@@ -39,8 +39,8 @@ await client.insert({
   table: tableName,
   values: fileStream,
   format: "Parquet",
-  clickhouse_settings: {
-    /** See also https://clickhouse.com/docs/en/interfaces/formats#parquet-format-settings.
+  datastore_settings: {
+    /** See also https://docs.hanzo.ai/datastore/en/interfaces/formats#parquet-format-settings.
      *  You could specify these (and other settings) here. */
   },
 });

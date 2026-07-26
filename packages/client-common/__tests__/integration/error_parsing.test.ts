@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import type { ClickHouseClient } from "@clickhouse/client-common";
+import type { DatastoreClient } from "@hanzo-ds/client-common";
 import { createTestClient, getTestDatabaseName } from "../utils";
 
-describe("ClickHouse server errors parsing", () => {
-  let client: ClickHouseClient;
+describe("Datastore server errors parsing", () => {
+  let client: DatastoreClient;
   beforeEach(() => {
     client = createTestClient();
   });

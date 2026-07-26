@@ -7,7 +7,7 @@ Guidance for the client source packages. See the [repo-root `AGENTS.md`](../AGEN
 1. When adding log messages, make sure to use eager log level checks to avoid unnecessary calculations for log messages that will not be emitted. For example:
 
    ```ts
-   if (log_level <= ClickHouseLogLevel.WARN) {
+   if (log_level <= DatastoreLogLevel.WARN) {
      log_writer.warn({
        message: "Example log message",
      });
@@ -20,7 +20,7 @@ Guidance for the client source packages. See the [repo-root `AGENTS.md`](../AGEN
    if (some_condition) {
      log_writer.warn({
        message:
-         "Example log message with suggestions for users. For more information, see https://github.com/ClickHouse/clickhouse-js/blob/main/docs/socket_hang_up_econnreset.md",
+         "Example log message with suggestions for users. For more information, see https://github.com/hanzo-ds/js/blob/main/docs/socket_hang_up_econnreset.md",
      });
    }
    ```
@@ -31,12 +31,12 @@ The source packages here are:
 
 - `client-common` — platform-agnostic shared code (config, query-param formatting, multipart
   assembly, URL handling, result sets, etc.). It must not depend on Node.js-only or Web-only APIs.
-  The published `@clickhouse/client-common` package is **deprecated**: `client-node` and `client-web`
+  The published `@hanzo-ds/client-common` package is **deprecated**: `client-node` and `client-web`
   no longer depend on it and instead bundle its sources via the `src/common` symlink
   (`client-node/src/common` and `client-web/src/common` both point to
   `client-common/src`), importing from it with relative paths (e.g. `./common/index`).
-- `client-node` (`@clickhouse/client`) — the Node.js client.
-- `client-web` (`@clickhouse/client-web`) — the Web/edge client.
+- `client-node` (`@hanzo-ds/client`) — the Node.js client.
+- `client-web` (`@hanzo-ds/client-web`) — the Web/edge client.
 
 `client-node` and `client-web` are slated to be **separated into fully independent packages**. Because
 of that, some logic is **intentionally duplicated** between the two connection implementations

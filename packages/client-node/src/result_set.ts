@@ -1,7 +1,7 @@
 import type {
   BaseResultSet,
-  ClickHouseSpan,
-  ClickHouseSpanAttributes,
+  DatastoreSpan,
+  DatastoreSpanAttributes,
   DataFormat,
   JSONHandling,
   ResponseHeaders,
@@ -60,7 +60,7 @@ export interface ResultSetOptions<Format extends DataFormat> {
   log_error: (error: Error) => void;
   response_headers: ResponseHeaders;
   jsonHandling?: JSONHandling;
-  span?: ClickHouseSpan;
+  span?: DatastoreSpan;
 }
 
 export class ResultSet<
@@ -80,10 +80,10 @@ export class ResultSet<
    */
   private _stream: Stream.Readable;
   private readonly format: Format;
-  /** The `clickhouse.query.stream` span owned by this result set (if the
+  /** The `datastore.query.stream` span owned by this result set (if the
    *  client was configured with a tracer); it ends via {@link finishSpan}
    *  when the response stream is fully consumed, closed, or fails. */
-  private readonly span: ClickHouseSpan | undefined;
+  private readonly span: DatastoreSpan | undefined;
   /** Decoded (decompressed) bytes received from the server so far. */
   private span_bytes = 0;
   /** Rows decoded from the response stream so far. */
@@ -99,7 +99,7 @@ export class ResultSet<
     log_error?: (error: Error) => void,
     _response_headers?: ResponseHeaders,
     jsonHandling?: JSONHandling,
-    span?: ClickHouseSpan,
+    span?: DatastoreSpan,
   ) {
     this._stream = _stream;
     this.format = format;
@@ -134,7 +134,7 @@ export class ResultSet<
     this.span_rows += count;
   }
 
-  /** Record the final response metrics (`clickhouse.response.decoded_bytes`
+  /** Record the final response metrics (`datastore.response.decoded_bytes`
    *  and, when rows were counted, `db.response.returned_rows`) and the error
    *  (if any) on the span, and end it. Safe to call multiple times - only
    *  the first call wins. */
@@ -143,8 +143,8 @@ export class ResultSet<
       return;
     }
     this.span_finished = true;
-    const attributes: ClickHouseSpanAttributes = {
-      "clickhouse.response.decoded_bytes": this.span_bytes,
+    const attributes: DatastoreSpanAttributes = {
+      "datastore.response.decoded_bytes": this.span_bytes,
     };
     if (this.span_rows_counted) {
       attributes["db.response.returned_rows"] = this.span_rows;

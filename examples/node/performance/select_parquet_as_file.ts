@@ -1,4 +1,4 @@
-import { createClient } from "@clickhouse/client";
+import { createClient } from "@hanzo-ds/client";
 import Fs from "node:fs";
 import { cwd } from "node:process";
 import Path from "node:path";
@@ -7,8 +7,8 @@ const client = createClient();
 
 const { stream } = await client.exec({
   query: `SELECT * from system.numbers LIMIT 10 FORMAT Parquet`,
-  clickhouse_settings: {
-    /** See also https://clickhouse.com/docs/en/interfaces/formats#parquet-format-settings.
+  datastore_settings: {
+    /** See also https://docs.hanzo.ai/datastore/en/interfaces/formats#parquet-format-settings.
      *  You could specify these (and other settings) here. */
   },
 });

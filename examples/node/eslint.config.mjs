@@ -67,7 +67,7 @@ export default defineConfig(
       "out",
       "dist",
       "node_modules",
-      // TODO: stop ignoring once @clickhouse/client@1.20.0 (which adds the
+      // TODO: stop ignoring once @hanzo-ds/client@1.20.0 (which adds the
       //  `tracer` config option) is published to npm.
       "coding/otel_tracing.ts",
     ],

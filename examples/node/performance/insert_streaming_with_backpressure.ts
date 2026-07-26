@@ -1,4 +1,4 @@
-import { createClient, type Row } from "@clickhouse/client";
+import { createClient, type Row } from "@hanzo-ds/client";
 import * as Stream from "node:stream";
 import { EventEmitter } from "node:events";
 
@@ -59,7 +59,7 @@ class BackpressureAwareDataProducer extends Stream.Readable {
       return false;
     }
 
-    // Convert data to JSON object for ClickHouse
+    // Convert data to JSON object for Datastore
     const jsonData = {
       id: data.id,
       timestamp: data.timestamp.toISOString(),
@@ -286,7 +286,7 @@ try {
     table: tableName,
     values: dataProducer,
     format: "JSONEachRow",
-    clickhouse_settings: {
+    datastore_settings: {
       // Optimize for streaming inserts
       async_insert: 1,
       wait_for_async_insert: 1,

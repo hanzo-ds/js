@@ -1,17 +1,17 @@
-# ClickHouse JS client examples
+# Datastore JS client examples
 
 Examples are split first by **client flavor**, then by **use case**:
 
 ```
 examples/
-├── node/                       # @clickhouse/client (Node.js)
+├── node/                       # @hanzo-ds/client (Node.js)
 │   ├── coding/
 │   ├── performance/
 │   ├── troubleshooting/
 │   ├── security/
 │   ├── schema-and-deployments/
 │   └── resources/              # shared fixture data
-└── web/                        # @clickhouse/client-web
+└── web/                        # @hanzo-ds/client-web
     ├── coding/
     ├── performance/
     ├── troubleshooting/
@@ -51,7 +51,7 @@ parameter binding, sessions, data types, and custom JSON handling.
 | Example                                        | Node                                                                                                                   | Web                                                                                                                  |
 | ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
 | Client configuration via URL parameters        | [node/coding/url_configuration.ts](node/coding/url_configuration.ts)                                                   | [web/coding/url_configuration.ts](web/coding/url_configuration.ts)                                                   |
-| ClickHouse settings (global and per-request)   | [node/coding/clickhouse_settings.ts](node/coding/clickhouse_settings.ts)                                               | [web/coding/clickhouse_settings.ts](web/coding/clickhouse_settings.ts)                                               |
+| Datastore settings (global and per-request)    | [node/coding/datastore_settings.ts](node/coding/datastore_settings.ts)                                                 | [web/coding/datastore_settings.ts](web/coding/datastore_settings.ts)                                                 |
 | Default format setting (`exec` without FORMAT) | [node/coding/default_format_setting.ts](node/coding/default_format_setting.ts)                                         | [web/coding/default_format_setting.ts](web/coding/default_format_setting.ts)                                         |
 | Successful ping against an existing host       | [node/coding/ping_existing_host.ts](node/coding/ping_existing_host.ts)                                                 | [web/coding/ping_existing_host.ts](web/coding/ping_existing_host.ts)                                                 |
 | Ping against a host that does not exist        | [node/coding/ping_non_existing_host.ts](node/coding/ping_non_existing_host.ts)                                         | [web/coding/ping_non_existing_host.ts](web/coding/ping_non_existing_host.ts)                                         |
@@ -75,8 +75,8 @@ parameter binding, sessions, data types, and custom JSON handling.
 | Temporary tables with `session_id`             | [node/coding/session_id_and_temporary_tables.ts](node/coding/session_id_and_temporary_tables.ts)                       | [web/coding/session_id_and_temporary_tables.ts](web/coding/session_id_and_temporary_tables.ts)                       |
 | `SET` commands per `session_id`                | [node/coding/session_level_commands.ts](node/coding/session_level_commands.ts)                                         | [web/coding/session_level_commands.ts](web/coding/session_level_commands.ts)                                         |
 | Dynamic / Variant / JSON                       | [node/coding/dynamic_variant_json.ts](node/coding/dynamic_variant_json.ts)                                             | [web/coding/dynamic_variant_json.ts](web/coding/dynamic_variant_json.ts)                                             |
-| `QBit` vector type (ClickHouse 25.10+)         | [node/coding/qbit.ts](node/coding/qbit.ts)                                                                             | [web/coding/qbit.ts](web/coding/qbit.ts)                                                                             |
-| `Time` / `Time64` (ClickHouse 25.6+)           | [node/coding/time_time64.ts](node/coding/time_time64.ts)                                                               | [web/coding/time_time64.ts](web/coding/time_time64.ts)                                                               |
+| `QBit` vector type (Datastore 25.10+)          | [node/coding/qbit.ts](node/coding/qbit.ts)                                                                             | [web/coding/qbit.ts](web/coding/qbit.ts)                                                                             |
+| `Time` / `Time64` (Datastore 25.6+)            | [node/coding/time_time64.ts](node/coding/time_time64.ts)                                                               | [web/coding/time_time64.ts](web/coding/time_time64.ts)                                                               |
 | Custom JSON `parse`/`stringify`                | [node/coding/custom_json_handling.ts](node/coding/custom_json_handling.ts)                                             | [web/coding/custom_json_handling.ts](web/coding/custom_json_handling.ts)                                             |
 | OpenTelemetry tracing via the `tracer` hooks   | [node/coding/otel_tracing.ts](node/coding/otel_tracing.ts)                                                             | —                                                                                                                    |
 
@@ -141,14 +141,14 @@ users, and SQL-injection-safe parameter binding.
 ### `schema-and-deployments/` — DDL and target deployments
 
 "How do I create tables and target different deployments?" — single-node,
-on-premise cluster, ClickHouse Cloud, column-shape features, and
+on-premise cluster, Datastore Cloud, column-shape features, and
 deployment-shaped connection strings.
 
 | Example                                    | Node                                                                                                                             | Web                                                                                                                            |
 | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | Single-node deployment                     | [node/schema-and-deployments/create_table_single_node.ts](node/schema-and-deployments/create_table_single_node.ts)               | [web/schema-and-deployments/create_table_single_node.ts](web/schema-and-deployments/create_table_single_node.ts)               |
 | On-premise cluster                         | [node/schema-and-deployments/create_table_on_premise_cluster.ts](node/schema-and-deployments/create_table_on_premise_cluster.ts) | [web/schema-and-deployments/create_table_on_premise_cluster.ts](web/schema-and-deployments/create_table_on_premise_cluster.ts) |
-| ClickHouse Cloud                           | [node/schema-and-deployments/create_table_cloud.ts](node/schema-and-deployments/create_table_cloud.ts)                           | [web/schema-and-deployments/create_table_cloud.ts](web/schema-and-deployments/create_table_cloud.ts)                           |
+| Datastore Cloud                            | [node/schema-and-deployments/create_table_cloud.ts](node/schema-and-deployments/create_table_cloud.ts)                           | [web/schema-and-deployments/create_table_cloud.ts](web/schema-and-deployments/create_table_cloud.ts)                           |
 | Insert into a table with ephemeral columns | [node/schema-and-deployments/insert_ephemeral_columns.ts](node/schema-and-deployments/insert_ephemeral_columns.ts)               | [web/schema-and-deployments/insert_ephemeral_columns.ts](web/schema-and-deployments/insert_ephemeral_columns.ts)               |
 | Insert excluding columns                   | [node/schema-and-deployments/insert_exclude_columns.ts](node/schema-and-deployments/insert_exclude_columns.ts)                   | [web/schema-and-deployments/insert_exclude_columns.ts](web/schema-and-deployments/insert_exclude_columns.ts)                   |
 | Client configuration via URL parameters    | [node/schema-and-deployments/url_configuration.ts](node/schema-and-deployments/url_configuration.ts)                             | [web/schema-and-deployments/url_configuration.ts](web/schema-and-deployments/url_configuration.ts)                             |
@@ -163,13 +163,13 @@ Environment requirements for all examples:
 - NPM
 - Docker Compose
 
-Run ClickHouse in Docker from the root folder of this repository:
+Run Datastore in Docker from the root folder of this repository:
 
 ```bash
 docker-compose up -d
 ```
 
-This will create two local ClickHouse instances: one with plain authentication
+This will create two local Datastore instances: one with plain authentication
 and one that requires [TLS](#tls-examples).
 
 ### Any example except `create_table_*`
@@ -203,13 +203,13 @@ npx tsx --transpile-only coding/array_json_each_row.ts
 
 ### TLS examples
 
-You will need to add `server.clickhouseconnect.test` to your `/etc/hosts` to
+You will need to add `server.datastoreconnect.test` to your `/etc/hosts` to
 make it work, as self-signed certificates are used in these examples.
 
 Execute the following command to add the required `/etc/hosts` entry:
 
 ```bash
-sudo -- sh -c "echo 127.0.0.1 server.clickhouseconnect.test >> /etc/hosts"
+sudo -- sh -c "echo 127.0.0.1 server.datastoreconnect.test >> /etc/hosts"
 ```
 
 After that, you should be able to run the examples (from `examples/node`):
@@ -220,21 +220,21 @@ npx tsx --transpile-only security/mutual_tls.ts
 npx tsx --transpile-only schema-and-deployments/create_table_on_premise_cluster.ts
 ```
 
-### ClickHouse Cloud examples
+### Datastore Cloud examples
 
 - for `*_cloud.ts` examples, Docker containers are not required, but you need to
   set some environment variables first for the Node.js client:
 
 ```sh
-export CLICKHOUSE_CLOUD_URL=https://<your-clickhouse-cloud-hostname>:8443
-export CLICKHOUSE_CLOUD_PASSWORD=<your-clickhouse-cloud-password>
+export DATASTORE_CLOUD_URL=https://<your-datastore-cloud-hostname>:8443
+export DATASTORE_CLOUD_PASSWORD=<your-datastore-cloud-password>
 ```
 
 and for the Web client, you need to set these variables in the examples
 themselves.
 
-You can obtain these credentials in the ClickHouse Cloud console (check
-[the docs](https://clickhouse.com/docs/en/integrations/language-clients/javascript#gather-your-connection-details)
+You can obtain these credentials in the Datastore Cloud console (check
+[the docs](https://docs.hanzo.ai/datastore/en/integrations/language-clients/javascript#gather-your-connection-details)
 for more information).
 
 Cloud examples assume that you are using the `default` user and database.
@@ -250,11 +250,11 @@ npx tsx --transpile-only schema-and-deployments/create_table_cloud.ts
 The following environment variables control behavior when running examples in
 automated environments (e.g., CI):
 
-- `CLICKHOUSE_CLUSTER_URL` — Overrides the URL for on-premise cluster examples.
+- `DATASTORE_CLUSTER_URL` — Overrides the URL for on-premise cluster examples.
   Default: `http://localhost:8127`.
 
-- `CLICKHOUSE_CLOUD_URL` / `CLICKHOUSE_CLOUD_PASSWORD` — When both are set, the
-  Cloud examples (`*_cloud.ts`) connect to the specified ClickHouse Cloud
+- `DATASTORE_CLOUD_URL` / `DATASTORE_CLOUD_PASSWORD` — When both are set, the
+  Cloud examples (`*_cloud.ts`) connect to the specified Datastore Cloud
   instance. When unset, these examples do not skip automatically and will fail
   because the required Cloud configuration is missing.
 

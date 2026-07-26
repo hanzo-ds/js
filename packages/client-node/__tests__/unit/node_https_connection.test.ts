@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import type Http from "http";
 import Https from "https";
-import { ClickHouseLogLevel, LogWriter } from "@clickhouse/client-common";
+import { DatastoreLogLevel, LogWriter } from "@hanzo-ds/client-common";
 import { TestLogger } from "../../../client-common/__tests__/utils/test_logger";
 import type { NodeConnectionParams } from "../../src/connection";
 import { NodeHttpsConnection } from "../../src/connection";
@@ -33,13 +33,13 @@ function buildHttpsConnectionParams(
     max_open_connections: 10,
     auth: { username: "default", password: "", type: "Credentials" },
     database: "default",
-    clickhouse_settings: {},
+    datastore_settings: {},
     log_writer: new LogWriter(
       new TestLogger(),
       "HttpsConnectionTest",
-      ClickHouseLogLevel.OFF,
+      DatastoreLogLevel.OFF,
     ),
-    log_level: ClickHouseLogLevel.OFF,
+    log_level: DatastoreLogLevel.OFF,
     keep_alive: {
       enabled: true,
       idle_socket_ttl: 2500,
@@ -52,7 +52,7 @@ function buildHttpsConnectionParams(
 
 describe("[Node.js] NodeHttpsConnection", () => {
   describe("buildRequestHeaders", () => {
-    it("should use X-ClickHouse-User/Key headers with Basic TLS", () => {
+    it("should use X-Datastore-User/Key headers with Basic TLS", () => {
       const connection = new TestableHttpsConnection(
         buildHttpsConnectionParams({
           tls: {
@@ -62,10 +62,10 @@ describe("[Node.js] NodeHttpsConnection", () => {
         }),
       );
       const headers = connection.getHeaders();
-      expect(headers["X-ClickHouse-User"]).toBe("default");
-      expect(headers["X-ClickHouse-Key"]).toBe("");
+      expect(headers["X-Datastore-User"]).toBe("default");
+      expect(headers["X-Datastore-Key"]).toBe("");
       expect(headers).not.toHaveProperty("Authorization");
-      expect(headers).not.toHaveProperty("X-ClickHouse-SSL-Certificate-Auth");
+      expect(headers).not.toHaveProperty("X-Datastore-SSL-Certificate-Auth");
     });
 
     it("should add SSL-Certificate-Auth header with Mutual TLS", () => {
@@ -80,9 +80,9 @@ describe("[Node.js] NodeHttpsConnection", () => {
         }),
       );
       const headers = connection.getHeaders();
-      expect(headers["X-ClickHouse-User"]).toBe("default");
-      expect(headers["X-ClickHouse-Key"]).toBe("");
-      expect(headers["X-ClickHouse-SSL-Certificate-Auth"]).toBe("on");
+      expect(headers["X-Datastore-User"]).toBe("default");
+      expect(headers["X-Datastore-Key"]).toBe("");
+      expect(headers["X-Datastore-SSL-Certificate-Auth"]).toBe("on");
     });
 
     it("should use per-request credentials when provided with TLS", () => {
@@ -97,8 +97,8 @@ describe("[Node.js] NodeHttpsConnection", () => {
       const headers = connection.getHeaders({
         auth: { username: "alice", password: "s3cret" },
       });
-      expect(headers["X-ClickHouse-User"]).toBe("alice");
-      expect(headers["X-ClickHouse-Key"]).toBe("s3cret");
+      expect(headers["X-Datastore-User"]).toBe("alice");
+      expect(headers["X-Datastore-Key"]).toBe("s3cret");
     });
 
     it("should throw when JWT auth is used with TLS certificates", () => {
@@ -123,8 +123,8 @@ describe("[Node.js] NodeHttpsConnection", () => {
       const headers = connection.getHeaders();
       // Without TLS, it falls through to the base class which uses Authorization header
       expect(headers).toHaveProperty("Authorization");
-      expect(headers).not.toHaveProperty("X-ClickHouse-User");
-      expect(headers).not.toHaveProperty("X-ClickHouse-Key");
+      expect(headers).not.toHaveProperty("X-Datastore-User");
+      expect(headers).not.toHaveProperty("X-Datastore-Key");
     });
   });
 
@@ -198,9 +198,9 @@ describe("[Node.js] NodeHttpsConnection", () => {
         log_writer: new LogWriter(
           new TestLogger(),
           "HttpsConnectionTest",
-          ClickHouseLogLevel.OFF,
+          DatastoreLogLevel.OFF,
         ),
-        log_level: ClickHouseLogLevel.OFF,
+        log_level: DatastoreLogLevel.OFF,
       });
 
       expect(httpsRequestSpy).toHaveBeenCalledTimes(1);
@@ -233,9 +233,9 @@ describe("[Node.js] NodeHttpsConnection", () => {
         log_writer: new LogWriter(
           new TestLogger(),
           "HttpsConnectionTest",
-          ClickHouseLogLevel.OFF,
+          DatastoreLogLevel.OFF,
         ),
-        log_level: ClickHouseLogLevel.OFF,
+        log_level: DatastoreLogLevel.OFF,
       });
 
       expect(httpsRequestSpy).toHaveBeenCalledTimes(1);

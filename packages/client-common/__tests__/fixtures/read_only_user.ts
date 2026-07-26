@@ -1,17 +1,17 @@
-import type { ClickHouseClient } from "@clickhouse/client-common";
+import type { DatastoreClient } from "@hanzo-ds/client-common";
 import { PRINT_DDL } from "@test/utils/test_env";
 import {
-  getClickHouseTestEnvironment,
+  getDatastoreTestEnvironment,
   getTestDatabaseName,
   guid,
   TestEnv,
 } from "../utils";
 
-export async function createReadOnlyUser(client: ClickHouseClient) {
-  const username = `clickhousejs__read_only_user_${guid()}`;
+export async function createReadOnlyUser(client: DatastoreClient) {
+  const username = `datastorejs__read_only_user_${guid()}`;
   const password = `CHJS_${guid()};`;
   const database = getTestDatabaseName();
-  const env = getClickHouseTestEnvironment();
+  const env = getDatastoreTestEnvironment();
   let createUser: string;
   let grant: string;
   switch (env) {
@@ -62,7 +62,7 @@ export async function createReadOnlyUser(client: ClickHouseClient) {
   for (const query of [createUser, grant]) {
     await client.command({
       query,
-      clickhouse_settings: {
+      datastore_settings: {
         wait_end_of_query: 1,
       },
     });

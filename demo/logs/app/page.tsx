@@ -1,6 +1,6 @@
 import { fetchLogsPage, type LogsPage } from "@/lib/logs";
 
-// This page hits ClickHouse on every request and must never be statically
+// This page hits Datastore on every request and must never be statically
 // prerendered or cached — it is a live, server-rendered view.
 export const dynamic = "force-dynamic";
 
@@ -24,7 +24,7 @@ export default async function LogsPageView({
   try {
     data = await fetchLogsPage(page, PAGE_SIZE);
   } catch (e) {
-    // The underlying error can carry ClickHouse SQL/server details, so log it
+    // The underlying error can carry Datastore SQL/server details, so log it
     // server-side and show the user a generic message instead.
     console.error("fetchLogsPage failed:", e);
     failed = true;
@@ -35,14 +35,14 @@ export default async function LogsPageView({
       <header>
         <h1>RowBinary Logs</h1>
         <p>
-          Server-rendered from ClickHouse, decoded with{" "}
-          <code>@clickhouse/rowbinary</code>. The browser only receives HTML —
-          all decoding happens in <code>lib/logs.ts</code> on the server.
+          Server-rendered from Datastore, decoded with{" "}
+          <code>@hanzo-ds/rowbinary</code>. The browser only receives HTML — all
+          decoding happens in <code>lib/logs.ts</code> on the server.
         </p>
       </header>
 
       {failed || !data ? (
-        <EmptyState message="Couldn't load logs from ClickHouse." />
+        <EmptyState message="Couldn't load logs from Datastore." />
       ) : data.total === 0 ? (
         <EmptyState message="The demo_logs table is empty." />
       ) : (
@@ -119,7 +119,7 @@ function EmptyState({ message }: { message?: string | null }) {
   return (
     <div className="empty">
       <p>No logs to show{message ? `: ${message}` : "."}</p>
-      <p>Make sure ClickHouse is running and the table is seeded:</p>
+      <p>Make sure Datastore is running and the table is seeded:</p>
       <pre>{`# from demo/logs\ndocker compose up -d\nnpm run seed`}</pre>
     </div>
   );

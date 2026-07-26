@@ -3,7 +3,7 @@
  * Seed the demo logs table.
  *
  * Standalone Node script (no build step, no client dependency): talks to the
- * ClickHouse HTTP interface with `fetch`, creates `demo_logs`, and fabricates a
+ * Datastore HTTP interface with `fetch`, creates `demo_logs`, and fabricates a
  * batch of realistic-looking rows with `INSERT ... SELECT FROM numbers(N)` so all
  * the generation happens server-side.
  *
@@ -14,15 +14,15 @@
  *
  *   npm run seed -- 50000
  *
- * Connection comes from the same env vars the app uses (CLICKHOUSE_URL etc.),
- * defaulting to this repo's docker-compose ClickHouse on localhost:8123.
+ * Connection comes from the same env vars the app uses (DATASTORE_URL etc.),
+ * defaulting to this repo's docker-compose Datastore on localhost:8123.
  */
 
 const CONFIG = {
-  url: process.env.CLICKHOUSE_URL ?? "http://localhost:8123",
-  user: process.env.CLICKHOUSE_USER ?? "default",
-  password: process.env.CLICKHOUSE_PASSWORD ?? "",
-  database: process.env.CLICKHOUSE_DATABASE ?? "default",
+  url: process.env.DATASTORE_URL ?? "http://localhost:8123",
+  user: process.env.DATASTORE_USER ?? "default",
+  password: process.env.DATASTORE_PASSWORD ?? "",
+  database: process.env.DATASTORE_DATABASE ?? "default",
 };
 
 const TABLE = "demo_logs";
@@ -38,13 +38,13 @@ async function exec(sql) {
   const res = await fetch(endpoint(), {
     method: "POST",
     headers: {
-      "X-ClickHouse-User": CONFIG.user,
-      "X-ClickHouse-Key": CONFIG.password,
+      "X-Datastore-User": CONFIG.user,
+      "X-Datastore-Key": CONFIG.password,
     },
     body: sql,
   });
   if (!res.ok) {
-    throw new Error(`ClickHouse failed (${res.status}): ${await res.text()}`);
+    throw new Error(`Datastore failed (${res.status}): ${await res.text()}`);
   }
   return res.text();
 }

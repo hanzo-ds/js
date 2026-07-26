@@ -1,8 +1,8 @@
 /**
- * @deprecated The `@clickhouse/client-common` package is deprecated. It is no longer used by
- * `@clickhouse/client` or `@clickhouse/client-web`; the shared code is bundled into each client
- * package instead. Import everything from `@clickhouse/client` (Node.js) or
- * `@clickhouse/client-web` (Web) instead.
+ * @deprecated The `@hanzo-ds/client-common` package is deprecated. It is no longer used by
+ * `@hanzo-ds/client` or `@hanzo-ds/client-web`; the shared code is bundled into each client
+ * package instead. Import everything from `@hanzo-ds/client` (Node.js) or
+ * `@hanzo-ds/client-web` (Web) instead.
  *
  * @packageDocumentation
  */
@@ -14,8 +14,8 @@ export {
   type QueryResult,
   type ExecParams,
   type InsertParams,
-  /** @deprecated Import `ClickHouseClient` from `@clickhouse/client` instead. In Web projects, use `import type { ClickHouseClient } from '@clickhouse/client-web'`. Importing it from `@clickhouse/client-common` is deprecated. */
-  ClickHouseClient,
+  /** @deprecated Import `DatastoreClient` from `@hanzo-ds/client` instead. In Web projects, use `import type { DatastoreClient } from '@hanzo-ds/client-web'`. Importing it from `@hanzo-ds/client-common` is deprecated. */
+  DatastoreClient,
   type CommandParams,
   type CommandResult,
   type ExecResult,
@@ -25,7 +25,7 @@ export {
   type PingParamsWithSelectQuery,
   type PingParamsWithEndpoint,
 } from "./client";
-export { type BaseClickHouseClientConfigOptions } from "./config";
+export { type BaseDatastoreClientConfigOptions } from "./config";
 export type {
   Row,
   RowOrProgress,
@@ -43,62 +43,62 @@ export type {
   SingleDocumentJSONFormat,
 } from "./data_formatter";
 export {
-  /** @deprecated Import `SupportedJSONFormats` from `@clickhouse/client` (Node.js) or `@clickhouse/client-web` (Web) instead. Importing it from `@clickhouse/client-common` is deprecated. */
+  /** @deprecated Import `SupportedJSONFormats` from `@hanzo-ds/client` (Node.js) or `@hanzo-ds/client-web` (Web) instead. Importing it from `@hanzo-ds/client-common` is deprecated. */
   SupportedJSONFormats,
-  /** @deprecated Import `SupportedRawFormats` from `@clickhouse/client` (Node.js) or `@clickhouse/client-web` (Web) instead. Importing it from `@clickhouse/client-common` is deprecated. */
+  /** @deprecated Import `SupportedRawFormats` from `@hanzo-ds/client` (Node.js) or `@hanzo-ds/client-web` (Web) instead. Importing it from `@hanzo-ds/client-common` is deprecated. */
   SupportedRawFormats,
-  /** @deprecated Import `StreamableFormats` from `@clickhouse/client` (Node.js) or `@clickhouse/client-web` (Web) instead. Importing it from `@clickhouse/client-common` is deprecated. */
+  /** @deprecated Import `StreamableFormats` from `@hanzo-ds/client` (Node.js) or `@hanzo-ds/client-web` (Web) instead. Importing it from `@hanzo-ds/client-common` is deprecated. */
   StreamableFormats,
-  /** @deprecated Import `StreamableJSONFormats` from `@clickhouse/client` (Node.js) or `@clickhouse/client-web` (Web) instead. Importing it from `@clickhouse/client-common` is deprecated. */
+  /** @deprecated Import `StreamableJSONFormats` from `@hanzo-ds/client` (Node.js) or `@hanzo-ds/client-web` (Web) instead. Importing it from `@hanzo-ds/client-common` is deprecated. */
   StreamableJSONFormats,
-  /** @deprecated Import `SingleDocumentJSONFormats` from `@clickhouse/client` (Node.js) or `@clickhouse/client-web` (Web) instead. Importing it from `@clickhouse/client-common` is deprecated. */
+  /** @deprecated Import `SingleDocumentJSONFormats` from `@hanzo-ds/client` (Node.js) or `@hanzo-ds/client-web` (Web) instead. Importing it from `@hanzo-ds/client-common` is deprecated. */
   SingleDocumentJSONFormats,
-  /** @deprecated Import `RecordsJSONFormats` from `@clickhouse/client` (Node.js) or `@clickhouse/client-web` (Web) instead. Importing it from `@clickhouse/client-common` is deprecated. */
+  /** @deprecated Import `RecordsJSONFormats` from `@hanzo-ds/client` (Node.js) or `@hanzo-ds/client-web` (Web) instead. Importing it from `@hanzo-ds/client-common` is deprecated. */
   RecordsJSONFormats,
-  /** @deprecated Import `TupleParam` from `@clickhouse/client` (Node.js) or `@clickhouse/client-web` (Web) instead. Importing it from `@clickhouse/client-common` is deprecated. */
+  /** @deprecated Import `TupleParam` from `@hanzo-ds/client` (Node.js) or `@hanzo-ds/client-web` (Web) instead. Importing it from `@hanzo-ds/client-common` is deprecated. */
   TupleParam,
 } from "./data_formatter";
 export {
-  /** @deprecated Import `ClickHouseError` from `@clickhouse/client` (Node.js) or `@clickhouse/client-web` (Web) instead. Importing it from `@clickhouse/client-common` is deprecated. */
-  ClickHouseError,
-  /** @deprecated Import `parseError` from `@clickhouse/client` (Node.js) or `@clickhouse/client-web` (Web) instead. Importing it from `@clickhouse/client-common` is deprecated. */
+  /** @deprecated Import `DatastoreError` from `@hanzo-ds/client` (Node.js) or `@hanzo-ds/client-web` (Web) instead. Importing it from `@hanzo-ds/client-common` is deprecated. */
+  DatastoreError,
+  /** @deprecated Import `parseError` from `@hanzo-ds/client` (Node.js) or `@hanzo-ds/client-web` (Web) instead. Importing it from `@hanzo-ds/client-common` is deprecated. */
   parseError,
 } from "./error";
 export {
-  /** @deprecated Import `ClickHouseLogLevel` from `@clickhouse/client` (Node.js) or `@clickhouse/client-web` (Web) instead. Importing it from `@clickhouse/client-common` is deprecated. */
-  ClickHouseLogLevel,
+  /** @deprecated Import `DatastoreLogLevel` from `@hanzo-ds/client` (Node.js) or `@hanzo-ds/client-web` (Web) instead. Importing it from `@hanzo-ds/client-common` is deprecated. */
+  DatastoreLogLevel,
   type ErrorLogParams,
   type WarnLogParams,
   type Logger,
   type LogParams,
 } from "./logger";
 export type {
-  ClickHouseSummary,
+  DatastoreSummary,
   InputJSON,
   InputJSONObjectEachRow,
   ResponseJSON,
   ResponseHeaders,
-  WithClickHouseSummary,
+  WithDatastoreSummary,
   WithResponseHeaders,
   ProgressRow,
   InsertValues,
-  ClickHouseAuth,
-  ClickHouseJWTAuth,
-  ClickHouseCredentialsAuth,
-} from "./clickhouse_types";
+  DatastoreAuth,
+  DatastoreJWTAuth,
+  DatastoreCredentialsAuth,
+} from "./datastore_types";
 export {
-  /** @deprecated Import `isProgressRow` from `@clickhouse/client` (Node.js) or `@clickhouse/client-web` (Web) instead. Importing it from `@clickhouse/client-common` is deprecated. */
+  /** @deprecated Import `isProgressRow` from `@hanzo-ds/client` (Node.js) or `@hanzo-ds/client-web` (Web) instead. Importing it from `@hanzo-ds/client-common` is deprecated. */
   isProgressRow,
-  /** @deprecated Import `isRow` from `@clickhouse/client` (Node.js) or `@clickhouse/client-web` (Web) instead. Importing it from `@clickhouse/client-common` is deprecated. */
+  /** @deprecated Import `isRow` from `@hanzo-ds/client` (Node.js) or `@hanzo-ds/client-web` (Web) instead. Importing it from `@hanzo-ds/client-common` is deprecated. */
   isRow,
-  /** @deprecated Import `isException` from `@clickhouse/client` (Node.js) or `@clickhouse/client-web` (Web) instead. Importing it from `@clickhouse/client-common` is deprecated. */
+  /** @deprecated Import `isException` from `@hanzo-ds/client` (Node.js) or `@hanzo-ds/client-web` (Web) instead. Importing it from `@hanzo-ds/client-common` is deprecated. */
   isException,
-} from "./clickhouse_types";
+} from "./datastore_types";
 export {
-  type ClickHouseSettings,
-  type ClickHouseSettingsInterface,
+  type DatastoreSettings,
+  type DatastoreSettingsInterface,
   type MergeTreeSettings,
-  /** @deprecated Import `SettingsMap` from `@clickhouse/client` (Node.js) or `@clickhouse/client-web` (Web) instead. Importing it from `@clickhouse/client-common` is deprecated. */
+  /** @deprecated Import `SettingsMap` from `@hanzo-ds/client` (Node.js) or `@hanzo-ds/client-web` (Web) instead. Importing it from `@hanzo-ds/client-common` is deprecated. */
   SettingsMap,
 } from "./settings";
 export type {
@@ -117,23 +117,23 @@ export type {
   JSONHandling,
 } from "./parse";
 export {
-  /** @deprecated Superseded by the `@clickhouse/datatype-parser` package (`parseDataType` + its `Node` AST); slated for removal in a future major version. (Also: import client APIs from `@clickhouse/client`/`@clickhouse/client-web`, not `@clickhouse/client-common`.) */
+  /** @deprecated Superseded by the `@hanzo-ds/datatype-parser` package (`parseDataType` + its `Node` AST); slated for removal in a future major version. (Also: import client APIs from `@hanzo-ds/client`/`@hanzo-ds/client-web`, not `@hanzo-ds/client-common`.) */
   SimpleColumnTypes,
-  /** @deprecated Superseded by the `@clickhouse/datatype-parser` package (`parseDataType` + its `Node` AST); slated for removal in a future major version. (Also: import client APIs from `@clickhouse/client`/`@clickhouse/client-web`, not `@clickhouse/client-common`.) */
+  /** @deprecated Superseded by the `@hanzo-ds/datatype-parser` package (`parseDataType` + its `Node` AST); slated for removal in a future major version. (Also: import client APIs from `@hanzo-ds/client`/`@hanzo-ds/client-web`, not `@hanzo-ds/client-common`.) */
   parseColumnType,
-  /** @deprecated Import `defaultJSONHandling` from `@clickhouse/client` (Node.js) or `@clickhouse/client-web` (Web) instead. Importing it from `@clickhouse/client-common` is deprecated. */
+  /** @deprecated Import `defaultJSONHandling` from `@hanzo-ds/client` (Node.js) or `@hanzo-ds/client-web` (Web) instead. Importing it from `@hanzo-ds/client-common` is deprecated. */
   defaultJSONHandling,
 } from "./parse";
 export {
-  type ClickHouseTracer,
-  type ClickHouseSpan,
-  type ClickHouseSpanOptions,
-  type ClickHouseSpanAttributes,
-  type ClickHouseSpanStatus,
-  type ClickHouseSpanName,
-  ClickHouseSpanStatusCode,
-  ClickHouseSpanKind,
-  ClickHouseSpanNames,
+  type DatastoreTracer,
+  type DatastoreSpan,
+  type DatastoreSpanOptions,
+  type DatastoreSpanAttributes,
+  type DatastoreSpanStatus,
+  type DatastoreSpanName,
+  DatastoreSpanStatusCode,
+  DatastoreSpanKind,
+  DatastoreSpanNames,
   recordSpanError,
 } from "./tracing";
 
@@ -159,7 +159,14 @@ export {
   numberConfigURLValue,
 } from "./config";
 export {
+  USER_HEADER_NAME,
+  KEY_HEADER_NAME,
+  SSL_CERTIFICATE_AUTH_HEADER_NAME,
+  SUMMARY_HEADER_NAME,
+  EXCEPTION_CODE_HEADER_NAME,
   EXCEPTION_TAG_HEADER_NAME,
+} from "./headers";
+export {
   isSuccessfulResponse,
   sleep,
   buildMultipartBody,

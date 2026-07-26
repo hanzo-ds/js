@@ -1,10 +1,10 @@
 # Building specialized clients for alternative runtimes and protocols
 
-This document is for third-party developers who want to build a ClickHouse
+This document is for third-party developers who want to build a Datastore
 client for a runtime or protocol that is not officially covered by this
 repository — for example a [Bun](https://bun.sh)-native client, a
 [Cloudflare Workers](https://workers.cloudflare.com/) client, a client that
-speaks the native ClickHouse TCP protocol, a gRPC-over-proxy client, etc.
+speaks the native Datastore TCP protocol, a gRPC-over-proxy client, etc.
 
 We want to make this as easy as possible and encourage you to reuse the code
 that already lives in this repo.
@@ -13,18 +13,18 @@ that already lives in this repo.
 
 Before you write a lot of code, please:
 
-1. Open a [GitHub issue](https://github.com/ClickHouse/clickhouse-js/issues)
+1. Open a [GitHub issue](https://github.com/hanzo-ds/js/issues)
    describing the runtime/protocol you want to target and the high-level
    approach you have in mind.
 2. Let us discuss the design with you. A short upfront conversation usually
    saves a lot of rework and makes the eventual PR much easier to review and
    merge.
 
-## A note on `@clickhouse/client-common`
+## A note on `@hanzo-ds/client-common`
 
-Historically, shared code between `@clickhouse/client` (Node.js) and
-`@clickhouse/client-web` lived in a third published package,
-`@clickhouse/client-common`, which both of them depended on.
+Historically, shared code between `@hanzo-ds/client` (Node.js) and
+`@hanzo-ds/client-web` lived in a third published package,
+`@hanzo-ds/client-common`, which both of them depended on.
 
 That package is being **deprecated**. The motivation is to simplify versioning
 across our packages and to avoid bundling/duplication issues that several
@@ -87,10 +87,10 @@ test(client-bun): port web integration tests
 - [ ] There is an issue / discussion describing the motivation and design.
 - [ ] The new package lives under `packages/<your-client>` and has its own
       `package.json` with a unique `name`.
-- [ ] No dependency on `@clickhouse/client-common` (it is deprecated).
+- [ ] No dependency on `@hanzo-ds/client-common` (it is deprecated).
 - [ ] Commit history shows the diff against the package you forked from.
 - [ ] Tests for the new runtime/protocol are included where practical.
 - [ ] Build, lint, and tests pass via the repo's standard scripts.
 
-Thanks for contributing — we're excited to see ClickHouse reach more
+Thanks for contributing — we're excited to see Datastore reach more
 runtimes and protocols!

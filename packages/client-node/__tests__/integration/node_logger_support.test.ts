@@ -1,15 +1,15 @@
 import type {
-  ClickHouseClient,
+  DatastoreClient,
   ErrorLogParams,
   Logger,
   LogParams,
-} from "@clickhouse/client-common";
+} from "@hanzo-ds/client-common";
 import { describe, it, afterEach, expect, vi } from "vitest";
-import { ClickHouseLogLevel } from "@clickhouse/client-common";
+import { DatastoreLogLevel } from "@hanzo-ds/client-common";
 import { createTestClient } from "@test/utils/client";
 
 describe("[Node.js] logger support", () => {
-  let client: ClickHouseClient;
+  let client: DatastoreClient;
   let logs: {
     message: string;
     err?: Error;
@@ -26,7 +26,7 @@ describe("[Node.js] logger support", () => {
       const infoSpy = vi.spyOn(console, "info");
       client = createTestClient({
         log: {
-          level: ClickHouseLogLevel.DEBUG,
+          level: DatastoreLogLevel.DEBUG,
         },
       });
       expect(infoSpy).toHaveBeenCalledOnce();
@@ -38,7 +38,7 @@ describe("[Node.js] logger support", () => {
       await client.ping();
       expect(debugSpy).toHaveBeenCalledOnce();
       expect(debugSpy).toHaveBeenCalledWith(
-        expect.stringMatching(/got a response from ClickHouse/),
+        expect.stringMatching(/got a response from Datastore/),
         expect.stringContaining("\nArguments:"),
         expect.objectContaining({
           request_method: "GET",
@@ -51,7 +51,7 @@ describe("[Node.js] logger support", () => {
     it("should provide a custom logger implementation", async () => {
       client = createTestClient({
         log: {
-          level: ClickHouseLogLevel.DEBUG,
+          level: DatastoreLogLevel.DEBUG,
           LoggerClass: TestLogger,
         },
       });
@@ -59,7 +59,7 @@ describe("[Node.js] logger support", () => {
       // logs[0] are about the current log level
       expect(logs[1]).toEqual(
         expect.objectContaining({
-          message: expect.stringMatching(/got a response from ClickHouse/),
+          message: expect.stringMatching(/got a response from Datastore/),
           args: expect.objectContaining({
             request_path: "/ping",
             request_method: "GET",
@@ -84,7 +84,7 @@ describe("[Node.js] logger support", () => {
     client = createTestClient({
       url: "http://localhost:1", // Invalid URL to trigger errors
       log: {
-        level: ClickHouseLogLevel.TRACE,
+        level: DatastoreLogLevel.TRACE,
         LoggerClass: TestLogger,
       },
     });
@@ -115,7 +115,7 @@ describe("[Node.js] logger support", () => {
         "X-Test-Header": secret,
       },
       log: {
-        level: ClickHouseLogLevel.TRACE,
+        level: DatastoreLogLevel.TRACE,
         LoggerClass: TestLogger,
       },
     });

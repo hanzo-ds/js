@@ -1,11 +1,11 @@
 import type { JSONHandling } from ".";
 import type {
-  WithClickHouseSummary,
+  WithDatastoreSummary,
   WithHttpStatusCode,
   WithResponseHeaders,
-} from "./clickhouse_types";
-import type { ClickHouseLogLevel, LogWriter } from "./logger";
-import type { ClickHouseSettings } from "./settings";
+} from "./datastore_types";
+import type { DatastoreLogLevel, LogWriter } from "./logger";
+import type { DatastoreSettings } from "./settings";
 
 export type ConnectionAuth =
   | { username: string; password: string; type: "Credentials" }
@@ -17,9 +17,9 @@ export interface ConnectionParams {
   max_open_connections: number;
   compression: CompressionSettings;
   database: string;
-  clickhouse_settings: ClickHouseSettings;
+  datastore_settings: DatastoreSettings;
   log_writer: LogWriter;
-  log_level: ClickHouseLogLevel;
+  log_level: DatastoreLogLevel;
   keep_alive: { enabled: boolean };
   application_id?: string;
   http_headers?: Record<string, string>;
@@ -33,7 +33,7 @@ export interface ConnectionParams {
  *  (read) bodies. `zstd` requires Node.js >= 22.15.0 (zstd support in the
  *  built-in `zlib` module); `br` (Brotli) is available on every supported
  *  Node.js version. Request-body compression is performed only by
- *  `@clickhouse/client` (Node.js); on the web client, response decompression is
+ *  `@hanzo-ds/client` (Node.js); on the web client, response decompression is
  *  handled by the browser and only `zstd` is rejected. */
 export type CompressionMethod = "gzip" | "zstd" | "br";
 
@@ -46,7 +46,7 @@ export type RequestCompression =
   | { codec: "br"; quality?: number };
 
 /** Normalized response (read) body compression. The compression options are
- *  chosen by the ClickHouse server, so none are carried here. */
+ *  chosen by the Datastore server, so none are carried here. */
 export type ResponseCompression =
   | { codec: "gzip" }
   | { codec: "zstd" }
@@ -62,7 +62,7 @@ export interface CompressionSettings {
 
 export interface ConnBaseQueryParams {
   query: string;
-  clickhouse_settings?: ClickHouseSettings;
+  datastore_settings?: DatastoreSettings;
   query_params?: Record<string, unknown>;
   abort_signal?: AbortSignal;
   session_id?: string;
@@ -103,10 +103,10 @@ export interface ConnQueryResult<Stream> extends ConnBaseResult {
   query_id: string;
 }
 
-export type ConnInsertResult = ConnBaseResult & WithClickHouseSummary;
+export type ConnInsertResult = ConnBaseResult & WithDatastoreSummary;
 export type ConnExecResult<Stream> = ConnQueryResult<Stream> &
-  WithClickHouseSummary;
-export type ConnCommandResult = ConnBaseResult & WithClickHouseSummary;
+  WithDatastoreSummary;
+export type ConnCommandResult = ConnBaseResult & WithDatastoreSummary;
 
 export type ConnPingResult =
   | {

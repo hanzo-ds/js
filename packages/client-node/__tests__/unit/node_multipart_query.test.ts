@@ -63,9 +63,9 @@ describe("[Node.js] Multipart query params", () => {
       const [_url, options] = httpRequestStub.mock.calls[0];
       const contentType = options.headers["Content-Type"] as string;
       expect(contentType).toBeDefined();
-      // Boundary should contain the clickhouse-js prefix
+      // Boundary should contain the datastore-js prefix
       expect(contentType).toMatch(
-        /^multipart\/form-data; boundary=----clickhouse-js-/,
+        /^multipart\/form-data; boundary=----datastore-js-/,
       );
     });
 
@@ -88,7 +88,7 @@ describe("[Node.js] Multipart query params", () => {
         query: "SELECT {v:Int32}",
         query_params: { v: 42 },
         session_id: "my-session",
-        clickhouse_settings: {
+        datastore_settings: {
           extremes: 1,
         },
       });

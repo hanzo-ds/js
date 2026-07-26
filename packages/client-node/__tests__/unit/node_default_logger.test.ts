@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import {
-  ClickHouseLogLevel,
+  DatastoreLogLevel,
   DefaultLogger,
   LogWriter,
-} from "@clickhouse/client-common";
+} from "@hanzo-ds/client-common";
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -25,7 +25,7 @@ describe("[Node.js] Logger/LogWriter", () => {
     const logWriter = new LogWriter(
       new DefaultLogger(),
       module,
-      ClickHouseLogLevel.OFF,
+      DatastoreLogLevel.OFF,
     );
     logEveryLogLevel(logWriter);
     expect(debugSpy).toHaveBeenCalledTimes(0);
@@ -38,7 +38,7 @@ describe("[Node.js] Logger/LogWriter", () => {
     const logWriter = new LogWriter(
       new DefaultLogger(),
       module,
-      ClickHouseLogLevel.TRACE,
+      DatastoreLogLevel.TRACE,
     );
 
     checkLogLevelSet("TRACE");
@@ -64,7 +64,7 @@ describe("[Node.js] Logger/LogWriter", () => {
     const logWriter = new LogWriter(
       new DefaultLogger(),
       module,
-      ClickHouseLogLevel.DEBUG,
+      DatastoreLogLevel.DEBUG,
     );
 
     checkLogLevelSet("DEBUG");
@@ -89,7 +89,7 @@ describe("[Node.js] Logger/LogWriter", () => {
     const logWriter = new LogWriter(
       new DefaultLogger(),
       module,
-      ClickHouseLogLevel.INFO,
+      DatastoreLogLevel.INFO,
     );
 
     checkLogLevelSet("INFO");
@@ -113,7 +113,7 @@ describe("[Node.js] Logger/LogWriter", () => {
     const logWriter = new LogWriter(
       new DefaultLogger(),
       module,
-      ClickHouseLogLevel.WARN,
+      DatastoreLogLevel.WARN,
     );
 
     logEveryLogLevel(logWriter);
@@ -133,7 +133,7 @@ describe("[Node.js] Logger/LogWriter", () => {
     const logWriter = new LogWriter(
       new DefaultLogger(),
       module,
-      ClickHouseLogLevel.ERROR,
+      DatastoreLogLevel.ERROR,
     );
 
     logEveryLogLevel(logWriter);
@@ -150,7 +150,7 @@ describe("[Node.js] Logger/LogWriter", () => {
   function checkLogLevelSet(level: LogLevel) {
     expect(infoSpy.mock.calls[0]).toEqual([
       expect.stringContaining(
-        `[INFO][@clickhouse/client][${module}] Log level is set to ${level}`,
+        `[INFO][@hanzo-ds/client][${module}] Log level is set to ${level}`,
       ),
     ]);
     expect(infoSpy).toHaveBeenCalledTimes(1);
@@ -159,7 +159,7 @@ describe("[Node.js] Logger/LogWriter", () => {
   function checkLog(spy: any, level: LogLevel, callNumber = 0) {
     expect(spy.mock.calls[callNumber]).toEqual([
       expect.stringContaining(
-        `[${level}][@clickhouse/client][${module}] ${message}`,
+        `[${level}][@hanzo-ds/client][${module}] ${message}`,
       ),
       expect.stringContaining("\nArguments:"),
       { foo: `${level.toLowerCase()}-42` },
@@ -169,7 +169,7 @@ describe("[Node.js] Logger/LogWriter", () => {
   function checkErrorLog() {
     expect(errSpy.mock.calls[0]).toEqual([
       expect.stringContaining(
-        `[ERROR][@clickhouse/client][${module}] ${message}`,
+        `[ERROR][@hanzo-ds/client][${module}] ${message}`,
       ),
       expect.stringContaining("\nArguments:"),
       { foo: "err-42" },

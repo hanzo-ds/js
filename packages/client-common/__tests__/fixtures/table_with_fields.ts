@@ -1,13 +1,13 @@
 import type {
-  ClickHouseClient,
-  ClickHouseSettings,
-} from "@clickhouse/client-common";
+  DatastoreClient,
+  DatastoreSettings,
+} from "@hanzo-ds/client-common";
 import { createTable, guid, TestEnv } from "../utils";
 
 export async function createTableWithFields(
-  client: ClickHouseClient,
+  client: DatastoreClient,
   fields: string,
-  clickhouse_settings?: ClickHouseSettings,
+  datastore_settings?: DatastoreSettings,
   table_name?: string,
 ): Promise<string> {
   const tableName = table_name ?? `test_table__${guid()}`;
@@ -35,14 +35,14 @@ export async function createTableWithFields(
             CREATE TABLE ${tableName} ON CLUSTER '{cluster}'
             (id UInt32, ${fields})
             ENGINE ReplicatedMergeTree(
-              '/clickhouse/{cluster}/tables/{database}/{table}/{shard}',
+              '/datastore/{cluster}/tables/{database}/{table}/{shard}',
               '{replica}'
             )
             ORDER BY (id)
           `;
       }
     },
-    clickhouse_settings,
+    datastore_settings,
   );
   return tableName;
 }

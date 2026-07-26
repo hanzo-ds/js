@@ -3,7 +3,7 @@
  * ========================================================
  *
  *   Repo:        https://github.com/Infisical/infisical  (~26k★)
- *   Package:     @clickhouse/client  ^1.17.0
+ *   Package:     @hanzo-ds/client  ^1.17.0
  *   Lives in:    backend/src
  *   Analysed at: 3d47c85f52fa33c7337ad9f328359db806073d4f
  *
@@ -14,7 +14,7 @@
  * unconfigured), wired into the Fastify app, and has its own migration runner.
  *
  * Key patterns:
- *   - `import { type ClickHouseClient, createClient }` in a config builder
+ *   - `import { type DatastoreClient, createClient }` in a config builder
  *     (`buildClickHouseFromConfig`).
  *   - Audit-log DAL + queue for buffered writes.
  *   - DDL migrations (e.g. `CREATE TABLE ... generateUUIDv7()`).
@@ -33,7 +33,7 @@
  */
 
 import { afterEach, describe, expect, it } from "vitest";
-import { type ClickHouseClient } from "@clickhouse/client";
+import { type DatastoreClient } from "@hanzo-ds/client";
 import { createTestClient, guid } from "@test/utils";
 
 interface ClickHouseConfig {
@@ -42,7 +42,7 @@ interface ClickHouseConfig {
 }
 
 describe("oss-dependents / infisical", () => {
-  let client: ClickHouseClient | null = null;
+  let client: DatastoreClient | null = null;
   const table = `oss_infisical_${guid()}`;
 
   // buildClickHouseFromConfig — returns null when unconfigured. When configured,
@@ -50,13 +50,13 @@ describe("oss-dependents / infisical", () => {
   // helper, so the `url` value only drives the configured/unconfigured branch.
   function buildClickHouseFromConfig(
     config: ClickHouseConfig,
-  ): ClickHouseClient | null {
+  ): DatastoreClient | null {
     if (!config.url) return null;
     return createTestClient();
   }
 
   // DDL migration runner.
-  async function runMigrations(c: ClickHouseClient): Promise<void> {
+  async function runMigrations(c: DatastoreClient): Promise<void> {
     await c.command({
       query: `
         CREATE TABLE IF NOT EXISTS ${table} (
@@ -66,13 +66,13 @@ describe("oss-dependents / infisical", () => {
           timestamp DateTime DEFAULT now()
         ) ENGINE = MergeTree ORDER BY (timestamp, id)
       `,
-      clickhouse_settings: { wait_end_of_query: 1 },
+      datastore_settings: { wait_end_of_query: 1 },
     });
   }
 
   // Audit-log DAL: buffered write of audit events.
   async function pushAuditLogs(
-    c: ClickHouseClient,
+    c: DatastoreClient,
     events: { actor: string; event: string }[],
   ): Promise<void> {
     await c.insert({ table, values: events, format: "JSONEachRow" });

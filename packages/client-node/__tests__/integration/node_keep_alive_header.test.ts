@@ -1,8 +1,8 @@
-import { ClickHouseLogLevel, Logger } from "@clickhouse/client-common";
+import { DatastoreLogLevel, Logger } from "@hanzo-ds/client-common";
 import { describe, it } from "vitest";
 import { createTestClient } from "@test/utils/client";
 import net from "net";
-import type { ClickHouseClientConfigOptions } from "@clickhouse/client";
+import type { DatastoreClientConfigOptions } from "@hanzo-ds/client";
 import { AddressInfo } from "net";
 
 describe.concurrent("Handling keep-alive header", () => {
@@ -10,7 +10,7 @@ describe.concurrent("Handling keep-alive header", () => {
     let sleepServerPromiseResolve: () => void;
     let sleepServerPromise = new Promise<void>((resolve) => {
       sleepServerPromiseResolve = resolve;
-      // Simulate a ClickHouse server that responds with a delay
+      // Simulate a Datastore server that responds with a delay
     });
 
     let attempted = 0;
@@ -48,9 +48,9 @@ describe.concurrent("Handling keep-alive header", () => {
       },
       log: {
         LoggerClass,
-        level: ClickHouseLogLevel.TRACE,
+        level: DatastoreLogLevel.TRACE,
       },
-    } as ClickHouseClientConfigOptions);
+    } as DatastoreClientConfigOptions);
 
     expect(await client.ping({ select: true })).toMatchObject({
       success: true,
@@ -102,7 +102,7 @@ describe.concurrent("Handling keep-alive header", () => {
     let sleepServerPromiseResolve: () => void;
     let sleepServerPromise = new Promise<void>((resolve) => {
       sleepServerPromiseResolve = resolve;
-      // Simulate a ClickHouse server that responds with a delay
+      // Simulate a Datastore server that responds with a delay
     });
 
     let attempted = 0;
@@ -140,9 +140,9 @@ describe.concurrent("Handling keep-alive header", () => {
       },
       log: {
         LoggerClass,
-        level: ClickHouseLogLevel.TRACE,
+        level: DatastoreLogLevel.TRACE,
       },
-    } as ClickHouseClientConfigOptions);
+    } as DatastoreClientConfigOptions);
 
     expect(await client.ping({ select: true })).toMatchObject({
       success: true,

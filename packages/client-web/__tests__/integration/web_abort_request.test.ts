@@ -1,13 +1,13 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import type { Row } from "@clickhouse/client-common";
+import type { Row } from "@hanzo-ds/client-common";
 import { createTestClient } from "@test/utils";
-import type { ClickHouseClient } from "@clickhouse/client-web";
+import type { DatastoreClient } from "@hanzo-ds/client-web";
 
 describe("[Web] abort request", () => {
-  let client: ClickHouseClient;
+  let client: DatastoreClient;
 
   beforeEach(() => {
-    client = createTestClient() as unknown as ClickHouseClient;
+    client = createTestClient() as unknown as DatastoreClient;
   });
 
   afterEach(async () => {
@@ -38,7 +38,7 @@ describe("[Web] abort request", () => {
       query: "SELECT number FROM system.numbers LIMIT 100000",
       format: "JSONCompactEachRow",
       abort_signal: controller.signal,
-      clickhouse_settings: {
+      datastore_settings: {
         // low block size to force streaming 1 row at a time
         max_block_size: "1",
       },
@@ -76,7 +76,7 @@ describe("[Web] abort request", () => {
       .query({
         query: "SELECT number FROM system.numbers LIMIT 3",
         format: "JSONCompactEachRow",
-        clickhouse_settings: {
+        datastore_settings: {
           // low block size to force streaming 1 row at a time
           max_block_size: "1",
         },

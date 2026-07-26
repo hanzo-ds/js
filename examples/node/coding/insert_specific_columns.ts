@@ -1,6 +1,6 @@
 // Explicitly specifying a list of columns to insert the data into.
 // For the inverse (excluding certain columns instead), see `insert_exclude_columns.ts`.
-import { createClient } from "@clickhouse/client";
+import { createClient } from "@hanzo-ds/client";
 
 const tableName = "insert_specific_columns";
 const client = createClient();

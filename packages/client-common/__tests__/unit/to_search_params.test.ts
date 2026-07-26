@@ -16,11 +16,11 @@ describe("toSearchParams", () => {
     ]);
   });
 
-  it("should set ClickHouse settings", async () => {
+  it("should set Datastore settings", async () => {
     const params = toSearchParams({
       database: "default",
       query_id: "foo",
-      clickhouse_settings: {
+      datastore_settings: {
         insert_quorum: "2",
         distributed_product_mode: "global",
         limit: "42",
@@ -39,7 +39,7 @@ describe("toSearchParams", () => {
     const params = toSearchParams({
       database: "default",
       query_id: "foo",
-      clickhouse_settings: {
+      datastore_settings: {
         wait_end_of_query: 1,
         buffer_size: "3000000",
         compress: 1,
@@ -94,7 +94,7 @@ describe("toSearchParams", () => {
     const query = "SELECT * FROM system.query_log";
     const params = toSearchParams({
       database: "some_db",
-      clickhouse_settings: {
+      datastore_settings: {
         extremes: 1,
         enable_optimize_predicate_expression: 0,
         wait_end_of_query: 1,

@@ -1,7 +1,7 @@
 import type {
   BaseResultSet,
-  ClickHouseSpan,
-  ClickHouseSpanAttributes,
+  DatastoreSpan,
+  DatastoreSpanAttributes,
   DataFormat,
   JSONHandling,
   ResponseHeaders,
@@ -11,6 +11,7 @@ import type {
 } from "./common/index";
 import {
   CARET_RETURN,
+  EXCEPTION_TAG_HEADER_NAME,
   extractErrorAtTheEndOfChunk,
   recordSpanError,
 } from "./common/index";
@@ -40,10 +41,10 @@ export class ResultSet<
   private readonly jsonHandling: JSONHandling;
   private _stream: ReadableStream;
   private readonly format: Format;
-  /** The `clickhouse.query.stream` span owned by this result set (if the
+  /** The `datastore.query.stream` span owned by this result set (if the
    *  client was configured with a tracer); it ends via {@link finishSpan}
    *  when the response stream is fully consumed, closed, or fails. */
-  private readonly span: ClickHouseSpan | undefined;
+  private readonly span: DatastoreSpan | undefined;
   /** Decoded (decompressed) bytes received from the server so far. */
   private span_bytes = 0;
   /** Rows decoded from the response stream so far. */
@@ -65,7 +66,7 @@ export class ResultSet<
       parse: JSON.parse,
       stringify: JSON.stringify,
     },
-    span?: ClickHouseSpan,
+    span?: DatastoreSpan,
   ) {
     this._stream = _stream;
     this.format = format;
@@ -73,7 +74,7 @@ export class ResultSet<
     this.span = span;
     this.response_headers =
       _response_headers !== undefined ? Object.freeze(_response_headers) : {};
-    this.exceptionTag = this.response_headers["x-clickhouse-exception-tag"] as
+    this.exceptionTag = this.response_headers[EXCEPTION_TAG_HEADER_NAME] as
       | string
       | undefined;
 
@@ -86,8 +87,8 @@ export class ResultSet<
     try {
       const text = await getAsText(this._stream);
       // text.length is the UTF-16 code-unit count of the response body, not a
-      // byte count.  We record it as `clickhouse.response.text_length` rather
-      // than `span_bytes` (`clickhouse.response.decoded_bytes`) to avoid the
+      // byte count.  We record it as `datastore.response.text_length` rather
+      // than `span_bytes` (`datastore.response.decoded_bytes`) to avoid the
       // `TextEncoder` allocation that accurate byte counting would require here.
       this.span_text_length = text.length;
       this.finishSpan();
@@ -289,8 +290,8 @@ export class ResultSet<
     this.span_rows += count;
   }
 
-  /** Record the final response metrics (`clickhouse.response.decoded_bytes`,
-   *  `clickhouse.response.text_length` when called from {@link text}, and
+  /** Record the final response metrics (`datastore.response.decoded_bytes`,
+   *  `datastore.response.text_length` when called from {@link text}, and
    *  `db.response.returned_rows` when rows were counted) and the error
    *  (if any) on the span, and end it. Safe to call multiple times - only
    *  the first call wins. */
@@ -299,14 +300,14 @@ export class ResultSet<
       return;
     }
     this.span_finished = true;
-    const attributes: ClickHouseSpanAttributes = {};
+    const attributes: DatastoreSpanAttributes = {};
     if (this.span_text_length !== undefined) {
       // Recorded by text(): UTF-16 code-unit count, not a byte count.
-      attributes["clickhouse.response.text_length"] = this.span_text_length;
+      attributes["datastore.response.text_length"] = this.span_text_length;
     } else {
       // Recorded by stream() / json() streamable path: actual decoded bytes
       // accumulated from raw Uint8Array chunks.
-      attributes["clickhouse.response.decoded_bytes"] = this.span_bytes;
+      attributes["datastore.response.decoded_bytes"] = this.span_bytes;
     }
     if (this.span_rows_counted) {
       attributes["db.response.returned_rows"] = this.span_rows;

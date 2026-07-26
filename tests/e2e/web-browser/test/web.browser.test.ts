@@ -1,18 +1,18 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import {
   createClient,
-  ClickHouseError,
-  type ClickHouseClient,
-} from "@clickhouse/client-web";
+  DatastoreError,
+  type DatastoreClient,
+} from "@hanzo-ds/client-web";
 
-// The publish workflow starts the single-node ClickHouse compose service before
+// The publish workflow starts the single-node Datastore compose service before
 // this runs. Its HTTP interface sends CORS headers (see
-// .docker/clickhouse/single_node/config.xml -> <http_options_response>), so the
+// .docker/datastore/single_node/config.xml -> <http_options_response>), so the
 // browser can reach it cross-origin from the vitest page.
 const url = "http://127.0.0.1:8123";
 
-describe("[Web e2e] published @clickhouse/client-web in a real browser", () => {
-  let client: ClickHouseClient;
+describe("[Web e2e] published @hanzo-ds/client-web in a real browser", () => {
+  let client: DatastoreClient;
 
   beforeAll(() => {
     client = createClient({ url });
@@ -49,12 +49,12 @@ describe("[Web e2e] published @clickhouse/client-web in a real browser", () => {
     expect(streamed).toBe(5);
   });
 
-  it("surfaces a bad query as a ClickHouseError", async () => {
+  it("surfaces a bad query as a DatastoreError", async () => {
     await expect(
       client.query({
         query: "SELECT * FROM table_that_does_not_exist_e2e_web",
         format: "JSONEachRow",
       }),
-    ).rejects.toBeInstanceOf(ClickHouseError);
+    ).rejects.toBeInstanceOf(DatastoreError);
   });
 });

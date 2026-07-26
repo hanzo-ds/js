@@ -1,5 +1,5 @@
 import type { LogWriter, RequestCompression } from "../common/index";
-import { ClickHouseLogLevel } from "../common/index";
+import { DatastoreLogLevel } from "../common/index";
 import type Http from "http";
 import Stream from "stream";
 import Zlib from "zlib";
@@ -11,7 +11,7 @@ type DecompressResponseResult =
 export function decompressResponse(
   response: Http.IncomingMessage,
   log_writer: LogWriter,
-  log_level: ClickHouseLogLevel,
+  log_level: DatastoreLogLevel,
 ): DecompressResponseResult {
   const encoding = response.headers["content-encoding"];
 
@@ -26,7 +26,7 @@ export function decompressResponse(
         response,
         Zlib.createGunzip(),
         function pipelineCb(err) {
-          if (err && log_level <= ClickHouseLogLevel.ERROR) {
+          if (err && log_level <= DatastoreLogLevel.ERROR) {
             log_writer.error({
               message: "An error occurred while decompressing the response",
               err,
@@ -57,7 +57,7 @@ export function decompressResponse(
         response,
         Zlib.createZstdDecompress(),
         function pipelineCb(err) {
-          if (err && log_level <= ClickHouseLogLevel.ERROR) {
+          if (err && log_level <= DatastoreLogLevel.ERROR) {
             log_writer.error({
               message: "An error occurred while decompressing the response",
               err,
@@ -74,7 +74,7 @@ export function decompressResponse(
         response,
         Zlib.createBrotliDecompress(),
         function pipelineCb(err) {
-          if (err && log_level <= ClickHouseLogLevel.ERROR) {
+          if (err && log_level <= DatastoreLogLevel.ERROR) {
             log_writer.error({
               message: "An error occurred while decompressing the response",
               err,

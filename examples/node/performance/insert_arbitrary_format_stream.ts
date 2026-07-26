@@ -1,20 +1,20 @@
-import type { ClickHouseClient } from "@clickhouse/client";
-import { createClient, drainStream } from "@clickhouse/client";
+import type { DatastoreClient } from "@hanzo-ds/client";
+import { createClient, drainStream } from "@hanzo-ds/client";
 import Fs from "node:fs";
 import { cwd } from "node:process";
 import Path from "node:path";
 
-/** If a particular format is not supported in the {@link ClickHouseClient.insert} method, there is still a workaround:
- *  you could use the {@link ClickHouseClient.exec} method to insert data in an arbitrary format.
+/** If a particular format is not supported in the {@link DatastoreClient.insert} method, there is still a workaround:
+ *  you could use the {@link DatastoreClient.exec} method to insert data in an arbitrary format.
  *  In this scenario, we are inserting the data from a file stream in AVRO format.
  *
  *  The Avro file used here (`./node/resources/data.avro`) was generated ahead of time
  *  so that this example does not depend on a third-party Avro encoder. To produce your own
- *  Avro files, see the official ClickHouse docs and any Avro tooling of your choice
+ *  Avro files, see the official Datastore docs and any Avro tooling of your choice
  *  (e.g., the `avsc` npm package, the Apache Avro CLI, etc.).
  *
- *  Related issue with a question: https://github.com/ClickHouse/clickhouse-js/issues/418
- *  See also: https://clickhouse.com/docs/interfaces/formats/Avro#inserting-data */
+ *  Related issue with a question: https://github.com/hanzo-ds/js/issues/418
+ *  See also: https://docs.hanzo.ai/datastore/interfaces/formats/Avro#inserting-data */
 
 const client = createClient();
 const tableName = "chjs_avro_stream_insert_demo";
@@ -40,7 +40,7 @@ const rs = await client.query({
 });
 console.log("Inserted data:", await rs.json());
 
-async function prepareTable(client: ClickHouseClient, tableName: string) {
+async function prepareTable(client: DatastoreClient, tableName: string) {
   await client.command({
     query: `
       CREATE OR REPLACE TABLE ${tableName}
@@ -48,9 +48,9 @@ async function prepareTable(client: ClickHouseClient, tableName: string) {
       ENGINE MergeTree()
       ORDER BY (id)
     `,
-    clickhouse_settings: {
+    datastore_settings: {
       // If on cluster: wait until the changes are applied on all nodes.
-      // See https://clickhouse.com/docs/en/interfaces/http/#response-buffering
+      // See https://docs.hanzo.ai/datastore/en/interfaces/http/#response-buffering
       wait_end_of_query: 1,
     },
   });

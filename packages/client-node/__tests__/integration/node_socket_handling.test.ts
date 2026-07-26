@@ -1,14 +1,11 @@
-import type {
-  ClickHouseClient,
-  ConnPingResult,
-} from "@clickhouse/client-common";
+import type { DatastoreClient, ConnPingResult } from "@hanzo-ds/client-common";
 import { describe, it, beforeAll, afterAll, afterEach, expect } from "vitest";
 import { permutations } from "@test/utils/permutations";
 import { createTestClient } from "@test/utils/client";
 import * as http from "http";
 import net from "net";
 import type Stream from "stream";
-import type { ClickHouseClientConfigOptions } from "@clickhouse/client";
+import type { DatastoreClientConfigOptions } from "@hanzo-ds/client";
 import { AddressInfo } from "net";
 
 const ClientTimeout = 10; // ms
@@ -16,7 +13,7 @@ const Iterations = 5;
 const MaxOpenConnections = 2;
 
 describe.concurrent("Slow server", () => {
-  let client: ClickHouseClient<Stream.Readable>;
+  let client: DatastoreClient<Stream.Readable>;
   let server: http.Server | null = null;
   let port: number;
   let sleepServerPromise: Promise<void>;
@@ -25,10 +22,10 @@ describe.concurrent("Slow server", () => {
   beforeAll(async () => {
     sleepServerPromise = new Promise<void>((resolve) => {
       sleepServerPromiseResolve = resolve;
-      // Simulate a ClickHouse server that responds with a delay
+      // Simulate a Datastore server that responds with a delay
     });
 
-    // Simulate a ClickHouse server that does not respond to the request in time
+    // Simulate a Datastore server that does not respond to the request in time
     [server, port] = await createHTTPServer(async (req, res) => {
       await sleepServerPromise;
       res.write("Ok.");
@@ -42,7 +39,7 @@ describe.concurrent("Slow server", () => {
       keep_alive: {
         enable: true,
       },
-    } as ClickHouseClientConfigOptions);
+    } as DatastoreClientConfigOptions);
   });
   afterAll(async () => {
     await client.close();
@@ -179,7 +176,7 @@ describe("Server that times out", () => {
 });
 
 describe("Resource is not available", () => {
-  let client: ClickHouseClient<Stream.Readable>;
+  let client: DatastoreClient<Stream.Readable>;
   let server: http.Server | undefined;
   const port = 18125;
   beforeAll(async () => {
@@ -195,7 +192,7 @@ describe("Resource is not available", () => {
       keep_alive: {
         enable: true,
       },
-    } as ClickHouseClientConfigOptions);
+    } as DatastoreClientConfigOptions);
   });
   afterEach(async () => {
     // Free the fixed port between retries: otherwise a retry would find the
@@ -247,7 +244,7 @@ describe.concurrent("Server that drops connections", () => {
       keep_alive: {
         enable: true,
       },
-    } as ClickHouseClientConfigOptions);
+    } as DatastoreClientConfigOptions);
 
     const result = await client.ping();
 
@@ -274,7 +271,7 @@ describe.concurrent("Server that drops connections", () => {
       keep_alive: {
         enable: true,
       },
-    } as ClickHouseClientConfigOptions);
+    } as DatastoreClientConfigOptions);
 
     const result = await client.ping();
 
@@ -303,7 +300,7 @@ describe.concurrent("Server that drops connections", () => {
       keep_alive: {
         enable: true,
       },
-    } as ClickHouseClientConfigOptions);
+    } as DatastoreClientConfigOptions);
 
     const result = await client.ping();
 
@@ -321,7 +318,7 @@ describe.concurrent("Server that drops connections", () => {
     let sleepServerPromiseResolve: () => void;
     let sleepServerPromise = new Promise<void>((resolve) => {
       sleepServerPromiseResolve = resolve;
-      // Simulate a ClickHouse server that responds with a delay
+      // Simulate a Datastore server that responds with a delay
     });
 
     let attempted = 0;
@@ -355,7 +352,7 @@ describe.concurrent("Server that drops connections", () => {
         level: 0,
       },
       max_open_connections: 1,
-    } as ClickHouseClientConfigOptions);
+    } as DatastoreClientConfigOptions);
 
     expect(await client.ping()).toMatchObject({ success: true });
 

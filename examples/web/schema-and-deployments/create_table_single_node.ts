@@ -1,10 +1,10 @@
-import { createClient } from "@clickhouse/client-web";
+import { createClient } from "@hanzo-ds/client-web";
 
-// A single ClickHouse node - for example, as in our `docker-compose.yml`
+// A single Datastore node - for example, as in our `docker-compose.yml`
 const client = createClient();
 await client.command({
   query: `
-    CREATE TABLE IF NOT EXISTS clickhouse_js_create_table_example
+    CREATE TABLE IF NOT EXISTS datastore_js_create_table_example
     (id UInt64, name String)
     ENGINE MergeTree()
     ORDER BY (id)

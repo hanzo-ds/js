@@ -1,20 +1,20 @@
 import {
   type LogWriter,
   type ConnOperation,
-  ClickHouseLogLevel,
+  DatastoreLogLevel,
 } from "../common/index";
 import type Stream from "stream";
 
 export interface Context {
   op: ConnOperation;
-  log_level: ClickHouseLogLevel;
+  log_level: DatastoreLogLevel;
   log_writer: LogWriter;
   query_id: string;
 }
 
 /** Drains the response stream, as calling `destroy` on a {@link Stream.Readable} response stream
  *  will result in closing the underlying socket, and negate the KeepAlive feature benefits.
- *  See https://github.com/ClickHouse/clickhouse-js/pull/203
+ *  See https://github.com/hanzo-ds/js/pull/203
  *  @deprecated This method is not intended to be used outside of the client implementation anymore. Use `client.command()` instead, which will handle draining the stream internally when needed.
  * */
 export async function drainStream(stream: Stream.Readable): Promise<void> {
@@ -79,7 +79,7 @@ export async function drainStream(stream: Stream.Readable): Promise<void> {
 /** Drains the response stream, as calling `destroy` on a {@link Stream.Readable} response stream
  *  will result in closing the underlying socket, and negate the KeepAlive feature benefits.
  * Also, provides additional internal logging for debugging stream issues. Not intended to be used outside of the client implementation.
- *  See https://github.com/ClickHouse/clickhouse-js/pull/203 */
+ *  See https://github.com/hanzo-ds/js/pull/203 */
 export async function drainStreamInternal(
   ctx: Context,
   stream: Stream.Readable,
@@ -89,7 +89,7 @@ export async function drainStreamInternal(
     let bytesReceived = 0;
     let chunkCount = 0;
 
-    if (ctx.log_level <= ClickHouseLogLevel.TRACE) {
+    if (ctx.log_level <= DatastoreLogLevel.TRACE) {
       ctx.log_writer.trace({
         message: `${ctx.op}: starting stream drain`,
         args: {
@@ -105,7 +105,7 @@ export async function drainStreamInternal(
 
     // If the stream has already emitted an error, we can reject the promise immediately.
     if (stream.errored) {
-      if (ctx.log_level <= ClickHouseLogLevel.TRACE) {
+      if (ctx.log_level <= DatastoreLogLevel.TRACE) {
         ctx.log_writer.trace({
           message: `${ctx.op}: stream already errored before drain`,
           args: {
@@ -123,7 +123,7 @@ export async function drainStreamInternal(
     // Avoid a race condition where the stream has already sent the 'end' event before we attach the listener.
     // In this case, we can resolve the promise immediately without attaching any listeners.
     if (stream.readableEnded) {
-      if (ctx.log_level <= ClickHouseLogLevel.TRACE) {
+      if (ctx.log_level <= DatastoreLogLevel.TRACE) {
         ctx.log_writer.trace({
           message: `${ctx.op}: stream already ended before drain`,
           args: {
@@ -140,7 +140,7 @@ export async function drainStreamInternal(
 
     // If the stream is already closed, we can resolve the promise immediately as well.
     if (stream.closed) {
-      if (ctx.log_level <= ClickHouseLogLevel.TRACE) {
+      if (ctx.log_level <= DatastoreLogLevel.TRACE) {
         ctx.log_writer.trace({
           message: `${ctx.op}: stream already closed before drain`,
           args: {
@@ -157,7 +157,7 @@ export async function drainStreamInternal(
 
     function dropData(chunk: Buffer | string) {
       // used only for the methods without expected response; we don't care about the data here
-      if (ctx.log_level <= ClickHouseLogLevel.TRACE) {
+      if (ctx.log_level <= DatastoreLogLevel.TRACE) {
         chunkCount++;
         const chunk_size = Buffer.byteLength(chunk);
         bytesReceived += chunk_size;
@@ -175,7 +175,7 @@ export async function drainStreamInternal(
 
     function onEnd() {
       removeListeners();
-      if (ctx.log_level <= ClickHouseLogLevel.TRACE) {
+      if (ctx.log_level <= DatastoreLogLevel.TRACE) {
         const duration = Date.now() - startTime;
         ctx.log_writer.trace({
           message: `${ctx.op}: stream drain completed (end event)`,
@@ -192,7 +192,7 @@ export async function drainStreamInternal(
 
     function onError(err: Error) {
       removeListeners();
-      if (ctx.log_level <= ClickHouseLogLevel.TRACE) {
+      if (ctx.log_level <= DatastoreLogLevel.TRACE) {
         const duration = Date.now() - startTime;
         ctx.log_writer.trace({
           message: `${ctx.op}: stream drain failed (error event)`,
@@ -210,7 +210,7 @@ export async function drainStreamInternal(
 
     function onClose() {
       removeListeners();
-      if (ctx.log_level <= ClickHouseLogLevel.TRACE) {
+      if (ctx.log_level <= DatastoreLogLevel.TRACE) {
         const duration = Date.now() - startTime;
         ctx.log_writer.trace({
           message: `${ctx.op}: stream closed during drain (close event)`,

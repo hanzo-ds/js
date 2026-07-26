@@ -1,5 +1,5 @@
 /// Snapshot test: compare the standalone parser against the static oracle
-/// snapshots in test/snapshots/ — NO `clickhouse` binary required.
+/// snapshots in test/snapshots/ — NO `datastore` binary required.
 ///
 /// Each snapshot holds the `data_type` subtree the real server emitted for a
 /// type in cases.txt (captured by update_snapshots.ts). Since a snapshot is
@@ -31,7 +31,7 @@ describe("snapshot corpus", () => {
       const path = snapshotPath(typeStr);
       expect(
         existsSync(path),
-        `missing snapshot for ${JSON.stringify(typeStr)} — run: npm run snapshot:update -- --clickhouse <path>`,
+        `missing snapshot for ${JSON.stringify(typeStr)} — run: npm run snapshot:update -- --datastore <path>`,
       ).toBe(true);
       const snap = JSON.parse(readFileSync(path, "utf8")) as Snapshot;
       const expected = canon(snap.data_type);

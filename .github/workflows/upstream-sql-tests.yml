@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       upstream_ref:
-        description: "ClickHouse/ClickHouse ref to check out (defaults to the pinned commit)"
+        description: "Datastore/Datastore ref to check out (defaults to the pinned commit)"
         required: false
         default: ""
         type: string
@@ -16,11 +16,11 @@ on:
     branches:
       - main
     paths:
-      - "tests/clickhouse-test-runner/**"
+      - "tests/datastore-test-runner/**"
       - ".github/workflows/upstream-sql-tests.yml"
   pull_request:
     paths:
-      - "tests/clickhouse-test-runner/**"
+      - "tests/datastore-test-runner/**"
       - ".github/workflows/upstream-sql-tests.yml"
 
 concurrency:
@@ -28,8 +28,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  UPSTREAM_REPO: "ClickHouse/ClickHouse"
-  # Pinned ClickHouse commit for the upstream test suite. Floating `master`
+  UPSTREAM_REPO: "Datastore/Datastore"
+  # Pinned Datastore commit for the upstream test suite. Floating `master`
   # drifts ahead of the `head`/`latest` server images (e.g. new tests using
   # settings the image doesn't know yet -> "Unknown setting ..."), which
   # spuriously reds this workflow. This SHA is a known-good snapshot (last green
@@ -55,10 +55,10 @@ jobs:
         # new settings ahead of any released server, spuriously reding this
         # workflow (and every PR that touches the test runner). `latest` is a
         # stable target; bleeding-edge coverage is not worth the daily noise.
-        clickhouse: [latest]
-        # passthrough: stream ClickHouse's own TabSeparated text (transport /
+        datastore: [latest]
+        # passthrough: stream Datastore's own TabSeparated text (transport /
         # session / settings coverage). rowbinary: decode
-        # RowBinaryWithNamesAndTypes through @clickhouse/rowbinary and re-render
+        # RowBinaryWithNamesAndTypes through @hanzo-ds/rowbinary and re-render
         # to TabSeparated, exercising the dynamic header->reader path. Each
         # backend has its own allowlist (see the "Run upstream SQL tests" step).
         backend: [passthrough, rowbinary]
@@ -68,17 +68,17 @@ jobs:
         # that per-shard runtime climbs back above ~1 minute.
         shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     steps:
-      - name: Checkout clickhouse-js
+      - name: Checkout datastore-js
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
-      - name: Checkout ClickHouse upstream
+      - name: Checkout Datastore upstream
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           repository: ${{ env.UPSTREAM_REPO }}
           ref: ${{ github.event.inputs.upstream_ref || env.UPSTREAM_REF }}
-          path: tests/clickhouse-test-runner/.upstream/ClickHouse
+          path: tests/datastore-test-runner/.upstream/Datastore
           sparse-checkout: |
-            tests/clickhouse-test
+            tests/datastore-test
             tests/queries
             tests/config
             tests/ci
@@ -96,15 +96,15 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install Python dependencies for upstream clickhouse-test
+      - name: Install Python dependencies for upstream datastore-test
         run: |
           python -m pip install --upgrade pip
           pip install jinja2
 
-      - name: Start ClickHouse (version - ${{ matrix.clickhouse }}) in Docker
+      - name: Start Datastore (version - ${{ matrix.datastore }}) in Docker
         uses: hoverkraft-tech/compose-action@11beaa1c2dae4e8ed7b1665aa074723b6cecb0e4 # v3.0.0
         env:
-          CLICKHOUSE_VERSION: ${{ matrix.clickhouse }}
+          DATASTORE_VERSION: ${{ matrix.datastore }}
         with:
           compose-file: "docker-compose.yml"
           down-flags: "--volumes"
@@ -116,12 +116,12 @@ jobs:
 
       - name: Make upstream test script executable
         run: |
-          chmod +x tests/clickhouse-test-runner/.upstream/ClickHouse/tests/clickhouse-test
+          chmod +x tests/datastore-test-runner/.upstream/Datastore/tests/datastore-test
 
       - name: Run upstream SQL tests
         id: run-tests
         env:
-          CLICKHOUSE_CLIENT_CLI_LOG: ${{ github.workspace }}/upstream-run.log
+          DATASTORE_CLIENT_CLI_LOG: ${{ github.workspace }}/upstream-run.log
           SHARD_INDEX: ${{ matrix.shard }}
           SHARD_TOTAL: 10
           TEST_RUNNER_BACKEND: ${{ matrix.backend }}
@@ -130,19 +130,19 @@ jobs:
           # can render back to TabSeparated, so it runs a dedicated (smaller)
           # allowlist; passthrough runs the full one.
           if [ "${TEST_RUNNER_BACKEND}" = "rowbinary" ]; then
-            export UPSTREAM_TEST_LIST="${{ github.workspace }}/tests/clickhouse-test-runner/rowbinary-allowlist.txt"
+            export UPSTREAM_TEST_LIST="${{ github.workspace }}/tests/datastore-test-runner/rowbinary-allowlist.txt"
           fi
-          bash tests/clickhouse-test-runner/scripts/run-upstream-tests.sh --no-stateful
+          bash tests/datastore-test-runner/scripts/run-upstream-tests.sh --no-stateful
 
       - name: Upload test artifacts
         if: always()
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
-          name: upstream-sql-tests-${{ matrix.backend }}-${{ matrix.clickhouse }}-shard-${{ matrix.shard }}
+          name: upstream-sql-tests-${{ matrix.backend }}-${{ matrix.datastore }}-shard-${{ matrix.shard }}
           retention-days: 14
           if-no-files-found: ignore
           path: |
             upstream-run.log
-            tests/clickhouse-test-runner/.upstream/ClickHouse/tests/queries/**/*.stdout
-            tests/clickhouse-test-runner/.upstream/ClickHouse/tests/queries/**/*.stderr
-            tests/clickhouse-test-runner/.upstream/ClickHouse/tests/queries/**/*.diff
+            tests/datastore-test-runner/.upstream/Datastore/tests/queries/**/*.stdout
+            tests/datastore-test-runner/.upstream/Datastore/tests/queries/**/*.stderr
+            tests/datastore-test-runner/.upstream/Datastore/tests/queries/**/*.diff

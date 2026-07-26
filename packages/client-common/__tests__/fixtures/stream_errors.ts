@@ -1,7 +1,7 @@
 import { expect } from "vitest";
 
-import type { QueryParamsWithFormat } from "@clickhouse/client-common";
-import { ClickHouseError } from "@clickhouse/client-common";
+import type { QueryParamsWithFormat } from "@hanzo-ds/client-common";
+import { DatastoreError } from "@hanzo-ds/client-common";
 
 export function streamErrorQueryParams(): QueryParamsWithFormat<"JSONEachRow"> {
   return {
@@ -10,7 +10,7 @@ export function streamErrorQueryParams(): QueryParamsWithFormat<"JSONEachRow"> {
                    sleepEachRow(0.001)
             FROM system.numbers LIMIT 100`,
     format: "JSONEachRow",
-    clickhouse_settings: {
+    datastore_settings: {
       // enforcing at least a few blocks, so that the response code is 200 OK
       max_block_size: "1",
       // Should be false by default since 25.11; but setting explicitly to make sure
@@ -21,9 +21,9 @@ export function streamErrorQueryParams(): QueryParamsWithFormat<"JSONEachRow"> {
 }
 
 export function assertError(err: Error | null) {
-  expect(err).toBeInstanceOf(ClickHouseError);
+  expect(err).toBeInstanceOf(DatastoreError);
 
-  const chErr = err as ClickHouseError;
+  const chErr = err as DatastoreError;
   expect(chErr.message).toContain(`boom: while executing 'FUNCTION throwIf`);
   expect(chErr.code).toBe("395");
 }

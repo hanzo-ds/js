@@ -1,6 +1,6 @@
-// ClickHouse does not have a dynamic DROP DATABASE command, so we need to query
+// Datastore does not have a dynamic DROP DATABASE command, so we need to query
 // for the database names first and then drop them one by one.
-// ClickHouse server also does not like dropping too many databases at once,
+// Datastore server also does not like dropping too many databases at once,
 // so we will drop them sequentially to avoid overwhelming the server.
 
 /**
@@ -8,18 +8,18 @@
  * so we set TTL to 10 minutes by default to give some buffer.
  */
 const TTL_MINUTES = process.env.TTL_MINUTES || 10;
-const PREFIX = process.env.PREFIX || "clickhousejs_";
-const CLICKHOUSE_CLOUD_HOST = process.env.CLICKHOUSE_CLOUD_HOST;
-const CLICKHOUSE_CLOUD_PASSWORD = process.env.CLICKHOUSE_CLOUD_PASSWORD;
+const PREFIX = process.env.PREFIX || "datastorejs_";
+const DATASTORE_CLOUD_HOST = process.env.DATASTORE_CLOUD_HOST;
+const DATASTORE_CLOUD_PASSWORD = process.env.DATASTORE_CLOUD_PASSWORD;
 
 // Executes query using HTTP interface
 async function executeQuery(query) {
   const r = await fetch(
-    `https://${CLICKHOUSE_CLOUD_HOST}/?query=${encodeURIComponent(query)}`,
+    `https://${DATASTORE_CLOUD_HOST}/?query=${encodeURIComponent(query)}`,
     {
       method: "POST",
       headers: {
-        Authorization: `Basic ${Buffer.from(`default:${CLICKHOUSE_CLOUD_PASSWORD}`).toString("base64")}`,
+        Authorization: `Basic ${Buffer.from(`default:${DATASTORE_CLOUD_PASSWORD}`).toString("base64")}`,
       },
     },
   );

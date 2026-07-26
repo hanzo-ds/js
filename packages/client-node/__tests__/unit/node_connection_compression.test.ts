@@ -3,7 +3,7 @@ import { sleep } from "../utils/sleep";
 import Http, { type ClientRequest } from "http";
 import Stream from "stream";
 import Zlib from "zlib";
-import { ClickHouseLogLevel, LogWriter } from "@clickhouse/client-common";
+import { DatastoreLogLevel, LogWriter } from "@hanzo-ds/client-common";
 import { TestLogger } from "../../../client-common/__tests__/utils/test_logger";
 import { assertConnQueryResult } from "../utils/assert";
 import {
@@ -34,7 +34,7 @@ const httpRequestStub = vi.spyOn(Http, "request");
 
 describe("Node.js Connection compression", () => {
   describe("response decompression", () => {
-    it("hints ClickHouse server to send a gzip compressed response if compress_request: true", async () => {
+    it("hints Datastore server to send a gzip compressed response if compress_request: true", async () => {
       const request = stubClientRequest();
       httpRequestStub.mockReturnValue(request);
 
@@ -106,7 +106,7 @@ describe("Node.js Connection compression", () => {
 
       const selectPromise = adapter.query({
         query: "SELECT * FROM system.numbers LIMIT 5",
-        clickhouse_settings: {
+        datastore_settings: {
           enable_http_compression: 1,
         },
       });
@@ -165,12 +165,12 @@ describe("Node.js Connection compression", () => {
         const logWriter = new LogWriter(
           new TestLogger(),
           "test",
-          ClickHouseLogLevel.OFF,
+          DatastoreLogLevel.OFF,
         );
         const result = decompressResponse(
           response,
           logWriter,
-          ClickHouseLogLevel.OFF,
+          DatastoreLogLevel.OFF,
         );
         expect(isDecompressionError(result)).toBe(true);
         expect((result as { error: Error }).error.message).toContain(

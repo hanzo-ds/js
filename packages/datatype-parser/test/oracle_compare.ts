@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/// Compare the standalone parser's JSON AST against the ClickHouse server.
+/// Compare the standalone parser's JSON AST against the Datastore server.
 ///
 /// For each data type in the cases file, the expected output is the `data_type`
 /// subtree the server produces for
@@ -11,10 +11,10 @@
 /// ignored). A TypeScript port of the Python `oracle_compare.py`.
 ///
 /// Usage:
-///   tsx test/oracle_compare.ts --clickhouse /path/to/clickhouse [--cases test/cases.txt]
+///   tsx test/oracle_compare.ts --datastore /path/to/datastore [--cases test/cases.txt]
 ///
-/// The clickhouse binary must be built from
-/// https://github.com/peter-leonov-ch/ClickHouse/pull/1 (the AST-format changes
+/// The datastore binary must be built from
+/// https://github.com/peter-leonov-ch/Datastore/pull/1 (the AST-format changes
 /// this parser mirrors live in that PR).
 
 import { fileURLToPath } from "node:url";
@@ -25,22 +25,22 @@ import { serverDataType, toolDataType } from "./oracle.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 
-function parseArgs(argv: string[]): { clickhouse: string; cases: string } {
-  let clickhouse = "";
+function parseArgs(argv: string[]): { datastore: string; cases: string } {
+  let datastore = "";
   let cases = join(here, "cases.txt");
   for (let i = 0; i < argv.length; i++) {
-    if (argv[i] === "--clickhouse") clickhouse = argv[++i] ?? "";
+    if (argv[i] === "--datastore") datastore = argv[++i] ?? "";
     else if (argv[i] === "--cases") cases = argv[++i] ?? cases;
   }
-  if (!clickhouse) {
-    console.error("error: --clickhouse <path> is required");
+  if (!datastore) {
+    console.error("error: --datastore <path> is required");
     process.exit(2);
   }
-  return { clickhouse, cases };
+  return { datastore, cases };
 }
 
 function main(): number {
-  const { clickhouse, cases: casesPath } = parseArgs(process.argv.slice(2));
+  const { datastore, cases: casesPath } = parseArgs(process.argv.slice(2));
   const cases = readCases(casesPath);
   let failures = 0;
 
@@ -48,7 +48,7 @@ function main(): number {
     let expected: unknown;
     let actual: unknown;
     try {
-      expected = canon(serverDataType(clickhouse, typeStr));
+      expected = canon(serverDataType(datastore, typeStr));
       actual = canon(toolDataType(typeStr));
     } catch (exc) {
       console.log(

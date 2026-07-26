@@ -1,0 +1,7 @@
+<datastore>
+  <macros>
+    <cluster>test_cluster</cluster>
+    <replica>datastore2</replica>
+    <shard>1</shard>
+  </macros>
+</datastore>

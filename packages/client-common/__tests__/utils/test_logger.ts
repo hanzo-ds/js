@@ -2,7 +2,7 @@ import type {
   ErrorLogParams,
   Logger,
   LogParams,
-} from "@clickhouse/client-common";
+} from "@hanzo-ds/client-common";
 
 export class TestLogger implements Logger {
   trace({ module, message, args }: LogParams) {

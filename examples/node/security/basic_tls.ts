@@ -1,11 +1,11 @@
-import { createClient } from "@clickhouse/client";
+import { createClient } from "@hanzo-ds/client";
 import fs from "node:fs";
 
 const client = createClient({
-  url: "https://server.clickhouseconnect.test:8443",
+  url: "https://server.datastoreconnect.test:8443",
   tls: {
     ca_cert: fs.readFileSync(
-      "../.docker/clickhouse/single_node_tls/certificates/ca.crt",
+      "../.docker/datastore/single_node_tls/certificates/ca.crt",
     ),
   },
 });

@@ -1,7 +1,7 @@
-# The oracle test needs a ClickHouse binary to produce expected output.
-# Override with -DCLICKHOUSE_BINARY=/path/to/clickhouse at configure time.
-set(CLICKHOUSE_BINARY "${CMAKE_SOURCE_DIR}/../build/programs/clickhouse"
-    CACHE FILEPATH "Path to the clickhouse binary used as the oracle")
+# The oracle test needs a Datastore binary to produce expected output.
+# Override with -DDATASTORE_BINARY=/path/to/datastore at configure time.
+set(DATASTORE_BINARY "${CMAKE_SOURCE_DIR}/../build/programs/datastore"
+    CACHE FILEPATH "Path to the datastore binary used as the oracle")
 
 find_package(Python3 COMPONENTS Interpreter)
 
@@ -10,7 +10,7 @@ if(Python3_Interpreter_FOUND)
         NAME oracle
         COMMAND ${Python3_EXECUTABLE}
             ${CMAKE_CURRENT_SOURCE_DIR}/oracle_compare.py
-            --clickhouse ${CLICKHOUSE_BINARY}
+            --datastore ${DATASTORE_BINARY}
             --tool $<TARGET_FILE:chdt-parse>
             --cases ${CMAKE_CURRENT_SOURCE_DIR}/cases.txt
     )

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { ClickHouseLogLevel, LogWriter } from "@clickhouse/client-common";
+import { DatastoreLogLevel, LogWriter } from "@hanzo-ds/client-common";
 import { TestLogger } from "../../../client-common/__tests__/utils/test_logger";
 import { WebConnection, type WebConnectionParams } from "../../src/connection";
 
@@ -13,7 +13,7 @@ function stubFetch() {
   return vi.fn(async () => ({
     status: 200,
     body: null,
-    headers: new Headers({ "x-clickhouse-query-id": "test-query-id" }),
+    headers: new Headers({ "x-datastore-query-id": "test-query-id" }),
   })) as unknown as ReturnType<typeof vi.fn> & typeof fetch;
 }
 
@@ -30,13 +30,13 @@ function buildWebConnection(
     max_open_connections: 10,
     auth: { username: "default", password: "", type: "Credentials" },
     database: "default",
-    clickhouse_settings: {},
+    datastore_settings: {},
     log_writer: new LogWriter(
       new TestLogger(),
       "WebConnectionTest",
-      ClickHouseLogLevel.OFF,
+      DatastoreLogLevel.OFF,
     ),
-    log_level: ClickHouseLogLevel.OFF,
+    log_level: DatastoreLogLevel.OFF,
     keep_alive: { enabled: false },
     ...config,
   });
@@ -67,9 +67,9 @@ describe("[Web] Multipart query params", () => {
       // params live in the body, not the URL
       expect(url).not.toContain("param_values");
       expect(url).toContain("query_id=");
-      // Content-Type announces multipart with a clickhouse-js boundary
+      // Content-Type announces multipart with a datastore-js boundary
       expect(headers["Content-Type"]).toMatch(
-        /^multipart\/form-data; boundary=----clickhouse-js-/,
+        /^multipart\/form-data; boundary=----datastore-js-/,
       );
     });
 
@@ -85,7 +85,7 @@ describe("[Web] Multipart query params", () => {
         query: "SELECT {v:Int32}",
         query_params: { v: 42 },
         session_id: "my-session",
-        clickhouse_settings: { extremes: 1 },
+        datastore_settings: { extremes: 1 },
       });
 
       const { url } = lastFetchCall(fetchStub);

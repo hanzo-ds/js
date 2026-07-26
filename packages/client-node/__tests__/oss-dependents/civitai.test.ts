@@ -3,22 +3,22 @@
  * ====================================================
  *
  *   Repo:        https://github.com/civitai/civitai  (~7k★)
- *   Package:     @clickhouse/client  ^0.2.2 (notably old — pre-1.0)
+ *   Package:     @hanzo-ds/client  ^0.2.2 (notably old — pre-1.0)
  *   Lives in:    src/server/clickhouse/client.ts
  *   Analysed at: dfbd42ac3b2809610e12e749f24f35159d057bfa
  *
  * How the client is used
  * ----------------------
  * Civitai uses ClickHouse for METRICS, REWARDS and event tracking. A
- * `CustomClickHouseClient` wraps `createClient`; downstream modules build
+ * `CustomDatastoreClient` wraps `createClient`; downstream modules build
  * metrics, rewards and event jobs on top of it.
  *
  * Key patterns:
- *   - `import { createClient, type ClickHouseClient } from '@clickhouse/client'`.
- *   - A `CustomClickHouseClient` augmentation reused across metrics/rewards.
- *   - Error handling via `ClickHouseError`.
+ *   - `import { createClient, type DatastoreClient } from '@hanzo-ds/client'`.
+ *   - A `CustomDatastoreClient` augmentation reused across metrics/rewards.
+ *   - Error handling via `DatastoreError`.
  *
- * Outlier: upstream is still on @clickhouse/client@^0.2.2, so it predates a large
+ * Outlier: upstream is still on @hanzo-ds/client@^0.2.2, so it predates a large
  * amount of the current API surface — a good migration candidate. This example
  * targets the CURRENT (1.x) API on purpose, so the integration test reflects
  * where civitai would land after upgrading.
@@ -33,17 +33,17 @@
  */
 
 import { afterEach, describe, expect, it } from "vitest";
-import { ClickHouseError, type ClickHouseClient } from "@clickhouse/client";
+import { DatastoreError, type DatastoreClient } from "@hanzo-ds/client";
 import { createTestClient, guid } from "@test/utils";
 
 describe("oss-dependents / civitai", () => {
   const table = `oss_civitai_${guid()}`;
 
-  // CustomClickHouseClient augments the base client with domain helpers reused by
+  // CustomDatastoreClient augments the base client with domain helpers reused by
   // metrics and rewards modules.
-  class CustomClickHouseClient {
-    private client: ClickHouseClient;
-    lastError: ClickHouseError | null = null;
+  class CustomDatastoreClient {
+    private client: DatastoreClient;
+    lastError: DatastoreError | null = null;
     constructor() {
       this.client = createTestClient();
     }
@@ -51,7 +51,7 @@ describe("oss-dependents / civitai", () => {
     async createSchema(): Promise<void> {
       await this.client.command({
         query: `CREATE TABLE ${table} (type String, userId UInt32) ENGINE = MergeTree ORDER BY type`,
-        clickhouse_settings: { wait_end_of_query: 1 },
+        datastore_settings: { wait_end_of_query: 1 },
       });
     }
 
@@ -68,7 +68,7 @@ describe("oss-dependents / civitai", () => {
         return true;
       } catch (err) {
         // Civitai narrows ClickHouse-specific failures from generic ones.
-        if (err instanceof ClickHouseError) {
+        if (err instanceof DatastoreError) {
           this.lastError = err;
           return false;
         }
@@ -92,13 +92,13 @@ describe("oss-dependents / civitai", () => {
     }
   }
 
-  let ch: CustomClickHouseClient;
+  let ch: CustomDatastoreClient;
   afterEach(async () => {
     await ch.close();
   });
 
-  it("tracks events and narrows ClickHouseError on failure", async () => {
-    ch = new CustomClickHouseClient();
+  it("tracks events and narrows DatastoreError on failure", async () => {
+    ch = new CustomDatastoreClient();
     await ch.createSchema();
 
     // Happy path.
@@ -107,7 +107,7 @@ describe("oss-dependents / civitai", () => {
     ).toBe(true);
     expect(await ch.count()).toBe("1");
 
-    // Failure path: inserting into a missing table surfaces a ClickHouseError,
+    // Failure path: inserting into a missing table surfaces a DatastoreError,
     // which the wrapper catches and narrows (instanceof) rather than crashing.
     expect(
       await ch.trackEvent(`missing_${guid()}`, {
@@ -115,7 +115,7 @@ describe("oss-dependents / civitai", () => {
         userId: 2,
       }),
     ).toBe(false);
-    expect(ch.lastError).toBeInstanceOf(ClickHouseError);
+    expect(ch.lastError).toBeInstanceOf(DatastoreError);
     expect(typeof ch.lastError?.code).toBe("string");
   });
 });

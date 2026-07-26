@@ -1,9 +1,9 @@
 import { createTestClient } from "@test/utils";
-import type { ClickHouseClientConfigOptions } from "@clickhouse/client-web";
-import type { ClickHouseClient } from "@clickhouse/client-web";
+import type { DatastoreClientConfigOptions } from "@hanzo-ds/client-web";
+import type { DatastoreClient } from "@hanzo-ds/client-web";
 
 export function createWebTestClient(
-  config: ClickHouseClientConfigOptions = {},
-): ClickHouseClient {
-  return createTestClient(config) as unknown as ClickHouseClient;
+  config: DatastoreClientConfigOptions = {},
+): DatastoreClient {
+  return createTestClient(config) as unknown as DatastoreClient;
 }

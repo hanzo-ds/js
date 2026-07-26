@@ -19,7 +19,7 @@ updates:
     cooldown:
       default-days: 7
       exclude:
-        - "@clickhouse/*"
+        - "@hanzo-ds/*"
     groups:
       dev-dependencies:
         dependency-type: "development"

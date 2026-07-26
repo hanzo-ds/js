@@ -12,7 +12,7 @@
 // See also:
 //  - `ping_existing_host.ts` - successful ping against an existing host.
 //  - `ping_timeout.ts`       - ping that times out.
-import { createClient } from "@clickhouse/client-web";
+import { createClient } from "@hanzo-ds/client-web";
 
 const client = createClient({
   url: "http://localhost:8100", // non-existing host

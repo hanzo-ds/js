@@ -1,5 +1,5 @@
 import { expect } from "vitest";
-import type { ClickHouseClient } from "@clickhouse/client-common";
+import type { DatastoreClient } from "@hanzo-ds/client-common";
 import { sleep } from "../utils";
 
 export const jsonValues = [
@@ -11,7 +11,7 @@ export const jsonValues = [
 ];
 
 export async function assertJsonValues(
-  client: ClickHouseClient,
+  client: DatastoreClient,
   tableName: string,
   tryCount = 1,
   tryDelayMs = 1000,

@@ -11,8 +11,8 @@ import type {
   IsSame,
   QueryParamsWithFormat,
 } from "./common/index";
-import { ClickHouseClient } from "./common/index";
-import type { WebClickHouseClientConfigOptions } from "./config";
+import { DatastoreClient } from "./common/index";
+import type { WebDatastoreClientConfigOptions } from "./config";
 import { WebImpl } from "./config";
 import type { ResultSet } from "./result_set";
 
@@ -24,11 +24,11 @@ export type QueryResult<Format extends DataFormat> =
     ? ResultSet<unknown>
     : ResultSet<Format>;
 
-export type WebClickHouseClient = Omit<
-  WebClickHouseClientImpl,
+export type WebDatastoreClient = Omit<
+  WebDatastoreClientImpl,
   "insert" | "exec" | "command"
 > & {
-  /** See {@link ClickHouseClient.insert}.
+  /** See {@link DatastoreClient.insert}.
    *
    *  ReadableStream is removed from possible insert values
    *  until it is supported by all major web platforms. */
@@ -37,14 +37,14 @@ export type WebClickHouseClient = Omit<
       values: ReadonlyArray<T> | InputJSON<T> | InputJSONObjectEachRow<T>;
     },
   ): Promise<InsertResult>;
-  /** See {@link ClickHouseClient.exec}.
+  /** See {@link DatastoreClient.exec}.
    *
    *  Custom values are currently not supported in the web versions.
    *  The `ignore_error_response` parameter is not supported in the Web version. */
   exec(
     params: Omit<ExecParams, "ignore_error_response">,
   ): Promise<ExecResult<ReadableStream>>;
-  /** See {@link ClickHouseClient.command}.
+  /** See {@link DatastoreClient.command}.
    *
    *  The `ignore_error_response` parameter is not supported in the Web version. */
   command(
@@ -52,8 +52,8 @@ export type WebClickHouseClient = Omit<
   ): Promise<CommandResult>;
 };
 
-class WebClickHouseClientImpl extends ClickHouseClient<ReadableStream> {
-  /** See {@link ClickHouseClient.query}. */
+class WebDatastoreClientImpl extends DatastoreClient<ReadableStream> {
+  /** See {@link DatastoreClient.query}. */
   override query<Format extends DataFormat>(
     params: QueryParamsWithFormat<Format>,
   ): Promise<QueryResult<Format>> {
@@ -62,9 +62,9 @@ class WebClickHouseClientImpl extends ClickHouseClient<ReadableStream> {
 }
 
 export function createClient(
-  config?: WebClickHouseClientConfigOptions,
-): WebClickHouseClient {
-  return new WebClickHouseClientImpl({
+  config?: WebDatastoreClientConfigOptions,
+): WebDatastoreClient {
+  return new WebDatastoreClientImpl({
     impl: WebImpl,
     ...(config || {}),
   });

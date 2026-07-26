@@ -1,11 +1,11 @@
 import { afterAll, beforeAll, describe, it } from "vitest";
 import type {
-  ClickHouseClient as BaseClickHouseClient,
+  DatastoreClient as BaseDatastoreClient,
   DataFormat,
-} from "@clickhouse/client-common";
+} from "@hanzo-ds/client-common";
 import { createTableWithFields } from "@test/fixtures/table_with_fields";
 import { guid } from "@test/utils/guid";
-import type { ClickHouseClient, ResultSet } from "@clickhouse/client";
+import type { DatastoreClient, ResultSet } from "@hanzo-ds/client";
 import { createNodeTestClient } from "../utils/node_client";
 
 /* eslint-disable @typescript-eslint/no-unused-expressions */
@@ -13,14 +13,14 @@ import { createNodeTestClient } from "../utils/node_client";
 // Ignored and used only as a source for ESLint checks with $ExpectType
 // See also: https://www.npmjs.com/package/eslint-plugin-expect-type
 describe.skip("[Node.js] Query and ResultSet types", () => {
-  let client: ClickHouseClient;
+  let client: DatastoreClient;
   const tableName = `node_query_format_types_test_${guid()}`;
   const query = `SELECT * FROM ${tableName} ORDER BY id ASC`;
 
   beforeAll(async () => {
     client = createNodeTestClient();
     await createTableWithFields(
-      client as BaseClickHouseClient,
+      client as BaseDatastoreClient,
       "name String, sku Array(UInt32)",
       {},
       tableName,

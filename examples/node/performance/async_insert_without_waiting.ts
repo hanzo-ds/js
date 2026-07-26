@@ -1,4 +1,4 @@
-import { createClient, ClickHouseError } from "@clickhouse/client";
+import { createClient, DatastoreError } from "@hanzo-ds/client";
 import { EventEmitter } from "node:events";
 import { setTimeout as sleep } from "node:timers/promises";
 
@@ -7,21 +7,21 @@ import { setTimeout as sleep } from "node:timers/promises";
 // A bit more advanced version of the `examples/async_insert.ts` example,
 // as async inserts are an interesting option when working with event listeners
 // that can receive an arbitrarily large or small amount of data at various times.
-// See https://clickhouse.com/docs/en/optimize/asynchronous-inserts
+// See https://docs.hanzo.ai/datastore/en/optimize/asynchronous-inserts
 const client = createClient({
-  url: process.env["CLICKHOUSE_URL"], // defaults to 'http://localhost:8123'
-  password: process.env["CLICKHOUSE_PASSWORD"], // defaults to an empty string
+  url: process.env["DATASTORE_URL"], // defaults to 'http://localhost:8123'
+  password: process.env["DATASTORE_PASSWORD"], // defaults to an empty string
   max_open_connections: 10,
-  clickhouse_settings: {
-    // https://clickhouse.com/docs/en/operations/settings/settings#async_insert
+  datastore_settings: {
+    // https://docs.hanzo.ai/datastore/en/operations/settings/settings#async_insert
     async_insert: 1,
-    // https://clickhouse.com/docs/en/operations/settings/settings#wait_for_async_insert
+    // https://docs.hanzo.ai/datastore/en/operations/settings/settings#wait_for_async_insert
     // explicitly disable it on the client side;
     // insert operations promises will be resolved as soon as the request itself was processed on the server.
     wait_for_async_insert: 0,
-    // https://clickhouse.com/docs/en/operations/settings/settings#async_insert_max_data_size
+    // https://docs.hanzo.ai/datastore/en/operations/settings/settings#async_insert_max_data_size
     async_insert_max_data_size: "1000000",
-    // https://clickhouse.com/docs/en/operations/settings/settings#async_insert_busy_timeout_max_ms
+    // https://docs.hanzo.ai/datastore/en/operations/settings/settings#async_insert_busy_timeout_max_ms
     async_insert_busy_timeout_max_ms: 1000,
   },
 });
@@ -41,7 +41,7 @@ interface Row {
 }
 
 // Assume we have an event listener in our application that periodically receives incoming data,
-// that we would like to have inserted into ClickHouse.
+// that we would like to have inserted into Datastore.
 // This emitter is just a simulation for the sake of this example.
 let rowsInserted = 0;
 const listener = new EventEmitter();
@@ -61,10 +61,10 @@ const asyncInsertOnData = async (rows: Row[]) => {
     console.log(`Insert ${rows.length} rows finished in ${elapsed} ms`);
   } catch (err) {
     // Depending on the error, it is possible that the request itself was not processed on the server.
-    if (err instanceof ClickHouseError) {
+    if (err instanceof DatastoreError) {
       // You could decide what to do with a failed insert based on the error code.
-      // An overview of possible error codes is available in the `system.errors` ClickHouse table.
-      console.error(`ClickHouse error: ${err.code}. Insert failed:`, err);
+      // An overview of possible error codes is available in the `system.errors` Datastore table.
+      console.error(`Datastore error: ${err.code}. Insert failed:`, err);
       return;
     }
     // You could implement a proper retry mechanism depending on your application needs;

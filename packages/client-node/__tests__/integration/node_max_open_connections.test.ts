@@ -2,11 +2,11 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { createSimpleTable } from "@test/fixtures/simple_table";
 import { guid } from "@test/utils/guid";
 import { sleep } from "@test/utils/sleep";
-import type { ClickHouseClient } from "@clickhouse/client";
+import type { DatastoreClient } from "@hanzo-ds/client";
 import { createNodeTestClient } from "../utils/node_client";
 
 describe("[Node.js] max_open_connections config", () => {
-  let client: ClickHouseClient;
+  let client: DatastoreClient;
   let results: number[] = [];
 
   beforeEach(async () => {

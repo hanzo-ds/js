@@ -1,5 +1,5 @@
 import { it, expect, describe, beforeEach, afterEach } from "vitest";
-import type { ClickHouseClient } from "@clickhouse/client-common";
+import type { DatastoreClient } from "@hanzo-ds/client-common";
 import { createTestClient } from "@test/utils/client";
 import * as fs from "fs";
 import Http from "http";
@@ -11,7 +11,7 @@ import http from "http";
 import { vi } from "vitest";
 
 describe("[Node.js] TLS connection", () => {
-  let client: ClickHouseClient<Stream.Readable>;
+  let client: DatastoreClient<Stream.Readable>;
   beforeEach(() => {
     client = createTestClient();
   });
@@ -19,14 +19,14 @@ describe("[Node.js] TLS connection", () => {
     await client.close();
   });
 
-  const certsPath = ".docker/clickhouse/single_node_tls/certificates";
+  const certsPath = ".docker/datastore/single_node_tls/certificates";
   const ca_cert = fs.readFileSync(`${certsPath}/ca.crt`);
   const cert = fs.readFileSync(`${certsPath}/client.crt`);
   const key = fs.readFileSync(`${certsPath}/client.key`);
 
   it("should work with basic TLS", async () => {
     client = createClient({
-      url: "https://server.clickhouseconnect.test:8443",
+      url: "https://server.datastoreconnect.test:8443",
       tls: {
         ca_cert,
       },
@@ -40,7 +40,7 @@ describe("[Node.js] TLS connection", () => {
 
   it("should work with mutual TLS", async () => {
     client = createClient({
-      url: "https://server.clickhouseconnect.test:8443",
+      url: "https://server.datastoreconnect.test:8443",
       username: "cert_user",
       tls: {
         ca_cert,
@@ -81,7 +81,7 @@ describe("[Node.js] TLS connection", () => {
 
   it("should fail with invalid certificates", async () => {
     client = createClient({
-      url: "https://server.clickhouseconnect.test:8443",
+      url: "https://server.datastoreconnect.test:8443",
       username: "cert_user",
       tls: {
         ca_cert,
@@ -102,7 +102,7 @@ describe("[Node.js] TLS connection", () => {
   describe("request auth override", () => {
     it("should override the credentials with basic TLS", async () => {
       client = createClient({
-        url: "https://server.clickhouseconnect.test:8443",
+        url: "https://server.datastoreconnect.test:8443",
         username: "gibberish",
         password: "gibberish",
         tls: {
@@ -122,7 +122,7 @@ describe("[Node.js] TLS connection", () => {
 
     it("should override the credentials with mutual TLS", async () => {
       client = createClient({
-        url: "https://server.clickhouseconnect.test:8443",
+        url: "https://server.datastoreconnect.test:8443",
         username: "gibberish",
         password: "gibberish",
         tls: {
@@ -150,11 +150,11 @@ describe("[Node.js] TLS connection", () => {
           ca: ca_cert,
         });
         const client = createClient({
-          url: "https://server.clickhouseconnect.test:8443",
+          url: "https://server.datastoreconnect.test:8443",
           http_agent: agent,
           http_headers: {
-            "X-ClickHouse-User": "default",
-            "X-ClickHouse-Key": "",
+            "X-Datastore-User": "default",
+            "X-Datastore-Key": "",
           },
           set_basic_auth_header: false,
         });

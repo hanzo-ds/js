@@ -21,10 +21,10 @@ on:
         required: true
         type: choice
         options:
-          - "@clickhouse/client"
-          - "@clickhouse/client-web"
+          - "@hanzo-ds/client"
+          - "@hanzo-ds/client-web"
           # The common package is deprecated, but can still be bumped on its own.
-          - "@clickhouse/client-common"
+          - "@hanzo-ds/client-common"
 
 permissions: {}
 
@@ -34,8 +34,8 @@ concurrency:
 
 jobs:
   bump_client:
-    name: "Bump @clickhouse/client"
-    if: inputs.package == '@clickhouse/client'
+    name: "Bump @hanzo-ds/client"
+    if: inputs.package == '@hanzo-ds/client'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -57,7 +57,7 @@ jobs:
           BUMP_TYPE: ${{ inputs.bump_type }}
         run: |
           CURRENT=$(node -p "require('./packages/client-node/package.json').version")
-          npm --workspace @clickhouse/client version --no-git-tag-version "$BUMP_TYPE"
+          npm --workspace @hanzo-ds/client version --no-git-tag-version "$BUMP_TYPE"
           NEW=$(node -p "require('./packages/client-node/package.json').version")
           echo "export default \"$NEW\";" > packages/client-node/src/version.ts
           echo "current=$CURRENT" >> "$GITHUB_OUTPUT"
@@ -75,17 +75,17 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BRANCH"
           git add .
-          git commit -m "chore: bump @clickhouse/client version to ${NEW}"
+          git commit -m "chore: bump @hanzo-ds/client version to ${NEW}"
           git push origin "$BRANCH"
           gh pr create \
-            --title "chore: bump @clickhouse/client version to ${NEW}" \
-            --body "Bumps \`@clickhouse/client\` from \`${CURRENT}\` to \`${NEW}\` (${BUMP_TYPE} bump)." \
+            --title "chore: bump @hanzo-ds/client version to ${NEW}" \
+            --body "Bumps \`@hanzo-ds/client\` from \`${CURRENT}\` to \`${NEW}\` (${BUMP_TYPE} bump)." \
             --base main \
             --head "$BRANCH"
 
   bump_client_web:
-    name: "Bump @clickhouse/client-web"
-    if: inputs.package == '@clickhouse/client-web'
+    name: "Bump @hanzo-ds/client-web"
+    if: inputs.package == '@hanzo-ds/client-web'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -107,7 +107,7 @@ jobs:
           BUMP_TYPE: ${{ inputs.bump_type }}
         run: |
           CURRENT=$(node -p "require('./packages/client-web/package.json').version")
-          npm --workspace @clickhouse/client-web version --no-git-tag-version "$BUMP_TYPE"
+          npm --workspace @hanzo-ds/client-web version --no-git-tag-version "$BUMP_TYPE"
           NEW=$(node -p "require('./packages/client-web/package.json').version")
           echo "export default \"$NEW\";" > packages/client-web/src/version.ts
           echo "current=$CURRENT" >> "$GITHUB_OUTPUT"
@@ -125,17 +125,17 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BRANCH"
           git add .
-          git commit -m "chore: bump @clickhouse/client-web version to ${NEW}"
+          git commit -m "chore: bump @hanzo-ds/client-web version to ${NEW}"
           git push origin "$BRANCH"
           gh pr create \
-            --title "chore: bump @clickhouse/client-web version to ${NEW}" \
-            --body "Bumps \`@clickhouse/client-web\` from \`${CURRENT}\` to \`${NEW}\` (${BUMP_TYPE} bump)." \
+            --title "chore: bump @hanzo-ds/client-web version to ${NEW}" \
+            --body "Bumps \`@hanzo-ds/client-web\` from \`${CURRENT}\` to \`${NEW}\` (${BUMP_TYPE} bump)." \
             --base main \
             --head "$BRANCH"
 
   bump_client_common:
-    name: "Bump @clickhouse/client-common (deprecated)"
-    if: inputs.package == '@clickhouse/client-common'
+    name: "Bump @hanzo-ds/client-common (deprecated)"
+    if: inputs.package == '@hanzo-ds/client-common'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -157,7 +157,7 @@ jobs:
           BUMP_TYPE: ${{ inputs.bump_type }}
         run: |
           CURRENT=$(node -p "require('./packages/client-common/package.json').version")
-          npm --workspace @clickhouse/client-common version --no-git-tag-version "$BUMP_TYPE"
+          npm --workspace @hanzo-ds/client-common version --no-git-tag-version "$BUMP_TYPE"
           NEW=$(node -p "require('./packages/client-common/package.json').version")
           echo "export default \"$NEW\";" > packages/client-common/src/version.ts
           echo "current=$CURRENT" >> "$GITHUB_OUTPUT"
@@ -175,10 +175,10 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BRANCH"
           git add .
-          git commit -m "chore: bump @clickhouse/client-common version to ${NEW}"
+          git commit -m "chore: bump @hanzo-ds/client-common version to ${NEW}"
           git push origin "$BRANCH"
           gh pr create \
-            --title "chore: bump @clickhouse/client-common version to ${NEW}" \
-            --body "Bumps \`@clickhouse/client-common\` from \`${CURRENT}\` to \`${NEW}\` (${BUMP_TYPE} bump)." \
+            --title "chore: bump @hanzo-ds/client-common version to ${NEW}" \
+            --body "Bumps \`@hanzo-ds/client-common\` from \`${CURRENT}\` to \`${NEW}\` (${BUMP_TYPE} bump)." \
             --base main \
             --head "$BRANCH"

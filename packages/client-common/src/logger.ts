@@ -78,18 +78,18 @@ export type LogWriterParams<Method extends keyof Logger> = Omit<
 export class LogWriter {
   private readonly logger: Logger;
   private readonly module: string;
-  private readonly logLevel: ClickHouseLogLevel;
-  constructor(logger: Logger, module: string, logLevel: ClickHouseLogLevel) {
+  private readonly logLevel: DatastoreLogLevel;
+  constructor(logger: Logger, module: string, logLevel: DatastoreLogLevel) {
     this.logger = logger;
     this.module = module;
     this.logLevel = logLevel;
     this.info({
-      message: `Log level is set to ${ClickHouseLogLevel[this.logLevel]}`,
+      message: `Log level is set to ${DatastoreLogLevel[this.logLevel]}`,
     });
   }
 
   trace(params: LogWriterParams<"trace">): void {
-    if (this.logLevel <= (ClickHouseLogLevel.TRACE as number)) {
+    if (this.logLevel <= (DatastoreLogLevel.TRACE as number)) {
       this.logger.trace({
         ...params,
         module: params.module ?? this.module,
@@ -98,7 +98,7 @@ export class LogWriter {
   }
 
   debug(params: LogWriterParams<"debug">): void {
-    if (this.logLevel <= (ClickHouseLogLevel.DEBUG as number)) {
+    if (this.logLevel <= (DatastoreLogLevel.DEBUG as number)) {
       this.logger.debug({
         ...params,
         module: params.module ?? this.module,
@@ -107,7 +107,7 @@ export class LogWriter {
   }
 
   info(params: LogWriterParams<"info">): void {
-    if (this.logLevel <= (ClickHouseLogLevel.INFO as number)) {
+    if (this.logLevel <= (DatastoreLogLevel.INFO as number)) {
       this.logger.info({
         ...params,
         module: params.module ?? this.module,
@@ -116,7 +116,7 @@ export class LogWriter {
   }
 
   warn(params: LogWriterParams<"warn">): void {
-    if (this.logLevel <= (ClickHouseLogLevel.WARN as number)) {
+    if (this.logLevel <= (DatastoreLogLevel.WARN as number)) {
       this.logger.warn({
         ...params,
         module: params.module ?? this.module,
@@ -125,7 +125,7 @@ export class LogWriter {
   }
 
   error(params: LogWriterParams<"error">): void {
-    if (this.logLevel <= (ClickHouseLogLevel.ERROR as number)) {
+    if (this.logLevel <= (DatastoreLogLevel.ERROR as number)) {
       this.logger.error({
         ...params,
         module: params.module ?? this.module,
@@ -137,12 +137,12 @@ export class LogWriter {
 /**
  * Mimics the runtime shape of a numeric TypeScript `enum`: an object with both
  * forward (`Name -> number`) and reverse (`number -> Name`) mappings. This
- * preserves backwards compatibility with the previous `enum ClickHouseLogLevel`
- * — both `ClickHouseLogLevel.TRACE` (returns `0`) and `ClickHouseLogLevel[0]`
+ * preserves backwards compatibility with the previous `enum DatastoreLogLevel`
+ * — both `DatastoreLogLevel.TRACE` (returns `0`) and `DatastoreLogLevel[0]`
  * (returns `'TRACE'`) continue to work — while staying compatible with the
  * `--erasableSyntaxOnly` TypeScript option (no TS `enum` declaration).
  */
-export const ClickHouseLogLevel = {
+export const DatastoreLogLevel = {
   /**
    * A fine-grained debugging event. Might produce a lot of logs, so use with caution.
    */
@@ -174,7 +174,7 @@ export const ClickHouseLogLevel = {
   4: "ERROR",
   127: "OFF",
 } as const;
-export type ClickHouseLogLevel = 0 | 1 | 2 | 3 | 4 | 127;
+export type DatastoreLogLevel = 0 | 1 | 2 | 3 | 4 | 127;
 
 function formatMessage({
   level,
@@ -186,5 +186,5 @@ function formatMessage({
   message: string;
 }): string {
   const ts = new Date().toISOString();
-  return `[${ts}][${level}][@clickhouse/client][${module}] ${message}`;
+  return `[${ts}][${level}][@hanzo-ds/client][${module}] ${message}`;
 }

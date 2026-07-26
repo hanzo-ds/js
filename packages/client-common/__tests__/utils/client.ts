@@ -1,15 +1,15 @@
 /* eslint @typescript-eslint/no-var-requires: 0 */
 import { beforeAll } from "vitest";
 import {
-  type BaseClickHouseClientConfigOptions,
-  type ClickHouseClient,
-  type ClickHouseSettings,
-} from "@clickhouse/client-common";
+  type BaseDatastoreClientConfigOptions,
+  type DatastoreClient,
+  type DatastoreSettings,
+} from "@hanzo-ds/client-common";
 import { EnvKeys, getFromEnv } from "./env";
 import { guid } from "./guid";
 import { createSimpleTestClient, getTestLogConfig } from "./simple_client";
 import {
-  getClickHouseTestEnvironment,
+  getDatastoreTestEnvironment,
   isCloudTestEnv,
   PRINT_DDL,
   SKIP_INIT,
@@ -22,11 +22,11 @@ let databaseName: string;
 // Only register the shared test-environment initializer when it is actually
 // needed. Skipping the registration entirely (instead of returning early from
 // the hook) ensures that importing this module never couples a test suite to a
-// reachable ClickHouse instance when init is skipped.
+// reachable Datastore instance when init is skipped.
 if (!SKIP_INIT) {
   beforeAll(async () => {
     console.log(
-      `\nTest environment: ${getClickHouseTestEnvironment()}, database: ${
+      `\nTest environment: ${getDatastoreTestEnvironment()}, database: ${
         databaseName ?? "default"
       }`,
     );
@@ -42,26 +42,26 @@ if (!SKIP_INIT) {
 }
 
 export function createTestClient<Stream = unknown>(
-  config: BaseClickHouseClientConfigOptions = {},
-): ClickHouseClient<Stream> {
-  // When the shared test-environment init is skipped, there is no ClickHouse
+  config: BaseDatastoreClientConfigOptions = {},
+): DatastoreClient<Stream> {
+  // When the shared test-environment init is skipped, there is no Datastore
   // instance to talk to; fall back to a client that requires no server.
   if (SKIP_INIT) {
     return createSimpleTestClient<Stream>(config);
   }
 
-  const env = getClickHouseTestEnvironment();
-  const clickHouseSettings: ClickHouseSettings = {
+  const env = getDatastoreTestEnvironment();
+  const datastoreSettings: DatastoreSettings = {
     // (U)Int64 are not quoted by default since 25.8
     output_format_json_quote_64bit_integers: 1,
   };
   if (env === TestEnv.LocalCluster) {
-    clickHouseSettings.insert_quorum = "2";
+    datastoreSettings.insert_quorum = "2";
   } else if (env === TestEnv.Cloud) {
-    clickHouseSettings.select_sequential_consistency = "1";
+    datastoreSettings.select_sequential_consistency = "1";
   }
   // Allow to override `insert_quorum` if necessary
-  Object.assign(clickHouseSettings, config?.clickhouse_settings || {});
+  Object.assign(datastoreSettings, config?.datastore_settings || {});
   const log = getTestLogConfig(config);
 
   if (isCloudTestEnv()) {
@@ -72,8 +72,8 @@ export function createTestClient<Stream = unknown>(
       request_timeout: 60_000,
       log,
       ...config,
-      clickhouse_settings: clickHouseSettings,
-    }) as ClickHouseClient<Stream>;
+      datastore_settings: datastoreSettings,
+    }) as DatastoreClient<Stream>;
   } else {
     // The local cluster entrypoint (nginx round-robin LB) is exposed on a different
     // host port than the single-node setup so both can run side by side.
@@ -87,23 +87,23 @@ export function createTestClient<Stream = unknown>(
       database: databaseName,
       log,
       ...config,
-      clickhouse_settings: clickHouseSettings,
-    }) as ClickHouseClient<Stream>;
+      datastore_settings: datastoreSettings,
+    }) as DatastoreClient<Stream>;
   }
 }
 
 export async function createRandomDatabase(
-  client: ClickHouseClient,
+  client: DatastoreClient,
 ): Promise<string> {
-  const databaseName = `clickhousejs__${guid()}__${+new Date()}`;
+  const databaseName = `datastorejs__${guid()}__${+new Date()}`;
   let maybeOnCluster = "";
-  if (getClickHouseTestEnvironment() === TestEnv.LocalCluster) {
+  if (getDatastoreTestEnvironment() === TestEnv.LocalCluster) {
     maybeOnCluster = ` ON CLUSTER '{cluster}'`;
   }
   const ddl = `CREATE DATABASE IF NOT EXISTS ${databaseName}${maybeOnCluster}`;
   await client.command({
     query: ddl,
-    clickhouse_settings: {
+    datastore_settings: {
       wait_end_of_query: 1,
     },
   });
@@ -112,20 +112,20 @@ export async function createRandomDatabase(
 }
 
 export async function createTable<Stream = unknown>(
-  client: ClickHouseClient<Stream>,
+  client: DatastoreClient<Stream>,
   definition: (environment: TestEnv) => string,
-  clickhouse_settings?: ClickHouseSettings,
+  datastore_settings?: DatastoreSettings,
 ): Promise<void> {
-  const env = getClickHouseTestEnvironment();
+  const env = getDatastoreTestEnvironment();
   const ddl = definition(env);
   await client.command({
     query: ddl,
-    clickhouse_settings: {
+    datastore_settings: {
       // Force response buffering, so we get the response only when
       // the table is actually created on every node
-      // See https://clickhouse.com/docs/en/interfaces/http/#response-buffering
+      // See https://docs.hanzo.ai/datastore/en/interfaces/http/#response-buffering
       wait_end_of_query: 1,
-      ...(clickhouse_settings || {}),
+      ...(datastore_settings || {}),
     },
   });
 
@@ -139,7 +139,7 @@ export function getTestDatabaseName(): string {
 }
 
 const MaxPingRetries = 30;
-export async function wakeUpPing(client: ClickHouseClient): Promise<void> {
+export async function wakeUpPing(client: DatastoreClient): Promise<void> {
   let attempts = 1;
   let lastError: Error | unknown;
   let isAwake = false;

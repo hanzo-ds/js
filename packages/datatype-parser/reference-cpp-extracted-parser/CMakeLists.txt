@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 project(chdt_datatype_parser CXX)
 
-# A self-contained library: no dependency on the ClickHouse source tree.
+# A self-contained library: no dependency on the Datastore source tree.
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)

@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach } from "vitest";
-import type { ClickHouseClient } from "@clickhouse/client-common";
+import type { DatastoreClient } from "@hanzo-ds/client-common";
 import { createSimpleTable } from "../fixtures/simple_table";
 import { createTestClient, guid, TestEnv, isOnEnv } from "../utils";
 import { sleep } from "../utils/sleep";
@@ -10,7 +10,7 @@ import { sleep } from "../utils/sleep";
 const testEnvs = [TestEnv.LocalSingleNode];
 
 describe("query_log", () => {
-  let client: ClickHouseClient;
+  let client: DatastoreClient;
   afterEach(async () => {
     if (client) {
       await client.close();
@@ -36,7 +36,7 @@ describe("query_log", () => {
     "can use query_id to fetch query_log table with exec",
     async () => {
       client = createTestClient();
-      const table = `clickhouse_query_id_exec_test__${guid()}`;
+      const table = `datastore_query_id_exec_test__${guid()}`;
       const query = `CREATE TABLE ${table} (id String) ENGINE MergeTree() ORDER BY (id)`;
       const { query_id } = await client.exec({
         query,
@@ -49,7 +49,7 @@ describe("query_log", () => {
     "can use query_id to fetch query_log table with insert",
     async () => {
       client = createTestClient();
-      const table = `clickhouse_query_id_insert_test__${guid()}`;
+      const table = `datastore_query_id_insert_test__${guid()}`;
       await createSimpleTable(client, table);
       const { query_id } = await client.insert({
         table,

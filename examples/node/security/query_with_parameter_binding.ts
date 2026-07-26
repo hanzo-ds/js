@@ -1,4 +1,4 @@
-import { createClient, TupleParam } from "@clickhouse/client";
+import { createClient, TupleParam } from "@hanzo-ds/client";
 
 /**
  * Binding query parameters of various data types.

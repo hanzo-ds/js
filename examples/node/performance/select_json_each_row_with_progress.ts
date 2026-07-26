@@ -5,16 +5,16 @@ import {
   isException,
   isRow,
   parseError,
-} from "@clickhouse/client";
+} from "@hanzo-ds/client";
 
-/** A few use cases of the `JSONEachRowWithProgress` format with ClickHouse and the Node.js/TypeScript client.
+/** A few use cases of the `JSONEachRowWithProgress` format with Datastore and the Node.js/TypeScript client.
  *  Here, the ResultSet infers the final row type as `{ row: T } | ProgressRow | SpecialEventRow<T>`. */
 const client = createClient();
 
 const selectResultSet = await client.query({
   query: "SELECT number FROM system.numbers LIMIT 3",
   format: "JSONEachRowWithProgress",
-  clickhouse_settings: {
+  datastore_settings: {
     // in this example, we reduce the block size to 1 to see progress rows more frequently
     max_block_size: "1",
   },
@@ -39,7 +39,7 @@ const aggregationResultSet = await client.query({
     LIMIT 10
   `,
   format: "JSONEachRowWithProgress",
-  clickhouse_settings: {
+  datastore_settings: {
     // enables 'rows_before_aggregation' special event row
     rows_before_aggregation: 1,
     // enables 'min' and 'max' special event rows
@@ -55,7 +55,7 @@ printLine();
 const exceptionResultSet = await client.query({
   query: `SELECT number, throwIf(number = 3, 'boom') AS foo FROM system.numbers`,
   format: "JSONEachRowWithProgress",
-  clickhouse_settings: {
+  datastore_settings: {
     // in this example, we reduce the block size to 1 to see progress rows more frequently
     max_block_size: "1",
   },
@@ -96,7 +96,7 @@ async function processResultSet<T>(
         console.error(
           "Got an exception row:",
           decodedRow,
-          "which can be parsed as a ClickHouseError instance:\n",
+          "which can be parsed as a DatastoreError instance:\n",
           parseError(decodedRow.exception),
         );
       } else {

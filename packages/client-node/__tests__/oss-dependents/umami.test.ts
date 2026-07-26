@@ -3,7 +3,7 @@
  * =========================================================
  *
  *   Repo:        https://github.com/umami-software/umami  (~36k★)
- *   Package:     @clickhouse/client  ^1.18.2
+ *   Package:     @hanzo-ds/client  ^1.18.2
  *   Lives in:    src/lib/clickhouse.ts
  *   Analysed at: c0ea3aefbee7a3429ee2f824b06dc4a9dbe0b7e1
  *
@@ -16,7 +16,7 @@
  * SQL.
  *
  * Key patterns:
- *   - `import { type ClickHouseClient, createClient } from '@clickhouse/client'`.
+ *   - `import { type DatastoreClient, createClient } from '@hanzo-ds/client'`.
  *   - Centralised filter -> SQL translation (FILTER_COLUMNS, OPERATORS) feeding
  *     `query`/`insert`.
  *   - Timezone handling via `date-fns-tz` around ClickHouse `DateTime` values
@@ -31,13 +31,13 @@
  */
 
 import { afterEach, describe, expect, it } from "vitest";
-import { type ClickHouseClient } from "@clickhouse/client";
+import { type DatastoreClient } from "@hanzo-ds/client";
 import { createTestClient, guid } from "@test/utils";
 
 describe("oss-dependents / umami", () => {
   // Mirrors umami's lazy module-level singleton.
-  let client: ClickHouseClient | undefined;
-  function getClient(): ClickHouseClient {
+  let client: DatastoreClient | undefined;
+  function getClient(): DatastoreClient {
     if (!client) {
       client = createTestClient();
     }
@@ -90,7 +90,7 @@ describe("oss-dependents / umami", () => {
       query: `CREATE TABLE ${table} (
         website_id String, session_id String, event_name String, created_at DateTime
       ) ENGINE = MergeTree ORDER BY (website_id, created_at)`,
-      clickhouse_settings: { wait_end_of_query: 1 },
+      datastore_settings: { wait_end_of_query: 1 },
     });
 
     await saveEvent({

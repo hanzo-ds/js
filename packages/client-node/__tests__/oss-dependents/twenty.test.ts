@@ -3,7 +3,7 @@
  * ====================================================
  *
  *   Repo:        https://github.com/twentyhq/twenty  (~45k★)
- *   Package:     @clickhouse/client  ^1.18.1
+ *   Package:     @hanzo-ds/client  ^1.18.1
  *   Lives in:    packages/twenty-server/src/database/clickHouse
  *   Analysed at: f96e36d3e67510eaf81ee130d8d56c3db563ec3f
  *
@@ -15,11 +15,11 @@
  * object / workspace events.
  *
  * Key patterns:
- *   - `import { type ClickHouseClient, ClickHouseLogLevel, createClient }`.
- *   - `ClickHouseLogLevel` passed to `createClient` to control client logging.
+ *   - `import { type DatastoreClient, DatastoreLogLevel, createClient }`.
+ *   - `DatastoreLogLevel` passed to `createClient` to control client logging.
  *   - Migrations (`run-migrations.ts`) and seeds (`run-seeds.ts`) share the same
  *     import surface.
- *   - Service is mocked in unit tests via `jest.mock('@clickhouse/client')`.
+ *   - Service is mocked in unit tests via `jest.mock('@hanzo-ds/client')`.
  *
  * References (pinned to ref=f96e36d3e67510eaf81ee130d8d56c3db563ec3f):
  *   - Service:    https://github.com/twentyhq/twenty/blob/f96e36d3e67510eaf81ee130d8d56c3db563ec3f/packages/twenty-server/src/database/clickHouse/clickHouse.service.ts
@@ -31,22 +31,22 @@
  */
 
 import { afterEach, describe, expect, it } from "vitest";
-import { ClickHouseLogLevel, type ClickHouseClient } from "@clickhouse/client";
+import { DatastoreLogLevel, type DatastoreClient } from "@hanzo-ds/client";
 import { createTestClient, guid } from "@test/utils";
 
 describe("oss-dependents / twenty", () => {
-  let client: ClickHouseClient;
+  let client: DatastoreClient;
   const table = `oss_twenty_${guid()}`;
 
-  function createCrmClient(): ClickHouseClient {
+  function createCrmClient(): DatastoreClient {
     return createTestClient({
       // Control client logging verbosity via the exported enum.
-      log: { level: ClickHouseLogLevel.WARN },
+      log: { level: DatastoreLogLevel.WARN },
     });
   }
 
   // run-migrations.ts — shares the same import surface as the service.
-  async function runMigrations(c: ClickHouseClient): Promise<void> {
+  async function runMigrations(c: DatastoreClient): Promise<void> {
     await c.command({
       query: `
         CREATE TABLE IF NOT EXISTS ${table} (
@@ -55,12 +55,12 @@ describe("oss-dependents / twenty", () => {
           timestamp DateTime
         ) ENGINE = MergeTree ORDER BY (workspaceId, timestamp)
       `,
-      clickhouse_settings: { wait_end_of_query: 1 },
+      datastore_settings: { wait_end_of_query: 1 },
     });
   }
 
   // run-seeds.ts — write some workspace/object events.
-  async function runSeeds(c: ClickHouseClient): Promise<void> {
+  async function runSeeds(c: DatastoreClient): Promise<void> {
     await c.insert({
       table,
       values: [
@@ -79,7 +79,7 @@ describe("oss-dependents / twenty", () => {
     await client.close();
   });
 
-  it("ClickHouseLogLevel config, command migrations + insert seeds", async () => {
+  it("DatastoreLogLevel config, command migrations + insert seeds", async () => {
     client = createCrmClient();
     await runMigrations(client);
     await runSeeds(client);

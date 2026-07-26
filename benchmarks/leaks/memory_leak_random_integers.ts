@@ -1,4 +1,4 @@
-import { createClient } from "@clickhouse/client";
+import { createClient } from "@hanzo-ds/client";
 import { randomInt } from "crypto";
 import Stream from "stream";
 import { v4 as uuid_v4 } from "uuid";
@@ -21,7 +21,7 @@ const program = async () => {
       ENGINE MergeTree()
       ORDER BY (id)
     `,
-    clickhouse_settings: {
+    datastore_settings: {
       wait_end_of_query: 1,
     },
   });

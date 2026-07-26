@@ -1,4 +1,4 @@
-# chdt — standalone ClickHouse data-type parser
+# chdt — standalone Datastore data-type parser
 
 ## Examples
 
@@ -253,16 +253,16 @@
 
 ## About
 
-A small, self-contained C++ library that parses a ClickHouse **data-type
+A small, self-contained C++ library that parses a Datastore **data-type
 string** (the kind sent in the types row of `RowBinaryWithNamesAndTypes`, e.g.
 `Array(Nullable(UInt64))`, `Tuple(a UInt8, b String)`, `Enum8('a' = 1)`,
 `Decimal(10, 2)`) into a JSON AST.
 
 It is extracted from the server's `ParserDataType`
-(`src/Parsers/ParserDataType.cpp`) but has **no dependency on the ClickHouse
+(`src/Parsers/ParserDataType.cpp`) but has **no dependency on the Datastore
 source tree** — only the C++20 standard library. The JSON it emits mirrors the
 data-type subtree of the frozen `EXPLAIN AST json = 1` document (format
-**version 2**; see `AST.md` in the ClickHouse repo), so its output is a drop-in
+**version 2**; see `AST.md` in the Datastore repo), so its output is a drop-in
 match for what the server produces.
 
 ## Why this exists
@@ -348,16 +348,16 @@ multi-word aliases (`DOUBLE PRECISION`, `CHAR VARYING`, `INT SIGNED`, …).
 
 - **oracle** (`test/oracle_compare.py`) — for each type in `test/cases.txt`,
   compares the parser's JSON against the `data_type` subtree the real server
-  emits for `CREATE TABLE t (c <TYPE>) ENGINE = Null`. Needs a `clickhouse`
-  binary (default: `../build/programs/clickhouse`; override with
-  `-DCLICKHOUSE_BINARY=...`).
+  emits for `CREATE TABLE t (c <TYPE>) ENGINE = Null`. Needs a `datastore`
+  binary (default: `../build/programs/datastore`; override with
+  `-DDATASTORE_BINARY=...`).
 - **unsupported** (`test/check_unsupported.py`) — asserts the deferred types in
   `test/cases_unsupported.txt` are rejected.
 
 ```bash
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCLICKHOUSE_BINARY=/work/ClickHouse/build/programs/clickhouse
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DDATASTORE_BINARY=/work/Datastore/build/programs/datastore
 cmake --build build
 ctest --test-dir build --output-on-failure
 ```
 
-When the AST format changes get merged the special build `/work/ClickHouse/build/programs/clickhouse` wouldn't be needed.
+When the AST format changes get merged the special build `/work/Datastore/build/programs/datastore` wouldn't be needed.

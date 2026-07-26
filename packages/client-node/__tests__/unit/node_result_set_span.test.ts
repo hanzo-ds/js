@@ -1,22 +1,22 @@
 import { describe, expect, it } from "vitest";
 import type {
-  ClickHouseSpan,
-  ClickHouseSpanAttributes,
-  ClickHouseSpanStatus,
-} from "@clickhouse/client-common";
+  DatastoreSpan,
+  DatastoreSpanAttributes,
+  DatastoreSpanStatus,
+} from "@hanzo-ds/client-common";
 import Stream, { Readable } from "stream";
 import { ResultSet } from "../../src";
 
-class RecordedSpan implements ClickHouseSpan {
-  attributes: ClickHouseSpanAttributes = {};
-  status?: ClickHouseSpanStatus;
+class RecordedSpan implements DatastoreSpan {
+  attributes: DatastoreSpanAttributes = {};
+  status?: DatastoreSpanStatus;
   exception?: Error;
   endedTimes = 0;
 
-  setAttributes(attributes: ClickHouseSpanAttributes) {
+  setAttributes(attributes: DatastoreSpanAttributes) {
     this.attributes = { ...this.attributes, ...attributes };
   }
-  setStatus(status: ClickHouseSpanStatus) {
+  setStatus(status: DatastoreSpanStatus) {
     this.status = status;
   }
   recordException(error: Error) {
@@ -47,7 +47,7 @@ describe("[Node.js] ResultSet span tracking", () => {
     const rs = makeResultSet(span);
     await rs.text();
     expect(span.endedTimes).toBe(1);
-    expect(span.attributes["clickhouse.response.decoded_bytes"]).toBe(
+    expect(span.attributes["datastore.response.decoded_bytes"]).toBe(
       expectedText.length,
     );
     // No rows were counted on the text() path.
@@ -61,7 +61,7 @@ describe("[Node.js] ResultSet span tracking", () => {
     expect(await rs.json()).toEqual([{ foo: "bar" }, { qaz: "qux" }]);
     expect(span.endedTimes).toBe(1);
     expect(span.attributes["db.response.returned_rows"]).toBe(2);
-    expect(span.attributes["clickhouse.response.decoded_bytes"]).toBe(
+    expect(span.attributes["datastore.response.decoded_bytes"]).toBe(
       expectedText.length,
     );
     expect(span.status).toBeUndefined();
@@ -77,7 +77,7 @@ describe("[Node.js] ResultSet span tracking", () => {
     expect(rows).toBe(2);
     expect(span.endedTimes).toBe(1);
     expect(span.attributes["db.response.returned_rows"]).toBe(2);
-    expect(span.attributes["clickhouse.response.decoded_bytes"]).toBe(
+    expect(span.attributes["datastore.response.decoded_bytes"]).toBe(
       expectedText.length,
     );
   });

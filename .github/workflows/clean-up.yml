@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   # Runs in parallel with the rest of the tests, there shoudl be no dependencies on it,
-  # and it should run even if other tests fail, to ensure that we keep the ClickHouse Cloud
+  # and it should run even if other tests fail, to ensure that we keep the Datastore Cloud
   # instance clean for the next runs to avoid adding cleanup cost to the critical path of the tests.
   cloud-cleanup:
     # Cloud secrets are not available for Dependabot pushes; skip the cleanup in that case.
@@ -27,11 +27,11 @@ jobs:
         with:
           node-version: 24
 
-      - name: Cleanup old databases in ClickHouse Cloud
+      - name: Cleanup old databases in Datastore Cloud
         env:
-          CLICKHOUSE_CLOUD_HOST: ${{ secrets.INTEGRATIONS_TEAM_TESTS_CLOUD_HOST_SMT_PROD }}
-          CLICKHOUSE_CLOUD_PASSWORD: ${{ secrets.INTEGRATIONS_TEAM_TESTS_CLOUD_PASSWORD_SMT_PROD }}
-          PREFIX: clickhousejs_
+          DATASTORE_CLOUD_HOST: ${{ secrets.INTEGRATIONS_TEAM_TESTS_CLOUD_HOST_SMT_PROD }}
+          DATASTORE_CLOUD_PASSWORD: ${{ secrets.INTEGRATIONS_TEAM_TESTS_CLOUD_PASSWORD_SMT_PROD }}
+          PREFIX: datastorejs_
           TTL_MINUTES: 60
         run: |
           node .scripts/cleanup_old_databases.mjs

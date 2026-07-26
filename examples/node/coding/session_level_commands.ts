@@ -1,10 +1,10 @@
-import { createClient } from "@clickhouse/client";
+import { createClient } from "@hanzo-ds/client";
 import * as crypto from "node:crypto";
 
 // Note that session will work as expected ONLY if you are accessing the Node directly.
-// If there is a load-balancer in front of ClickHouse nodes, the requests might end up on different nodes,
-// and the session will not be preserved. As a workaround for ClickHouse Cloud, you could try replica-aware routing.
-// See https://clickhouse.com/docs/manage/replica-aware-routing.
+// If there is a load-balancer in front of Datastore nodes, the requests might end up on different nodes,
+// and the session will not be preserved. As a workaround for Datastore Cloud, you could try replica-aware routing.
+// See https://docs.hanzo.ai/datastore/manage/replica-aware-routing.
 const client = createClient({
   // with session_id defined, SET and other session commands
   // will affect all the consecutive queries
@@ -13,7 +13,7 @@ const client = createClient({
 
 await client.command({
   query: `SET output_format_json_quote_64bit_integers = 0`,
-  clickhouse_settings: { wait_end_of_query: 1 },
+  datastore_settings: { wait_end_of_query: 1 },
 });
 
 // this query uses output_format_json_quote_64bit_integers = 0
@@ -25,7 +25,7 @@ console.log(await rows1.json());
 
 await client.command({
   query: `SET output_format_json_quote_64bit_integers = 1`,
-  clickhouse_settings: { wait_end_of_query: 1 },
+  datastore_settings: { wait_end_of_query: 1 },
 });
 
 // this query uses output_format_json_quote_64bit_integers = 1

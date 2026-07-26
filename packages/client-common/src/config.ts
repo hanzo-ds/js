@@ -1,4 +1,4 @@
-import type { InsertValues, ResponseHeaders } from "./clickhouse_types";
+import type { InsertValues, ResponseHeaders } from "./datastore_types";
 import type {
   CompressionMethod,
   Connection,
@@ -8,11 +8,11 @@ import type {
 } from "./connection";
 import type { DataFormat } from "./data_formatter";
 import type { Logger } from "./logger";
-import { ClickHouseLogLevel, LogWriter } from "./logger";
+import { DatastoreLogLevel, LogWriter } from "./logger";
 import { defaultJSONHandling, type JSONHandling } from "./parse/json_handling";
 import type { BaseResultSet } from "./result";
-import type { ClickHouseSettings } from "./settings";
-import type { ClickHouseSpan, ClickHouseTracer } from "./tracing";
+import type { DatastoreSettings } from "./settings";
+import type { DatastoreSpan, DatastoreTracer } from "./tracing";
 
 /** Normalizes the public request compression option into the internal codec
  *  object, or `undefined` when disabled. `true` keeps gzip for backwards
@@ -46,17 +46,17 @@ function normalizeResponseCompression(
   return { codec: value.codec };
 }
 
-export interface BaseClickHouseClientConfigOptions {
+export interface BaseDatastoreClientConfigOptions {
   /** @deprecated since version 1.0.0. Use {@link url} instead. <br/>
-   *  A ClickHouse instance URL.
+   *  A Datastore instance URL.
    *  @default http://localhost:8123 */
   host?: string;
-  /** A ClickHouse instance URL.
+  /** A Datastore instance URL.
    *  @default http://localhost:8123 */
   url?: string | URL;
-  /** An optional pathname to add to the ClickHouse URL after it is parsed by the client.
-   *  For example, if you use a proxy, and your ClickHouse instance can be accessed as http://proxy:8123/clickhouse_server,
-   *  specify `clickhouse_server` here (with or without a leading slash);
+  /** An optional pathname to add to the Datastore URL after it is parsed by the client.
+   *  For example, if you use a proxy, and your Datastore instance can be accessed as http://proxy:8123/datastore_server,
+   *  specify `datastore_server` here (with or without a leading slash);
    *  otherwise, if provided directly in the {@link url}, it will be considered as the `database` option.<br/>
    *  Multiple segments are supported, e.g. `/my_proxy/db`.
    *  @default empty string */
@@ -69,15 +69,15 @@ export interface BaseClickHouseClientConfigOptions {
   max_open_connections?: number;
   /** Request and response compression settings. */
   compression?: {
-    /** Instructs the ClickHouse server to respond with a compressed response body.
+    /** Instructs the Datastore server to respond with a compressed response body.
      *  `true` requests `gzip`; pass `{ codec }` to select the codec explicitly,
      *  e.g. `{ codec: "zstd" }` or `{ codec: "br" }`. This adds the matching
-     *  `Accept-Encoding` header and the `enable_http_compression=1` ClickHouse HTTP
+     *  `Accept-Encoding` header and the `enable_http_compression=1` Datastore HTTP
      *  setting. Decompression takes no codec options (the server chose them).
      *  `"zstd"` requires Node.js >= 22.15.0; `"br"` works on any supported Node.js.
-     *  On `@clickhouse/client-web`, `zstd` is rejected at client creation; `gzip`
+     *  On `@hanzo-ds/client-web`, `zstd` is rejected at client creation; `gzip`
      *  and `br` responses are decompressed by the browser.
-     *  <p><b>Warning</b>: Response compression can't be enabled for a user with readonly=1, as ClickHouse will not allow settings modifications for such user.</p>
+     *  <p><b>Warning</b>: Response compression can't be enabled for a user with readonly=1, as Datastore will not allow settings modifications for such user.</p>
      *  @default false */
     response?: boolean | { codec: CompressionMethod };
     /** Enables compression of the outgoing request (insert) body.
@@ -88,8 +88,8 @@ export interface BaseClickHouseClientConfigOptions {
      *  used (gzip/zstd use zlib's defaults, `br` defaults to quality 4 since
      *  zlib's brotli default of 11 is far too slow for a streaming insert body).
      *  `"zstd"` requires Node.js >= 22.15.0; `"br"` works on any supported Node.js.
-     *  Request-body compression is performed only by `@clickhouse/client` (Node.js);
-     *  `@clickhouse/client-web` sends request bodies uncompressed.
+     *  Request-body compression is performed only by `@hanzo-ds/client` (Node.js);
+     *  `@hanzo-ds/client-web` sends request bodies uncompressed.
      *  @default false */
     request?: boolean | RequestCompression;
   };
@@ -101,8 +101,8 @@ export interface BaseClickHouseClientConfigOptions {
    *  Should not be set if {@link access_token} is provided.
    *  @default empty string */
   password?: string;
-  /** A JWT access token to authenticate with ClickHouse.
-   *  JWT token authentication is supported in ClickHouse Cloud only.
+  /** A JWT access token to authenticate with Datastore.
+   *  JWT token authentication is supported in Datastore Cloud only.
    *  Should not be set if {@link username} or {@link password} are provided.
    *  @default empty */
   access_token?: string;
@@ -112,20 +112,20 @@ export interface BaseClickHouseClientConfigOptions {
   /** Database name to use.
    * @default default */
   database?: string;
-  /** ClickHouse settings to apply to all requests.
+  /** Datastore settings to apply to all requests.
    *  @default empty object */
-  clickhouse_settings?: ClickHouseSettings;
+  datastore_settings?: DatastoreSettings;
   log?: {
     /** A class to instantiate a custom logger implementation.
      *  @default see {@link DefaultLogger} */
     LoggerClass?: new () => Logger;
-    /** @default set to {@link ClickHouseLogLevel.WARN} */
-    level?: ClickHouseLogLevel;
+    /** @default set to {@link DatastoreLogLevel.WARN} */
+    level?: DatastoreLogLevel;
   };
-  /** ClickHouse Session id to attach to the outgoing requests.
+  /** Datastore Session id to attach to the outgoing requests.
    *  @default empty string (no session) */
   session_id?: string;
-  /** ClickHouse role name(s) to attach to the outgoing requests.
+  /** Datastore role name(s) to attach to the outgoing requests.
    *  @default undefined string (no roles) */
   role?: string | Array<string>;
   /** @deprecated since version 1.0.0. Use {@link http_headers} instead. <br/>
@@ -164,11 +164,11 @@ export interface BaseClickHouseClientConfigOptions {
    * wrapper: exceptions thrown by the tracer or its spans propagate to the
    * caller. Make sure your tracer doesn't throw.
    *
-   * @see {@link ClickHouseTracer}
+   * @see {@link DatastoreTracer}
    * @default undefined (no spans are emitted; the client uses a shared no-op tracer/span to keep call sites monomorphic,
    * at the cost of a small fixed per-operation overhead)
    */
-  tracer?: ClickHouseTracer;
+  tracer?: DatastoreTracer;
   /** When true, query() sends query_params as multipart/form-data parts
    *  instead of URL query string entries. This avoids HTTP URL length limits
    *  when query parameters contain large arrays (25K+ values).
@@ -188,7 +188,7 @@ export interface BaseClickHouseClientConfigOptions {
 
 export type MakeConnection<
   Stream,
-  Config = BaseClickHouseClientConfigOptionsWithURL,
+  Config = BaseDatastoreClientConfigOptionsWithURL,
 > = (config: Config, params: ConnectionParams) => Connection<Stream>;
 
 export type MakeResultSet<Stream> = <
@@ -201,12 +201,12 @@ export type MakeResultSet<Stream> = <
   log_error: (err: Error) => void,
   response_headers: ResponseHeaders,
   jsonHandling: JSONHandling,
-  /** When the client was configured with a {@link ClickHouseTracer}, a
-   *  `clickhouse.query.stream` child span is created and passed here.  The
+  /** When the client was configured with a {@link DatastoreTracer}, a
+   *  `datastore.query.stream` child span is created and passed here.  The
    *  result set tracks its own streaming progress (decoded bytes/rows) and
    *  must record the final response metrics on the span and end it when the
    *  stream is fully consumed, closed, or fails. */
-  span?: ClickHouseSpan,
+  span?: DatastoreSpan,
 ) => ResultSet;
 
 export type MakeValuesEncoder<Stream> = (
@@ -220,12 +220,12 @@ export interface ValuesEncoder<Stream> {
   ): void;
 
   /**
-   * A function encodes an array or a stream of JSON objects to a format compatible with ClickHouse.
+   * A function encodes an array or a stream of JSON objects to a format compatible with Datastore.
    * If values are provided as an array of JSON objects, the function encodes it in place.
    * If values are provided as a stream of JSON objects, the function sets up the encoding of each chunk.
    * If values are provided as a raw non-object stream, the function does nothing.
    *
-   * @param values a set of values to send to ClickHouse.
+   * @param values a set of values to send to Datastore.
    * @param format a format to encode value to.
    */
   encodeValues<T = unknown>(
@@ -242,10 +242,10 @@ export interface ValuesEncoder<Stream> {
  * so we can indicate which URL parameters are unknown by both common and implementation packages.
  */
 export type HandleImplSpecificURLParams = (
-  config: BaseClickHouseClientConfigOptions,
+  config: BaseDatastoreClientConfigOptions,
   url: URL,
 ) => {
-  config: BaseClickHouseClientConfigOptions;
+  config: BaseDatastoreClientConfigOptions;
   // params that were handled in the implementation; used to calculate final "unknown" URL params
   // i.e. common package does not know about Node.js-specific ones,
   // but after handling we will be able to remove them from the final unknown set (and not throw).
@@ -265,8 +265,8 @@ export interface ImplementationDetails<Stream> {
 }
 
 // Configuration with parameters parsed from the URL, and the URL itself normalized for the connection.
-export type BaseClickHouseClientConfigOptionsWithURL = Omit<
-  BaseClickHouseClientConfigOptions,
+export type BaseDatastoreClientConfigOptionsWithURL = Omit<
+  BaseDatastoreClientConfigOptions,
   "url"
 > & { url: URL }; // not string and not undefined
 
@@ -279,10 +279,10 @@ export type BaseClickHouseClientConfigOptionsWithURL = Omit<
  * Enforces certain defaults in case of deprecated keys or readonly mode.
  */
 export function prepareConfigWithURL(
-  baseConfigOptions: BaseClickHouseClientConfigOptions,
+  baseConfigOptions: BaseDatastoreClientConfigOptions,
   logger: Logger,
   handleImplURLParams: HandleImplSpecificURLParams | null,
-): BaseClickHouseClientConfigOptionsWithURL {
+): BaseDatastoreClientConfigOptionsWithURL {
   const baseConfig = { ...baseConfigOptions };
   if (baseConfig.additional_headers !== undefined) {
     logger.warn({
@@ -313,11 +313,11 @@ export function prepareConfigWithURL(
     url.pathname = config.pathname;
   }
   config.url = url;
-  return config as BaseClickHouseClientConfigOptionsWithURL;
+  return config as BaseDatastoreClientConfigOptionsWithURL;
 }
 
 export function getConnectionParams(
-  config: BaseClickHouseClientConfigOptionsWithURL,
+  config: BaseDatastoreClientConfigOptionsWithURL,
   logger: Logger,
 ): ConnectionParams {
   let auth: ConnectionParams["auth"];
@@ -336,29 +336,29 @@ export function getConnectionParams(
     };
   }
 
-  const log_level = config.log?.level ?? ClickHouseLogLevel.WARN;
+  const log_level = config.log?.level ?? DatastoreLogLevel.WARN;
   const request_timeout = config.request_timeout ?? 30_000;
-  const clickhouse_settings = config.clickhouse_settings ?? {};
+  const datastore_settings = config.datastore_settings ?? {};
 
-  if (log_level <= ClickHouseLogLevel.WARN) {
+  if (log_level <= DatastoreLogLevel.WARN) {
     // Warn if request_timeout is high but progress headers are not configured
     // This can lead to socket hang-up errors when long-running queries exceed load balancer idle timeouts
     const THRESHOLD_MS = 60_000; // 60 seconds
     if (request_timeout > THRESHOLD_MS) {
       const send_progress =
-        String(clickhouse_settings.send_progress_in_http_headers) === "1";
+        String(datastore_settings.send_progress_in_http_headers) === "1";
       const progress_interval =
-        clickhouse_settings.http_headers_progress_interval_ms;
+        datastore_settings.http_headers_progress_interval_ms;
 
       if (!send_progress) {
         logger.warn({
           module: "Config",
-          message: `request_timeout is set to ${request_timeout}ms, but send_progress_in_http_headers is not enabled. Long-running queries may fail with socket hang-up errors if they exceed the load balancer idle timeout. Consider enabling progress headers with clickhouse_settings: { send_progress_in_http_headers: 1, http_headers_progress_interval_ms: '<interval>' }. See https://github.com/ClickHouse/clickhouse-js/blob/main/docs/howto/long_running_queries.md for more details.`,
+          message: `request_timeout is set to ${request_timeout}ms, but send_progress_in_http_headers is not enabled. Long-running queries may fail with socket hang-up errors if they exceed the load balancer idle timeout. Consider enabling progress headers with datastore_settings: { send_progress_in_http_headers: 1, http_headers_progress_interval_ms: '<interval>' }. See https://github.com/hanzo-ds/js/blob/main/docs/howto/long_running_queries.md for more details.`,
         });
       } else if (progress_interval === undefined) {
         logger.warn({
           module: "Config",
-          message: `request_timeout is set to ${request_timeout}ms and send_progress_in_http_headers is enabled, but http_headers_progress_interval_ms is not set. It is recommended to set http_headers_progress_interval_ms to a value slightly below your load balancer's idle timeout (e.g., '110000' for a 120s LB timeout). See https://github.com/ClickHouse/clickhouse-js/blob/main/docs/howto/long_running_queries.md for more details.`,
+          message: `request_timeout is set to ${request_timeout}ms and send_progress_in_http_headers is enabled, but http_headers_progress_interval_ms is not set. It is recommended to set http_headers_progress_interval_ms to a value slightly below your load balancer's idle timeout (e.g., '110000' for a 120s LB timeout). See https://github.com/hanzo-ds/js/blob/main/docs/howto/long_running_queries.md for more details.`,
         });
       }
     }
@@ -382,7 +382,7 @@ export function getConnectionParams(
     log_writer: new LogWriter(logger, "Connection", log_level),
     log_level: log_level,
     keep_alive: { enabled: config.keep_alive?.enabled ?? true },
-    clickhouse_settings,
+    datastore_settings,
     http_headers: config.http_headers ?? {},
     json: {
       ...defaultJSONHandling,
@@ -401,10 +401,10 @@ export function getConnectionParams(
  * If a value is overridden, then a warning will be logged (even if the log level is OFF).
  */
 export function mergeConfigs(
-  baseConfig: BaseClickHouseClientConfigOptions,
-  configFromURL: BaseClickHouseClientConfigOptions,
+  baseConfig: BaseDatastoreClientConfigOptions,
+  configFromURL: BaseDatastoreClientConfigOptions,
   logger: Logger,
-): BaseClickHouseClientConfigOptions {
+): BaseDatastoreClientConfigOptions {
   function deepMerge(
     base: Record<string, any>,
     fromURL: Record<string, any>,
@@ -436,7 +436,7 @@ export function mergeConfigs(
 
   const config: Record<string, any> = { ...baseConfig };
   deepMerge(config, configFromURL);
-  return config as BaseClickHouseClientConfigOptions;
+  return config as BaseDatastoreClientConfigOptions;
 }
 
 export function createUrl(configURL: string | URL | undefined): URL {
@@ -449,13 +449,13 @@ export function createUrl(configURL: string | URL | undefined): URL {
     }
   } catch (err) {
     throw new Error(
-      "ClickHouse URL is malformed. Expected format: http[s]://[username:password@]hostname:port[/database][?param1=value1&param2=value2]",
+      "Datastore URL is malformed. Expected format: http[s]://[username:password@]hostname:port[/database][?param1=value1&param2=value2]",
       { cause: err },
     );
   }
   if (url.protocol !== "http:" && url.protocol !== "https:") {
     throw new Error(
-      `ClickHouse URL protocol must be either http or https. Got: ${url.protocol}`,
+      `Datastore URL protocol must be either http or https. Got: ${url.protocol}`,
     );
   }
   return url;
@@ -469,8 +469,8 @@ export function createUrl(configURL: string | URL | undefined): URL {
 export function loadConfigOptionsFromURL(
   url: URL,
   handleExtraURLParams: HandleImplSpecificURLParams | null,
-): [URL, BaseClickHouseClientConfigOptions] {
-  let config: BaseClickHouseClientConfigOptions = {};
+): [URL, BaseDatastoreClientConfigOptions] {
+  let config: BaseDatastoreClientConfigOptions = {};
   // trim is not needed, cause space is not allowed in the URL basic auth and should be encoded as %20
   if (url.username !== "") {
     config.username = decodeURIComponent(url.username);
@@ -484,26 +484,26 @@ export function loadConfigOptionsFromURL(
   const urlSearchParamsKeys = [...url.searchParams.keys()];
   if (urlSearchParamsKeys.length > 0) {
     const unknownParams = new Set<string>();
-    const settingPrefix = "clickhouse_setting_";
+    const settingPrefix = "datastore_setting_";
     const settingShortPrefix = "ch_";
     const httpHeaderPrefix = "http_header_";
     urlSearchParamsKeys.forEach((key) => {
       let paramWasProcessed = true;
       const value = url.searchParams.get(key) as string;
       if (key.startsWith(settingPrefix)) {
-        // clickhouse_settings_*
+        // datastore_settings_*
         const settingKey = key.slice(settingPrefix.length);
-        if (config.clickhouse_settings === undefined) {
-          config.clickhouse_settings = {};
+        if (config.datastore_settings === undefined) {
+          config.datastore_settings = {};
         }
-        config.clickhouse_settings[settingKey] = value;
+        config.datastore_settings[settingKey] = value;
       } else if (key.startsWith(settingShortPrefix)) {
         // ch_*
         const settingKey = key.slice(settingShortPrefix.length);
-        if (config.clickhouse_settings === undefined) {
-          config.clickhouse_settings = {};
+        if (config.datastore_settings === undefined) {
+          config.datastore_settings = {};
         }
-        config.clickhouse_settings[settingKey] = value;
+        config.datastore_settings[settingKey] = value;
       } else if (key.startsWith(httpHeaderPrefix)) {
         // http_headers_*
         const headerKey = key.slice(httpHeaderPrefix.length);
@@ -559,8 +559,8 @@ export function loadConfigOptionsFromURL(
             config.log.level = enumConfigURLValue({
               key,
               value,
-              enumObject: ClickHouseLogLevel,
-            }) as ClickHouseLogLevel;
+              enumObject: DatastoreLogLevel,
+            }) as DatastoreLogLevel;
             break;
           case "keep_alive_enabled":
             if (config.keep_alive === undefined) {
@@ -598,9 +598,9 @@ export function loadConfigOptionsFromURL(
       );
     }
   }
-  // clean up the final ClickHouse URL to be used in the connection
-  const clickHouseURL = new URL(`${url.protocol}//${url.host}`);
-  return [clickHouseURL, config];
+  // clean up the final Datastore URL to be used in the connection
+  const datastoreURL = new URL(`${url.protocol}//${url.host}`);
+  return [datastoreURL, config];
 }
 
 export function booleanConfigURLValue({

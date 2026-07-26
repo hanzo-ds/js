@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import type { QueryParams } from "@clickhouse/client-common";
-import { TupleParam } from "@clickhouse/client-common";
-import { type ClickHouseClient } from "@clickhouse/client-common";
+import type { QueryParams } from "@hanzo-ds/client-common";
+import { TupleParam } from "@hanzo-ds/client-common";
+import { type DatastoreClient } from "@hanzo-ds/client-common";
 import { createTestClient } from "../utils";
 
 describe("select with query binding", () => {
-  let client: ClickHouseClient;
+  let client: DatastoreClient;
   beforeEach(() => {
     client = createTestClient();
   });
@@ -380,7 +380,7 @@ describe("select with query binding", () => {
       expect(response).toBe("foobar\n");
     });
 
-    // this one is taken from https://clickhouse.com/docs/en/sql-reference/data-types/enum/#usage-examples
+    // this one is taken from https://docs.hanzo.ai/datastore/en/sql-reference/data-types/enum/#usage-examples
     it("should accept the entire enum definition in a parametrized query", async () => {
       const rs = await client.query({
         query: `SELECT toTypeName(CAST('a', {e: String}))`,

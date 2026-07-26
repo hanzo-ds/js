@@ -3,7 +3,7 @@
  * ======================================================
  *
  *   Repo:        https://github.com/langfuse/langfuse  (~26k★)
- *   Package:     @clickhouse/client  ^1.18.5
+ *   Package:     @hanzo-ds/client  ^1.18.5
  *   Lives in:    packages/shared/src/server
  *   Analysed at: dee4118e8e9e672bc59a844a0ee3addd6a34a144
  *   Test partner: beta release-test branch peter_leonov_ch_clickhouse_client_beta_test
@@ -17,14 +17,14 @@
  * top.
  *
  * Key patterns:
- *   - `createClient({ ... })` with `ClickHouseSettings`.
+ *   - `createClient({ ... })` with `DatastoreSettings`.
  *   - Custom LOGGER implementing the client `Logger` interface, mapping
  *     ClickHouse log levels to Winston (`mapLogLevel`).
  *   - OpenTelemetry spans wrapped around every query (omitted here).
  *   - Read/write/command wrappers; `commandClickhouse` for DDL; `InsertResult`.
- *   - Unit tests that `vi.mock('@clickhouse/client')`.
- *   - Upstream also deep-imports `@clickhouse/client/dist/config`
- *     (NodeClickHouseClientConfigOptions), which makes it sensitive to the
+ *   - Unit tests that `vi.mock('@hanzo-ds/client')`.
+ *   - Upstream also deep-imports `@hanzo-ds/client/dist/config`
+ *     (NodeDatastoreClientConfigOptions), which makes it sensitive to the
  *     client's published file layout — flagged but intentionally NOT reproduced
  *     here (we depend on the public export surface only).
  *
@@ -37,19 +37,19 @@
  *
  * The reproduction below targets the CURRENT 1.x client API and runs against the
  * test ClickHouse via the shared `createTestClient` helper (which forwards the
- * langfuse-specific `clickhouse_settings` / `log` options to `createClient`).
+ * langfuse-specific `datastore_settings` / `log` options to `createClient`).
  */
 
 import { afterEach, describe, expect, it } from "vitest";
 import {
-  ClickHouseLogLevel,
-  type ClickHouseClient,
-  type ClickHouseSettings,
+  DatastoreLogLevel,
+  type DatastoreClient,
+  type DatastoreSettings,
   type ErrorLogParams,
   type InsertResult,
   type LogParams,
   type Logger,
-} from "@clickhouse/client";
+} from "@hanzo-ds/client";
 import { createTestClient, guid, validateUUID } from "@test/utils";
 
 // Custom logger implementing the client Logger interface (maps to Winston in
@@ -73,15 +73,15 @@ class LangfuseClickHouseLogger implements Logger {
   }
 }
 
-function getClickhouseClient(): ClickHouseClient {
-  const clickhouse_settings: ClickHouseSettings = {
+function getClickhouseClient(): DatastoreClient {
+  const datastore_settings: DatastoreSettings = {
     async_insert: 1,
     wait_for_async_insert: 1,
   };
   return createTestClient({
-    clickhouse_settings,
+    datastore_settings,
     log: {
-      level: ClickHouseLogLevel.INFO,
+      level: DatastoreLogLevel.INFO,
       LoggerClass: LangfuseClickHouseLogger,
     },
   });
@@ -89,7 +89,7 @@ function getClickhouseClient(): ClickHouseClient {
 
 // Repository base — read/write/command wrappers.
 async function queryClickhouse<T>(
-  client: ClickHouseClient,
+  client: DatastoreClient,
   query: string,
   params?: Record<string, unknown>,
 ): Promise<T[]> {
@@ -102,18 +102,18 @@ async function queryClickhouse<T>(
 }
 
 async function commandClickhouse(
-  client: ClickHouseClient,
+  client: DatastoreClient,
   query: string,
 ): Promise<void> {
   await client.command({
     query,
-    clickhouse_settings: { wait_end_of_query: 1 },
+    datastore_settings: { wait_end_of_query: 1 },
   });
 }
 
 // Seeder uses InsertResult.
 async function insertTraces(
-  client: ClickHouseClient,
+  client: DatastoreClient,
   table: string,
   rows: unknown[],
 ): Promise<InsertResult> {
@@ -121,7 +121,7 @@ async function insertTraces(
 }
 
 describe("oss-dependents / langfuse", () => {
-  let client: ClickHouseClient;
+  let client: DatastoreClient;
   const table = `oss_langfuse_${guid()}`;
 
   afterEach(async () => {

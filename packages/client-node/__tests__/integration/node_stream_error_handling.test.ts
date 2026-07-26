@@ -3,14 +3,14 @@ import {
   assertError,
   streamErrorQueryParams,
 } from "@test/fixtures/stream_errors";
-import { isClickHouseVersionAtLeast } from "@test/utils/server_version";
-import type { ClickHouseClient } from "@clickhouse/client";
-import type { ClickHouseError } from "@clickhouse/client";
+import { isDatastoreVersionAtLeast } from "@test/utils/server_version";
+import type { DatastoreClient } from "@hanzo-ds/client";
+import type { DatastoreError } from "@hanzo-ds/client";
 import { createNodeTestClient } from "../utils/node_client";
 
-// See https://github.com/ClickHouse/ClickHouse/pull/88818
+// See https://github.com/hanzoai/datastore/pull/88818
 describe("[Node.js] Stream error handling", () => {
-  let client: ClickHouseClient;
+  let client: DatastoreClient;
 
   beforeEach(async () => {
     client = createNodeTestClient();
@@ -20,11 +20,11 @@ describe("[Node.js] Stream error handling", () => {
   });
 
   it("with promise listeners", async ({ skip }) => {
-    if (!(await isClickHouseVersionAtLeast(client, 25, 11))) {
+    if (!(await isDatastoreVersionAtLeast(client, 25, 11))) {
       skip();
     }
 
-    let caughtError: ClickHouseError | null = null;
+    let caughtError: DatastoreError | null = null;
 
     try {
       const queryParams = streamErrorQueryParams();
@@ -45,18 +45,18 @@ describe("[Node.js] Stream error handling", () => {
         });
       });
     } catch (err) {
-      caughtError = err as ClickHouseError;
+      caughtError = err as DatastoreError;
     }
 
     assertError(caughtError);
   });
 
   it("with async iterators", async ({ skip }) => {
-    if (!(await isClickHouseVersionAtLeast(client, 25, 11))) {
+    if (!(await isDatastoreVersionAtLeast(client, 25, 11))) {
       skip();
     }
 
-    let caughtError: ClickHouseError | null = null;
+    let caughtError: DatastoreError | null = null;
 
     try {
       const queryParams = streamErrorQueryParams();
@@ -69,43 +69,43 @@ describe("[Node.js] Stream error handling", () => {
         }
       }
     } catch (err) {
-      caughtError = err as ClickHouseError;
+      caughtError = err as DatastoreError;
     }
 
     assertError(caughtError);
   });
 
   it.skip("with .json()", async ({ skip }) => {
-    if (!(await isClickHouseVersionAtLeast(client, 25, 11))) {
+    if (!(await isDatastoreVersionAtLeast(client, 25, 11))) {
       skip();
     }
 
-    let caughtError: ClickHouseError | null = null;
+    let caughtError: DatastoreError | null = null;
 
     try {
       const queryParams = streamErrorQueryParams();
       const rs = await client.query(queryParams);
       await rs.json();
     } catch (err) {
-      caughtError = err as ClickHouseError;
+      caughtError = err as DatastoreError;
     }
 
     assertError(caughtError);
   });
 
   it.skip("with .text()", async ({ skip }) => {
-    if (!(await isClickHouseVersionAtLeast(client, 25, 11))) {
+    if (!(await isDatastoreVersionAtLeast(client, 25, 11))) {
       skip();
     }
 
-    let caughtError: ClickHouseError | null = null;
+    let caughtError: DatastoreError | null = null;
 
     try {
       const queryParams = streamErrorQueryParams();
       const rs = await client.query(queryParams);
       await rs.text();
     } catch (err) {
-      caughtError = err as ClickHouseError;
+      caughtError = err as DatastoreError;
     }
 
     assertError(caughtError);

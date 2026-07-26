@@ -4,7 +4,7 @@
 #include <sstream>
 #include <string>
 
-/// chdt-parse: read a ClickHouse data-type string and print its JSON AST.
+/// chdt-parse: read a Datastore data-type string and print its JSON AST.
 ///
 ///   chdt-parse "Array(Nullable(UInt64))"     # type from arguments
 ///   echo "Tuple(a UInt8, b String)" | chdt-parse   # type from stdin

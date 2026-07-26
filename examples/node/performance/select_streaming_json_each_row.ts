@@ -1,4 +1,4 @@
-import { createClient, type Row } from "@clickhouse/client";
+import { createClient, type Row } from "@hanzo-ds/client";
 
 /**
  * Can be used for consuming large datasets for reducing memory overhead,
@@ -19,11 +19,11 @@ import { createClient, type Row } from "@clickhouse/client";
  *  - JSONCompactStringsEachRowWithNamesAndTypes
  *
  * See other supported formats for streaming:
- * https://clickhouse.com/docs/en/integrations/language-clients/javascript#supported-data-formats
+ * https://docs.hanzo.ai/datastore/en/integrations/language-clients/javascript#supported-data-formats
  *
- * NB: There might be confusion between JSON as a general format and ClickHouse JSON format (https://clickhouse.com/docs/en/sql-reference/formats#json).
+ * NB: There might be confusion between JSON as a general format and Datastore JSON format (https://docs.hanzo.ai/datastore/en/sql-reference/formats#json).
  * The client supports streaming JSON objects with JSONEachRow and other JSON*EachRow formats (see the list above);
- * it's just that ClickHouse JSON format and a few others are represented as a single object in the response and cannot be streamed by the client.
+ * it's just that Datastore JSON format and a few others are represented as a single object in the response and cannot be streamed by the client.
  */
 const client = createClient();
 const rows = await client.query({

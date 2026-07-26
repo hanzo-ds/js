@@ -1,4 +1,4 @@
-import { createClient } from "@clickhouse/client-web";
+import { createClient } from "@hanzo-ds/client-web";
 
 function assertEqual(
   actual: unknown,
@@ -10,7 +10,7 @@ function assertEqual(
   }
 }
 
-// ClickHouse converts UUID values into UInt128 implicitly only for the `VALUES`
+// Datastore converts UUID values into UInt128 implicitly only for the `VALUES`
 // clause. With row-oriented input formats such as `JSONEachRow`, sending a UUID
 // string like "019982cb-3abf-7e12-9668-c788a9e3639c" for a `UInt128` column
 // fails with `CANNOT_PARSE_INPUT_ASSERTION_FAILED`. This example shows two
@@ -20,9 +20,9 @@ function assertEqual(
 // client and send it as a decimal string (recommended; JS `number` cannot hold
 // 128 bits without precision loss, so always pass UInt128 as a string).
 //
-// Pattern 2 — declare the UUID column as `EPHEMERAL` and let ClickHouse
+// Pattern 2 — declare the UUID column as `EPHEMERAL` and let Datastore
 // populate the `UInt128` column via `DEFAULT`. See also:
-// https://clickhouse.com/docs/en/sql-reference/statements/create/table#ephemeral
+// https://docs.hanzo.ai/datastore/en/sql-reference/statements/create/table#ephemeral
 
 function uuidToUInt128(uuid: string): string {
   // 8-4-4-4-12 hex digits → 32 hex digits → BigInt → decimal string

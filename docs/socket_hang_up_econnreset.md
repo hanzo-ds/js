@@ -6,7 +6,7 @@ If you're experiencing `socket hang up` and / or `ECONNRESET` errors even when u
 
   ```ts
   const client = createClient({
-    log: { level: ClickHouseLogLevel.WARN },
+    log: { level: DatastoreLogLevel.WARN },
   });
   ```
 
@@ -14,7 +14,7 @@ If you're experiencing `socket hang up` and / or `ECONNRESET` errors even when u
 
 - Reduce the `keep_alive.idle_socket_ttl` setting in the client configuration by 500 milliseconds. In certain situations, for example, high network latency between client and server, it could be beneficial, ruling out the situation where an outgoing request could obtain a socket that the server is going to close.
 
-- If this error is happening during long-running queries with no data coming in or out (for example, a long-running `INSERT FROM SELECT`), this might be due to a load balancer or other network components closing long-lived connections or long running requests. You could try forcing some data coming in during long-running queries by using a combination of these ClickHouse settings:
+- If this error is happening during long-running queries with no data coming in or out (for example, a long-running `INSERT FROM SELECT`), this might be due to a load balancer or other network components closing long-lived connections or long running requests. You could try forcing some data coming in during long-running queries by using a combination of these Datastore settings:
 
   ```ts
   const client = createClient({
@@ -23,7 +23,7 @@ If you're experiencing `socket hang up` and / or `ECONNRESET` errors even when u
     /** These settings in combination allow to avoid LB timeout issues in case of long-running queries without data coming in or out,
      *  such as `INSERT FROM SELECT` and similar ones, as the connection could be marked as idle by the LB and closed abruptly.
      *  In this case, we assume that the LB has idle connection timeout of 120s, so we set 110s as a "safe" value. */
-    clickhouse_settings: {
+    datastore_settings: {
       send_progress_in_http_headers: 1,
       http_headers_progress_interval_ms: "110000", // UInt64, should be passed as a string
     },
@@ -32,7 +32,7 @@ If you're experiencing `socket hang up` and / or `ECONNRESET` errors even when u
 
   Keep in mind, however, that the total size of the received headers has a 16KB limit in recent Node.js versions; after a certain amount of progress headers received, which was around 70-80 in our tests, an exception will be thrown.
 
-  It is also possible to use an entirely different approach, avoiding wait time on the wire completely; it could be done by leveraging HTTP interface "feature" that mutations aren't cancelled when the connection is lost. See [this example](https://github.com/ClickHouse/clickhouse-js/blob/main/examples/long_running_queries_cancel_request.ts) for more details.
+  It is also possible to use an entirely different approach, avoiding wait time on the wire completely; it could be done by leveraging HTTP interface "feature" that mutations aren't cancelled when the connection is lost. See [this example](https://github.com/hanzo-ds/js/blob/main/examples/long_running_queries_cancel_request.ts) for more details.
 
 - Keep-Alive feature can be disabled entirely. In this case, client will also add `Connection: close` header to every request, and the underlying HTTP agent won't reuse the connections. `keep_alive.idle_socket_ttl` setting will be ignored, as there will be no idling sockets. This will result in additional overhead, as a new connection will be established for every request.
 
@@ -44,18 +44,18 @@ If you're experiencing `socket hang up` and / or `ECONNRESET` errors even when u
   });
   ```
 
-- Rule out potential issues with the rest of the network stack including Node.js itself by running a simple command-line test with the same ClickHouse instance and the same network path (i.e. from the same machine or network segment, e.g. a Kubernetes pod), for example, using `curl`:
+- Rule out potential issues with the rest of the network stack including Node.js itself by running a simple command-line test with the same Datastore instance and the same network path (i.e. from the same machine or network segment, e.g. a Kubernetes pod), for example, using `curl`:
 
   ```sh
-  curl -is --user '<user>:<password>' --data-binary "SELECT 1" <clickhouse_url>
+  curl -is --user '<user>:<password>' --data-binary "SELECT 1" <datastore_url>
   ```
 
   You might want to run it in a loop for several minutes. If you see similar errors in `curl`, it is likely that the issue is not related to the client configuration, but rather to the network stack or the server configuration.
 
-- To test the connection with plain Node.js functionality, you can try to create a simple HTTP request to the ClickHouse server using the built-in `fetch` API:
+- To test the connection with plain Node.js functionality, you can try to create a simple HTTP request to the Datastore server using the built-in `fetch` API:
 
   ```ts
-  const response = await fetch("<clickhouse_url>?query=SELECT+1", {
+  const response = await fetch("<datastore_url>?query=SELECT+1", {
     method: "POST",
     headers: {
       Authorization:

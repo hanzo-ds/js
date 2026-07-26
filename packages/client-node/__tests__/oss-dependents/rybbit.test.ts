@@ -3,7 +3,7 @@
  * =====================================================
  *
  *   Repo:        https://github.com/rybbit-io/rybbit  (~12k★)
- *   Package:     @clickhouse/client  1.11.1 (pinned, exact)
+ *   Package:     @hanzo-ds/client  1.11.1 (pinned, exact)
  *   Lives in:    server/src/db/clickhouse
  *   Analysed at: d92e3f274121f1910c9259747c8045bd74a21792
  *
@@ -19,7 +19,7 @@
  *   - `createClient({ url, database, password, request_timeout: 300_000 })` —
  *     long request timeout for heavy queries.
  *   - Schema/DDL applied entirely through `client.exec({ query,
- *     clickhouse_settings })`.
+ *     datastore_settings })`.
  *   - `ResultSet` type used in query utilities; deployment flags (IS_CLOUD,
  *     LITE_DASHBOARD) toggle which MVs are created.
  *
@@ -35,11 +35,11 @@
  */
 
 import { afterEach, describe, expect, it } from "vitest";
-import { type ClickHouseClient, type ResultSet } from "@clickhouse/client";
+import { type DatastoreClient, type ResultSet } from "@hanzo-ds/client";
 import { createTestClient, guid } from "@test/utils";
 
 describe("oss-dependents / rybbit", () => {
-  let client: ClickHouseClient;
+  let client: DatastoreClient;
   const events = `oss_rybbit_events_${guid()}`;
   const mv = `oss_rybbit_events_hourly_${guid()}`;
 
@@ -58,7 +58,7 @@ describe("oss-dependents / rybbit", () => {
     for (const query of ddl) {
       const { stream } = await client.exec({
         query,
-        clickhouse_settings: { wait_end_of_query: 1 },
+        datastore_settings: { wait_end_of_query: 1 },
       });
       stream.destroy();
     }

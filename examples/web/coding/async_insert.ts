@@ -1,22 +1,22 @@
-import { createClient, ClickHouseError } from "@clickhouse/client-web";
+import { createClient, DatastoreError } from "@hanzo-ds/client-web";
 
 // This example demonstrates how to use asynchronous inserts, avoiding client side batching of the incoming data.
-// Suitable for ClickHouse Cloud, too.
-// See https://clickhouse.com/docs/en/optimize/asynchronous-inserts
+// Suitable for Datastore Cloud, too.
+// See https://docs.hanzo.ai/datastore/en/optimize/asynchronous-inserts
 const client = createClient({
   // In a browser application, configure the URL/credentials directly here
   // (or build them from a runtime configuration object). The defaults below
-  // assume a ClickHouse instance running locally without authentication.
+  // assume a Datastore instance running locally without authentication.
   url: "http://localhost:8123",
   max_open_connections: 10,
-  clickhouse_settings: {
-    // https://clickhouse.com/docs/en/operations/settings/settings#async_insert
+  datastore_settings: {
+    // https://docs.hanzo.ai/datastore/en/operations/settings/settings#async_insert
     async_insert: 1,
-    // https://clickhouse.com/docs/en/operations/settings/settings#wait_for_async_insert
+    // https://docs.hanzo.ai/datastore/en/operations/settings/settings#wait_for_async_insert
     wait_for_async_insert: 1,
-    // https://clickhouse.com/docs/en/operations/settings/settings#async_insert_max_data_size
+    // https://docs.hanzo.ai/datastore/en/operations/settings/settings#async_insert_max_data_size
     async_insert_max_data_size: "1000000",
-    // https://clickhouse.com/docs/en/operations/settings/settings#async_insert_busy_timeout_ms
+    // https://docs.hanzo.ai/datastore/en/operations/settings/settings#async_insert_busy_timeout_ms
     async_insert_busy_timeout_ms: 1000,
   },
 });
@@ -31,7 +31,7 @@ await client.command({
     ORDER BY id
   `,
   // Tell the server to send the response only when the DDL is fully executed.
-  clickhouse_settings: {
+  datastore_settings: {
     wait_end_of_query: 1,
   },
 });
@@ -41,7 +41,7 @@ const start = new Date();
 // (e.g. from parallel HTTP requests in your app or similar).
 const promises = [...new Array(10)].map(async () => {
   // Each of these smaller inserts could be merged into a single batch on the server side
-  // (or more, depending on https://clickhouse.com/docs/en/operations/settings/settings#async_insert_max_data_size).
+  // (or more, depending on https://docs.hanzo.ai/datastore/en/operations/settings/settings#async_insert_max_data_size).
   // Since we set `async_insert=1`, application does not have to prepare a larger batch to optimize the insert performance.
   // In this example, and with this particular (rather small) data size, we expect the server to merge it into just a single batch.
   // As we set `wait_for_async_insert=1` as well, the insert promises will be resolved when the server sends an ack
@@ -59,10 +59,10 @@ const promises = [...new Array(10)].map(async () => {
     })
     .catch((err) => {
       // Depending on the error, it is possible that the request itself was not processed on the server.
-      if (err instanceof ClickHouseError) {
+      if (err instanceof DatastoreError) {
         // You could decide what to do with a failed insert based on the error code.
-        // An overview of possible error codes is available in the `system.errors` ClickHouse table.
-        console.error(`ClickHouse error: ${err.code}. Insert failed:`, err);
+        // An overview of possible error codes is available in the `system.errors` Datastore table.
+        console.error(`Datastore error: ${err.code}. Insert failed:`, err);
         return;
       }
       // You could implement a proper retry mechanism depending on your application needs;

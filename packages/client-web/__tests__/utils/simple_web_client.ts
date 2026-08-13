@@ -2,8 +2,8 @@
 // so that creating a simple client never registers the shared `beforeAll`
 // test-environment initializer and stays runnable without Datastore.
 import { createSimpleTestClient } from "@test/utils/simple_client";
-import type { DatastoreClientConfigOptions } from "@hanzo-ds/client-web";
-import type { DatastoreClient } from "@hanzo-ds/client-web";
+import type { DatastoreClientConfigOptions } from "@hanzo/datastore-client-web";
+import type { DatastoreClient } from "@hanzo/datastore-client-web";
 
 export function createSimpleWebTestClient(
   config: DatastoreClientConfigOptions = {},

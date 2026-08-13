@@ -9,7 +9,7 @@
     "outDir": "out",
     "paths": {
       "@test/*": ["./packages/client-common/__tests__/*"],
-      "@hanzo-ds/client-common": ["./packages/client-common/src/index.ts"]
+      "@hanzo/datastore-client-common": ["./packages/client-common/src/index.ts"]
     }
   }
 }

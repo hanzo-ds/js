@@ -1,4 +1,4 @@
-import { createClient } from "@hanzo-ds/client-web";
+import { createClient } from "@hanzo/datastore-client-web";
 
 // URL configuration reference with all possible values.
 //

@@ -1,4 +1,4 @@
-import type { DatastoreClient } from "@hanzo-ds/client-common";
+import type { DatastoreClient } from "@hanzo/datastore-client-common";
 
 interface ServerVersion {
   major: number;

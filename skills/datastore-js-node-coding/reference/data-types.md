@@ -50,7 +50,7 @@ When answering about storing and reading JSON objects:
 ## `Dynamic`, `Variant(...)`, `JSON`
 
 ```ts
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 
 const client = createClient({
   datastore_settings: {
@@ -228,7 +228,7 @@ Datastore handle the bit-plane layout — don't feed raw `FixedString` bytes
 through JSON yourself.
 
 ```ts
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 
 const tableName = `chjs_qbit`;
 const client = createClient({

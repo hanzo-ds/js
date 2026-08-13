@@ -26,14 +26,14 @@ if (
   );
 }
 
-// Which build of the client the `@hanzo-ds/*` specifiers resolve to:
+// Which build of the client the `@hanzo/datastore-*` specifiers resolve to:
 //   src  (default) - the raw TypeScript sources (via the `unittest` export
 //                    condition), for a fast, build-free loop.
 //   dist           - the compiled packages, exactly as a published consumer
 //                    sees them (run `npm run build` first). An e2e-style guard
 //                    against the built artifact / public surface.
 // TEST_TARGET is orthogonal to TEST_MODE (which only selects the spec files).
-// Caveat: only specs that import EXCLUSIVELY via the `@hanzo-ds/*` names
+// Caveat: only specs that import EXCLUSIVELY via the `@hanzo/datastore-*` names
 // retarget cleanly; specs that also reach into `../../src` directly keep
 // importing source for those paths regardless.
 const testTarget = process.env.TEST_TARGET ?? "src";
@@ -143,7 +143,7 @@ export default defineConfig({
   // Vite to pre-bundle it (as a real bundler-based consumer would) so its named
   // exports are exposed to the browser ESM imports.
   optimizeDeps:
-    testTarget === "dist" ? { include: ["@hanzo-ds/client-web"] } : undefined,
+    testTarget === "dist" ? { include: ["@hanzo/datastore-client-web"] } : undefined,
   resolve: {
     // Driven by TEST_TARGET (see above). With `src` (default), the `unittest`
     // export condition + aliases resolve the raw sources. With `dist`, we drop
@@ -155,7 +155,7 @@ export default defineConfig({
     // bundle. The web client bundles the common sources (client-common is
     // deprecated and not a runtime dep), so a real consumer gets common-origin
     // symbols — value classes like `SettingsMap`/`TupleParam`, `DatastoreError`
-    // — from `@hanzo-ds/client-web`. Pointing both at one bundle keeps a
+    // — from `@hanzo/datastore-client-web`. Pointing both at one bundle keeps a
     // single class identity, so `instanceof` checks (the client's internal ones
     // on test-provided values, and the tests' own) hold.
     alias:
@@ -165,16 +165,16 @@ export default defineConfig({
             // package NAME (not a path) so it resolves through the published
             // entry — Vite pre-bundles the CJS dist and its named exports stay
             // intact, and common-origin symbols share the client's one bundle.
-            "@hanzo-ds/client-common": "@hanzo-ds/client-web",
+            "@hanzo/datastore-client-common": "@hanzo/datastore-client-web",
             "@test": fileURLToPath(
               new URL("packages/client-common/__tests__", `file://${root}/`),
             ),
           }
         : {
-            "@hanzo-ds/client-common": fileURLToPath(
+            "@hanzo/datastore-client-common": fileURLToPath(
               new URL("packages/client-common/src", `file://${root}/`),
             ),
-            "@hanzo-ds/client-web": fileURLToPath(
+            "@hanzo/datastore-client-web": fileURLToPath(
               new URL("packages/client-web", `file://${root}/`),
             ),
             "@test": fileURLToPath(

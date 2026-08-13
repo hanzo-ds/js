@@ -1,4 +1,4 @@
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 
 const url = process.env["DATASTORE_CLOUD_URL"];
 const password = process.env["DATASTORE_CLOUD_PASSWORD"];

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseDataType } from "@hanzo-ds/datatype-parser";
+import { parseDataType } from "@hanzo/datastore-datatype-parser";
 import { query } from "./datastore.js";
 import { Cursor } from "../src/readers/core.js";
 import { astToReader, RowBinaryTypeError } from "../src/readers/compile.js";

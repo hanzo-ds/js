@@ -9,7 +9,7 @@
 **Fix:** Remove response compression for read-only users:
 
 ```js
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 
 // Don't do this with a readonly=1 user:
 // compression: { response: true }

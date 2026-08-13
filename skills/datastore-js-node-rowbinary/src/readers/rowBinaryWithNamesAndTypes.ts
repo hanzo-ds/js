@@ -4,12 +4,12 @@
  * decodes the rest of the stream.
  *
  * This ties together the pieces: {@link readHeader} (wire), the parser
- * (`@hanzo-ds/datatype-parser`), and {@link astToReader} (the AST → reader
+ * (`@hanzo/datastore-datatype-parser`), and {@link astToReader} (the AST → reader
  * fold in `compile.ts`), then assembles a named-tuple row reader over the
  * columns and a {@link readRows} driver for the row data.
  */
 
-import { parseDataType } from "@hanzo-ds/datatype-parser";
+import { parseDataType } from "@hanzo/datastore-datatype-parser";
 
 import type { Reader, Cursor } from "./core.js";
 import { readHeader } from "./header.js";

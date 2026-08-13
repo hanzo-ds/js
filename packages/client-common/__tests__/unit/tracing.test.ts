@@ -8,8 +8,8 @@ import {
   type DatastoreSpanOptions,
   type DatastoreSpanStatus,
   type DatastoreTracer,
-} from "@hanzo-ds/client-common";
-import { parseError } from "@hanzo-ds/client-common";
+} from "@hanzo/datastore-client-common";
+import { parseError } from "@hanzo/datastore-client-common";
 import { DatastoreClient } from "../../src/client";
 import { NoopDatastoreSpan } from "../../src/tracing";
 

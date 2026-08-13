@@ -8,7 +8,7 @@
 When the user wants `UInt64`/`Int64` values back as `BigInt`:
 
 - State that configurable `json.parse` / `json.stringify` requires
-  `@hanzo-ds/client >= 1.14.0`.
+  `@hanzo/datastore-client >= 1.14.0`.
 - Show the supported `createClient({ json: { parse, stringify } })` option,
   usually with `json-bigint` and `useNativeBigInt: true`.
 - Combine it with `output_format_json_quote_64bit_integers: 0` so the server
@@ -35,7 +35,7 @@ A custom `{ parse, stringify }` lets you plug in `JSONBig`,
 ## Recipe: BigInt-safe stringify, custom Date handling
 
 ```ts
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 
 const valueSerializer = (value: unknown): unknown => {
   // Serialize Date as a UNIX millis number (instead of toJSON's ISO string)
@@ -102,7 +102,7 @@ or precision-lossy numbers), plug in a `BigInt`-aware parser such as
 [`json-bigint`](https://www.npmjs.com/package/json-bigint):
 
 ```ts
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 import JSONBig from "json-bigint";
 
 const bigJson = JSONBig({ useNativeBigInt: true });
@@ -134,7 +134,7 @@ hand-rolled reviver. This uses the `context.source` argument that
 numeric literal is available before it's coerced to a JS `number`:
 
 ```ts
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 
 const parseBigInt = (text: string) =>
   JSON.parse(text, function (key, value, context) {

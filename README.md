@@ -4,11 +4,11 @@
 </p>
 <br/>
 <p align="center">
-<a href="https://www.npmjs.com/package/@hanzo-ds/client">
+<a href="https://www.npmjs.com/package/@hanzo/datastore-client">
 <img alt="NPM Version" src="https://img.shields.io/npm/v/%40hanzo-ds%2Fclient?color=%233178C6&logo=npm">
 </a>
 
-<a href="https://www.npmjs.com/package/@hanzo-ds/client">
+<a href="https://www.npmjs.com/package/@hanzo/datastore-client">
 <img alt="NPM Downloads" src="https://img.shields.io/npm/dw/%40hanzo-ds%2Fclient?color=%233178C6&logo=npm">
 </a>
 
@@ -35,26 +35,26 @@ The client has zero external dependencies and is optimized for maximum performan
 
 The repository consists of four packages:
 
-- `@hanzo-ds/client` - a version of the client designed for Node.js platform only. It is built on top of [HTTP](https://nodejs.org/api/http.html)
+- `@hanzo/datastore-client` - a version of the client designed for Node.js platform only. It is built on top of [HTTP](https://nodejs.org/api/http.html)
   and [Stream](https://nodejs.org/api/stream.html) APIs; supports streaming for both selects and inserts.
-- `@hanzo-ds/client-web` - a version of the client built on top of [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
+- `@hanzo/datastore-client-web` - a version of the client built on top of [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
   and [Web Streams](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API) APIs; supports streaming for selects.
   Compatible with Chrome/Firefox browsers and Cloudflare workers.
-- `@hanzo-ds/client-common` - shared common types and the base framework for building a custom client implementation.
-- `@hanzo-ds/rowbinary` - a library for reading (and soon writing) Datastore RowBinary format.
+- `@hanzo/datastore-client-common` - shared common types and the base framework for building a custom client implementation.
+- `@hanzo/datastore-rowbinary` - a library for reading (and soon writing) Datastore RowBinary format.
 
 ## Installation
 
 Node.js client:
 
 ```sh
-npm i @hanzo-ds/client
+npm i @hanzo/datastore-client
 ```
 
 Web client (browsers, Cloudflare workers):
 
 ```sh
-npm i @hanzo-ds/client-web
+npm i @hanzo/datastore-client-web
 ```
 
 ## Environment requirements
@@ -85,7 +85,7 @@ The client may work with older versions too; however, this is best-effort suppor
 ## Quick start
 
 ```ts
-import { createClient } from "@hanzo-ds/client"; // or '@hanzo-ds/client-web'
+import { createClient } from "@hanzo/datastore-client"; // or '@hanzo/datastore-client-web'
 
 const client = createClient({
   url: process.env.DATASTORE_URL ?? "http://localhost:8123",
@@ -114,13 +114,13 @@ See the [Datastore website](https://docs.hanzo.ai/datastore/integrations/javascr
 
 Each package keeps its own changelog:
 
-- `@hanzo-ds/client` — [`packages/client-node/CHANGELOG.md`](./packages/client-node/CHANGELOG.md)
-- `@hanzo-ds/client-web` — [`packages/client-web/CHANGELOG.md`](./packages/client-web/CHANGELOG.md)
-- `@hanzo-ds/client-common` (deprecated) — [`packages/client-common/CHANGELOG.md`](./packages/client-common/CHANGELOG.md)
-- `@hanzo-ds/datatype-parser` — [`packages/datatype-parser/CHANGELOG.md`](./packages/datatype-parser/CHANGELOG.md)
-- `@hanzo-ds/rowbinary` — [`skills/datastore-js-node-rowbinary/CHANGELOG.md`](./skills/datastore-js-node-rowbinary/CHANGELOG.md)
+- `@hanzo/datastore-client` — [`packages/client-node/CHANGELOG.md`](./packages/client-node/CHANGELOG.md)
+- `@hanzo/datastore-client-web` — [`packages/client-web/CHANGELOG.md`](./packages/client-web/CHANGELOG.md)
+- `@hanzo/datastore-client-common` (deprecated) — [`packages/client-common/CHANGELOG.md`](./packages/client-common/CHANGELOG.md)
+- `@hanzo/datastore-datatype-parser` — [`packages/datatype-parser/CHANGELOG.md`](./packages/datatype-parser/CHANGELOG.md)
+- `@hanzo/datastore-rowbinary` — [`skills/datastore-js-node-rowbinary/CHANGELOG.md`](./skills/datastore-js-node-rowbinary/CHANGELOG.md)
 
-History through `@hanzo-ds/client` 1.23.0 lives in the now-frozen repository-wide [`CHANGELOG.md`](./CHANGELOG.md).
+History through `@hanzo/datastore-client` 1.23.0 lives in the now-frozen repository-wide [`CHANGELOG.md`](./CHANGELOG.md).
 
 ## AI Agent Skills
 

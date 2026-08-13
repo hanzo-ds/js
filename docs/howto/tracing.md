@@ -1,6 +1,6 @@
 # Tracing the Datastore client with the `tracer` API
 
-`@hanzo-ds/client` (and `@hanzo-ds/client-web`) ships a small,
+`@hanzo/datastore-client` (and `@hanzo/datastore-client-web`) ships a small,
 **zero-dependency** `tracer` configuration option you can use to plug the
 client's per-operation lifecycle into any tracing or metrics backend - most
 notably [OpenTelemetry](https://opentelemetry.io/), but also Prometheus
@@ -12,12 +12,12 @@ The tracer surface lives entirely inside the client (no extra packages on
 OTEL tracer can be passed to the client **as-is** - no adapter, no casts:
 
 ```ts
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 import { trace } from "@opentelemetry/api";
 
 const client = createClient({
   url: "http://localhost:8123",
-  tracer: trace.getTracer("@hanzo-ds/client"),
+  tracer: trace.getTracer("@hanzo/datastore-client"),
 });
 ```
 
@@ -40,7 +40,7 @@ import type {
   DatastoreSpanOptions,
   DatastoreSpanAttributes,
   DatastoreSpanStatus,
-} from "@hanzo-ds/client"; // or '@hanzo-ds/client-web'
+} from "@hanzo/datastore-client"; // or '@hanzo/datastore-client-web'
 
 interface DatastoreTracer<TSpan extends DatastoreSpan = DatastoreSpan> {
   startActiveSpan<T>(
@@ -177,7 +177,7 @@ import {
   createClient,
   type DatastoreSpan,
   type DatastoreTracer,
-} from "@hanzo-ds/client";
+} from "@hanzo/datastore-client";
 
 const noop = () => undefined;
 const noopSpan: DatastoreSpan = {
@@ -187,7 +187,7 @@ const noopSpan: DatastoreSpan = {
   end: noop,
 };
 
-const otelTracer = trace.getTracer("@hanzo-ds/client");
+const otelTracer = trace.getTracer("@hanzo/datastore-client");
 const tracer: DatastoreTracer = {
   startActiveSpan: (name, options, fn) =>
     trace.getSpan(context.active()) === undefined
@@ -208,9 +208,9 @@ To suppress them, run the operation under a suppressed context using
 ```ts
 import { context, trace } from "@opentelemetry/api";
 import { suppressTracing } from "@opentelemetry/core";
-import { createClient, type DatastoreTracer } from "@hanzo-ds/client";
+import { createClient, type DatastoreTracer } from "@hanzo/datastore-client";
 
-const otelTracer = trace.getTracer("@hanzo-ds/client");
+const otelTracer = trace.getTracer("@hanzo/datastore-client");
 const tracer: DatastoreTracer = {
   startActiveSpan: (name, options, fn) =>
     otelTracer.startActiveSpan(name, options, (span) =>
@@ -236,7 +236,7 @@ import {
   type DatastoreSpan,
   type DatastoreSpanStatus,
   type DatastoreTracer,
-} from "@hanzo-ds/client";
+} from "@hanzo/datastore-client";
 
 interface RecordedSpan extends DatastoreSpan {
   name: string;

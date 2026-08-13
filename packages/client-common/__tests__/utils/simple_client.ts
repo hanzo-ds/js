@@ -2,7 +2,7 @@ import {
   DatastoreLogLevel,
   type BaseDatastoreClientConfigOptions,
   type DatastoreClient,
-} from "@hanzo-ds/client-common";
+} from "@hanzo/datastore-client-common";
 import { TestLogger } from "./test_logger";
 
 /**

@@ -81,7 +81,7 @@ async function main(): Promise<void> {
   }
 
   // Backend selection is via env (the upstream runner controls argv): the
-  // RowBinary backend exercises the @hanzo-ds/rowbinary decode path; the
+  // RowBinary backend exercises the @hanzo/datastore-rowbinary decode path; the
   // default passthrough backend streams Datastore's own TabSeparated text.
   // Reject an unknown value rather than silently falling back to passthrough,
   // which would hide a typo'd TEST_RUNNER_BACKEND in CI.

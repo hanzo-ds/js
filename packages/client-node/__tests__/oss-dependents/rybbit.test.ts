@@ -3,7 +3,7 @@
  * =====================================================
  *
  *   Repo:        https://github.com/rybbit-io/rybbit  (~12k★)
- *   Package:     @hanzo-ds/client  1.11.1 (pinned, exact)
+ *   Package:     @hanzo/datastore-client  1.11.1 (pinned, exact)
  *   Lives in:    server/src/db/clickhouse
  *   Analysed at: d92e3f274121f1910c9259747c8045bd74a21792
  *
@@ -35,7 +35,7 @@
  */
 
 import { afterEach, describe, expect, it } from "vitest";
-import { type DatastoreClient, type ResultSet } from "@hanzo-ds/client";
+import { type DatastoreClient, type ResultSet } from "@hanzo/datastore-client";
 import { createTestClient, guid } from "@test/utils";
 
 describe("oss-dependents / rybbit", () => {

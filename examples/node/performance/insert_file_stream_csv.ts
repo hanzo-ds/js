@@ -1,4 +1,4 @@
-import { createClient, type Row } from "@hanzo-ds/client";
+import { createClient, type Row } from "@hanzo/datastore-client";
 import Fs from "node:fs";
 import { cwd } from "node:process";
 import Path from "node:path";

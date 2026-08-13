@@ -1,4 +1,4 @@
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 import assert from "node:assert";
 
 /**

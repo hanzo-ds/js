@@ -1,4 +1,4 @@
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 import * as crypto from "node:crypto";
 
 // Note that session will work as expected ONLY if you are accessing the Node directly.

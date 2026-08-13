@@ -1,4 +1,4 @@
-import { createClient } from "@hanzo-ds/client-web";
+import { createClient } from "@hanzo/datastore-client-web";
 
 // Using a `session_id` so that a `TEMPORARY TABLE` created on one request is visible on the next.
 // Temporary tables only exist for the lifetime of the session and are scoped to the node that

@@ -1,7 +1,7 @@
 // An example how to send an INSERT INTO ... VALUES ... query that requires additional functions call.
 // Inspired by https://github.com/hanzo-ds/js/issues/239
-import type { DatastoreSettings } from "@hanzo-ds/client-web";
-import { createClient } from "@hanzo-ds/client-web";
+import type { DatastoreSettings } from "@hanzo/datastore-client-web";
+import { createClient } from "@hanzo/datastore-client-web";
 
 interface Data {
   id: string;

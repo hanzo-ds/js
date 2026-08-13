@@ -1,4 +1,4 @@
-import { createClient } from "@hanzo-ds/client-web";
+import { createClient } from "@hanzo/datastore-client-web";
 
 /**
  * An illustration of limitations and client-specific settings for users created in `READONLY = 1` mode.

@@ -3,7 +3,7 @@
  * ==================================================
  *
  *   Repo:        https://github.com/dbgate/dbgate  (~7k★)
- *   Package:     @hanzo-ds/client  ^1.5.0
+ *   Package:     @hanzo/datastore-client  ^1.5.0
  *   Lives in:    plugins/dbgate-plugin-clickhouse
  *   Analysed at: 6bacb1c81e8e330ca0ee163ec06202b68a1e0591
  *
@@ -14,7 +14,7 @@
  * analysis and bulk inserts.
  *
  * Key patterns:
- *   - Upstream is CommonJS: `const { createClient } = require('@hanzo-ds/client')`
+ *   - Upstream is CommonJS: `const { createClient } = require('@hanzo/datastore-client')`
  *     implementing DbGate's `EngineDriver`. Reproduced here with an ESM import.
  *   - A custom `createBulkInsertStream` for efficient bulk loading — reproduced
  *     using the client's streaming insert (an async row generator as `values`).
@@ -31,7 +31,7 @@
 
 import { Readable } from "node:stream";
 import { afterEach, describe, expect, it } from "vitest";
-import { type DatastoreClient } from "@hanzo-ds/client";
+import { type DatastoreClient } from "@hanzo/datastore-client";
 import { createTestClient, guid } from "@test/utils";
 
 describe("oss-dependents / dbgate", () => {

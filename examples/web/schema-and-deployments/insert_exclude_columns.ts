@@ -1,4 +1,4 @@
-import { createClient } from "@hanzo-ds/client-web";
+import { createClient } from "@hanzo/datastore-client-web";
 
 /**
  * Excluding certain columns from the INSERT statement.

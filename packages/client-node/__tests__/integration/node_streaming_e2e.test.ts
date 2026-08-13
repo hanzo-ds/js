@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import type { Row } from "@hanzo-ds/client-common";
+import type { Row } from "@hanzo/datastore-client-common";
 import {
   type DatastoreClient,
   type DatastoreSettings,
-} from "@hanzo-ds/client-common";
+} from "@hanzo/datastore-client-common";
 import { createSimpleTable } from "@test/fixtures/simple_table";
 import { createTestClient } from "@test/utils/client";
 import { guid } from "@test/utils/guid";

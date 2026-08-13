@@ -1,6 +1,6 @@
 name: "publish: datatype parser"
 
-# Independent publish + release for the standalone @hanzo-ds/datatype-parser
+# Independent publish + release for the standalone @hanzo/datastore-datatype-parser
 # package (the data-type string parser). Like the per-package client publish
 # workflows (publish-client*.yml), it carries its own version in
 # packages/datatype-parser/package.json and ships on its own cadence. Triggered
@@ -79,7 +79,7 @@ jobs:
         id: version
         run: |
           VERSION=$(node -p "require('./package.json').version")
-          echo "Publishing @hanzo-ds/datatype-parser@$VERSION"
+          echo "Publishing @hanzo/datastore-datatype-parser@$VERSION"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Pack the tarball
@@ -103,7 +103,7 @@ jobs:
           # Verify the main barrel entry resolves and exposes the parser, from
           # the exact artifact we are about to publish.
           node --input-type=module -e "
-            import * as dt from '@hanzo-ds/datatype-parser';
+            import * as dt from '@hanzo/datastore-datatype-parser';
             if (typeof dt.parseDataType !== 'function') throw new Error('parseDataType missing from main export');
             console.log('OK: packed tarball imports cleanly');
           "
@@ -125,7 +125,7 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git tag -a "${RELEASE_TAG}" -m "Release @hanzo-ds/datatype-parser ${RELEASE_VERSION}"
+          git tag -a "${RELEASE_TAG}" -m "Release @hanzo/datastore-datatype-parser ${RELEASE_VERSION}"
           git push origin "refs/tags/${RELEASE_TAG}"
 
   e2e:
@@ -147,14 +147,14 @@ jobs:
           node-version: ${{ matrix.node }}
           registry-url: "https://registry.npmjs.org"
 
-      - name: Wait for @hanzo-ds/datatype-parser@${{ needs.publish.outputs.version }} on npm
+      - name: Wait for @hanzo/datastore-datatype-parser@${{ needs.publish.outputs.version }} on npm
         run: |
           set -euo pipefail
           if [ -z "${PUBLISHED_VERSION}" ]; then
             echo "PUBLISHED_VERSION is empty; cannot wait for npm publication." >&2
             exit 1
           fi
-          pkg="@hanzo-ds/datatype-parser"
+          pkg="@hanzo/datastore-datatype-parser"
           # Poll the registry for up to ~5 minutes. New versions usually surface
           # in seconds, but the registry CDN can lag.
           max_attempts=60
@@ -181,11 +181,11 @@ jobs:
           work="$(mktemp -d)"
           cd "$work"
           npm init -y >/dev/null 2>&1
-          npm install "@hanzo-ds/datatype-parser@${PUBLISHED_VERSION}"
+          npm install "@hanzo/datastore-datatype-parser@${PUBLISHED_VERSION}"
           # Verify the main barrel entry resolves and exposes the parser to a
           # downstream consumer.
           node --input-type=module -e "
-            import * as dt from '@hanzo-ds/datatype-parser';
+            import * as dt from '@hanzo/datastore-datatype-parser';
             if (typeof dt.parseDataType !== 'function') throw new Error('parseDataType missing from main export');
-            console.log('OK: @hanzo-ds/datatype-parser@${PUBLISHED_VERSION} imports cleanly');
+            console.log('OK: @hanzo/datastore-datatype-parser@${PUBLISHED_VERSION} imports cleanly');
           "

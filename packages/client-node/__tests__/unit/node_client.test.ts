@@ -3,12 +3,12 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import type {
   BaseDatastoreClientConfigOptions,
   ConnectionParams,
-} from "@hanzo-ds/client-common";
+} from "@hanzo/datastore-client-common";
 import {
   DefaultLogger,
   LogWriter,
   DatastoreLogLevel,
-} from "@hanzo-ds/client-common";
+} from "@hanzo/datastore-client-common";
 import { createClient } from "../../src";
 import {
   type CreateConnectionParams,

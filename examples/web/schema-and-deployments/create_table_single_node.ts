@@ -1,4 +1,4 @@
-import { createClient } from "@hanzo-ds/client-web";
+import { createClient } from "@hanzo/datastore-client-web";
 
 // A single Datastore node - for example, as in our `docker-compose.yml`
 const client = createClient();

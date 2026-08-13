@@ -9,7 +9,7 @@
 Right answer for ~90% of selects when the result fits in memory.
 
 ```ts
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 
 interface Row {
   number: string;
@@ -41,7 +41,7 @@ Use `JSON` (or `JSONCompact`) when you need Datastore's response envelope
 `ResponseJSON<T>`:
 
 ```ts
-import { createClient, type ResponseJSON } from "@hanzo-ds/client";
+import { createClient, type ResponseJSON } from "@hanzo/datastore-client";
 
 const client = createClient();
 const rows = await client.query({

@@ -1,4 +1,4 @@
-# @hanzo-ds/datatype-parser
+# @hanzo/datastore-datatype-parser
 
 A small, self-contained TypeScript library that parses a Datastore **data-type
 string** (the kind sent in the types row of `RowBinaryWithNamesAndTypes`, e.g.
@@ -16,7 +16,7 @@ parser's output across the full test corpus.
 ## Install & build
 
 ```bash
-npm install @hanzo-ds/datatype-parser
+npm install @hanzo/datastore-datatype-parser
 ```
 
 ## Usage
@@ -24,7 +24,7 @@ npm install @hanzo-ds/datatype-parser
 Library:
 
 ```ts
-import { parseDataType, toJSON } from "@hanzo-ds/datatype-parser";
+import { parseDataType, toJSON } from "@hanzo/datastore-datatype-parser";
 
 const r = parseDataType("Tuple(a UInt8, b String)");
 if (r.ok()) {

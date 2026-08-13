@@ -5,7 +5,7 @@ import { dirname } from "node:path";
 const nextConfig = {
   // The decoder is a regular Node dependency we want to require at runtime on the
   // server, not bundle/trace into the server build. Keep it external.
-  serverExternalPackages: ["@hanzo-ds/rowbinary"],
+  serverExternalPackages: ["@hanzo/datastore-rowbinary"],
   // This demo lives inside the datastore-js monorepo, which has its own
   // lockfiles higher up. Pin the tracing root to this app so Next doesn't infer
   // the wrong workspace root.

@@ -1,4 +1,4 @@
-import { createClient } from "@hanzo-ds/client-web";
+import { createClient } from "@hanzo/datastore-client-web";
 
 // This example targets Datastore Cloud and requires credentials. When they are
 // not provided (e.g. CI runs without cloud secrets, such as Dependabot PRs),

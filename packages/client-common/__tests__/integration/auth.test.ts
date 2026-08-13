@@ -7,7 +7,7 @@ import {
   beforeEach,
   afterEach,
 } from "vitest";
-import { type DatastoreClient } from "@hanzo-ds/client-common";
+import { type DatastoreClient } from "@hanzo/datastore-client-common";
 import { createSimpleTable } from "@test/fixtures/simple_table";
 import { getAuthFromEnv } from "@test/utils/env";
 import { createTestClient, guid } from "../utils";

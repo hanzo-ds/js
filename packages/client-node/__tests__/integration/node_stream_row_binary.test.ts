@@ -1,10 +1,10 @@
-import type { DatastoreClient } from "@hanzo-ds/client-common";
+import type { DatastoreClient } from "@hanzo/datastore-client-common";
 import { describe, it, beforeEach, afterEach, expect } from "vitest";
 import { createSimpleTable } from "@test/fixtures/simple_table";
 import { createTestClient } from "@test/utils/client";
 import { guid } from "@test/utils/guid";
 import Stream from "stream";
-import { drainStream } from "@hanzo-ds/client";
+import { drainStream } from "@hanzo/datastore-client";
 
 describe("[Node.js] stream RowBinary insert", () => {
   let client: DatastoreClient<Stream.Readable>;

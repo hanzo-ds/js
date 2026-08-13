@@ -1,4 +1,4 @@
-# `@hanzo-ds/client` examples (Node.js)
+# `@hanzo/datastore-client` examples (Node.js)
 
 Examples for the Node.js client. They may freely use Node-only APIs (file
 streams, TLS, `http`, `node:*` built-ins, etc.).

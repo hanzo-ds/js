@@ -1,4 +1,4 @@
-# Recommendations for AI agents — `@hanzo-ds/rowbinary`
+# Recommendations for AI agents — `@hanzo/datastore-rowbinary`
 
 Guidance for the [`datastore-js-node-rowbinary`](.) package (the RowBinary codec library and agent skill). See the [repo-root `AGENTS.md`](../../AGENTS.md) for cross-cutting guidance.
 

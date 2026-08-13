@@ -17,7 +17,7 @@
     "run-examples": "vitest run -c vitest.config.ts"
   },
   "dependencies": {
-    "@hanzo-ds/client-web": "latest"
+    "@hanzo/datastore-client-web": "latest"
   },
   "devDependencies": {
     "@vitest/browser-playwright": "4.1.5",

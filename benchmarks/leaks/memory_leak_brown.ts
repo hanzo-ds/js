@@ -1,4 +1,4 @@
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 import Fs from "fs";
 import Path from "path";
 import { v4 as uuid_v4 } from "uuid";

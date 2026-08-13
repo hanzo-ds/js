@@ -1,6 +1,6 @@
 {
-  "name": "@hanzo-ds/client-common",
-  "description": "DEPRECATED: this package is no longer used by @hanzo-ds/client or @hanzo-ds/client-web; the shared code is now bundled into each client package. Install @hanzo-ds/client (Node.js) or @hanzo-ds/client-web (Web) instead.",
+  "name": "@hanzo/datastore-client-common",
+  "description": "DEPRECATED: this package is no longer used by @hanzo/datastore-client or @hanzo/datastore-client-web; the shared code is now bundled into each client package. Install @hanzo/datastore-client (Node.js) or @hanzo/datastore-client-web (Web) instead.",
   "homepage": "https://docs.hanzo.ai/datastore",
   "version": "1.23.0",
   "license": "Apache-2.0",

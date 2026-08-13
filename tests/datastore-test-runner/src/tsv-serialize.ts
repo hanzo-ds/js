@@ -11,7 +11,7 @@
  * header→reader path decoded every column correctly.
  *
  * The renderer is TYPE-DIRECTED: it walks the column's parsed data-type AST
- * (from `@hanzo-ds/datatype-parser`, the same AST the parser folds into
+ * (from `@hanzo/datastore-datatype-parser`, the same AST the parser folds into
  * readers) alongside the decoded value, because the JS value alone is
  * insufficient to reproduce Datastore's text — e.g. a `DateTime64(P)` decodes
  * to `[Date, nanoseconds]` but the sub-second precision `P` that decides how
@@ -29,11 +29,11 @@
  * allowlist rather than silently passing through an unexercised path.
  */
 
-import { parseDataType, NodeKind, type Node } from "@hanzo-ds/datatype-parser";
-import { formatDecimal } from "@hanzo-ds/rowbinary/readers/decimals";
-import { formatTime, formatTime64 } from "@hanzo-ds/rowbinary/readers/time";
-import { formatUUID } from "@hanzo-ds/rowbinary/readers/uuid";
-import { formatIPv4, formatIPv6 } from "@hanzo-ds/rowbinary/readers/ip";
+import { parseDataType, NodeKind, type Node } from "@hanzo/datastore-datatype-parser";
+import { formatDecimal } from "@hanzo/datastore-rowbinary/readers/decimals";
+import { formatTime, formatTime64 } from "@hanzo/datastore-rowbinary/readers/time";
+import { formatUUID } from "@hanzo/datastore-rowbinary/readers/uuid";
+import { formatIPv4, formatIPv6 } from "@hanzo/datastore-rowbinary/readers/ip";
 
 /** Thrown when a column type has no TSV renderer yet (see module note). */
 export class TSVRenderError extends Error {
@@ -187,7 +187,7 @@ export function renderValue(
   if (value === null || value === undefined) return nested ? "NULL" : "\\N";
 
   if (node.kind === NodeKind.EnumDataType) {
-    // @hanzo-ds/rowbinary's enum readers already resolve the underlying
+    // @hanzo/datastore-rowbinary's enum readers already resolve the underlying
     // integer to its NAME via the type's value→name map, so render that string
     // directly (Datastore TSV prints the enum name, not the integer).
     return renderStringish(String(value), nested);

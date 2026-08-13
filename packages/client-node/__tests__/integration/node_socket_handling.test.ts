@@ -1,11 +1,11 @@
-import type { DatastoreClient, ConnPingResult } from "@hanzo-ds/client-common";
+import type { DatastoreClient, ConnPingResult } from "@hanzo/datastore-client-common";
 import { describe, it, beforeAll, afterAll, afterEach, expect } from "vitest";
 import { permutations } from "@test/utils/permutations";
 import { createTestClient } from "@test/utils/client";
 import * as http from "http";
 import net from "net";
 import type Stream from "stream";
-import type { DatastoreClientConfigOptions } from "@hanzo-ds/client";
+import type { DatastoreClientConfigOptions } from "@hanzo/datastore-client";
 import { AddressInfo } from "net";
 
 const ClientTimeout = 10; // ms

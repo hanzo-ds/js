@@ -1,6 +1,6 @@
 import { describe, it, expect, afterEach, beforeEach } from "vitest";
-import type { DatastoreClient, Row } from "@hanzo-ds/client-common";
-import { isProgressRow } from "@hanzo-ds/client-common";
+import type { DatastoreClient, Row } from "@hanzo/datastore-client-common";
+import { isProgressRow } from "@hanzo/datastore-client-common";
 import { createTestClient } from "@test/utils";
 import { genLargeStringsDataset } from "@test/utils/datasets";
 

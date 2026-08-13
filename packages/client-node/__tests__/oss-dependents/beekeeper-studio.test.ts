@@ -3,7 +3,7 @@
  * ======================================================================
  *
  *   Repo:        https://github.com/beekeeper-studio/beekeeper-studio  (~23k★)
- *   Package:     @hanzo-ds/client  ^1.8.1
+ *   Package:     @hanzo/datastore-client  ^1.8.1
  *   Lives in:    apps/studio
  *   Analysed at: 2839d29c544a7a0c5c7e85f6431f7187cf311759
  *
@@ -14,7 +14,7 @@
  * dialect so the app can introspect schemas, run queries and insert data.
  *
  * Key patterns:
- *   - `import { createClient, InsertParams } from '@hanzo-ds/client'`.
+ *   - `import { createClient, InsertParams } from '@hanzo/datastore-client'`.
  *   - A bespoke knex-clickhouse layer (TableBuilder, ViewCompiler,
  *     QueryCompiler) wrapping the driver (omitted here).
  *   - TLS handling: one-way and mutual TLS based on configured cert/key files.
@@ -32,7 +32,7 @@
 
 import type { Readable } from "node:stream";
 import { afterEach, describe, expect, it } from "vitest";
-import { type DatastoreClient, type InsertParams } from "@hanzo-ds/client";
+import { type DatastoreClient, type InsertParams } from "@hanzo/datastore-client";
 import { createTestClient, guid } from "@test/utils";
 
 interface DriverTLS {

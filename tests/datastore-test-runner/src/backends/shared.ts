@@ -3,7 +3,7 @@ import {
   DatastoreLogLevel,
   createClient,
   type DatastoreClient,
-} from "@hanzo-ds/client";
+} from "@hanzo/datastore-client";
 import type { ParsedArgs } from "../args.js";
 import { appendLog } from "../log.js";
 import { errorMatchesExpectation, type Statement } from "../test-hint.js";

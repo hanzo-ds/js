@@ -19,7 +19,7 @@ updates:
     cooldown:
       default-days: 7
       exclude:
-        - "@hanzo-ds/*"
+        - "@hanzo/datastore-*"
     groups:
       dev-dependencies:
         dependency-type: "development"

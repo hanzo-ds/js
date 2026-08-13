@@ -1,6 +1,6 @@
 name: "publish: client"
 
-# Publish + release for @hanzo-ds/client (the Node.js client).
+# Publish + release for @hanzo/datastore-client (the Node.js client).
 #
 # Split out of the former all-in-one publish.yml so each client package
 # publishes on its own. Two triggers, like the standalone-package workflows:
@@ -63,13 +63,13 @@ env:
 
 jobs:
   head:
-    name: "Publish @hanzo-ds/client (head)"
+    name: "Publish @hanzo/datastore-client (head)"
     if: github.ref == 'refs/heads/release' && github.event_name == 'push'
     runs-on: ubuntu-latest
     environment: npm-publish
     outputs:
       version: ${{ steps.version.outputs.version }}
-      packages: "@hanzo-ds/client"
+      packages: "@hanzo/datastore-client"
     steps:
       - name: Checkout repository
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
@@ -89,25 +89,25 @@ jobs:
           BASE_VERSION=$(node -p "require('./packages/client-node/package.json').version")
           HEAD_VERSION="${BASE_VERSION}-head.${GITHUB_SHA::7}.${GITHUB_RUN_ATTEMPT}"
           echo "Setting version to: $HEAD_VERSION"
-          npm --workspace @hanzo-ds/client version --no-git-tag-version "$HEAD_VERSION"
+          npm --workspace @hanzo/datastore-client version --no-git-tag-version "$HEAD_VERSION"
           echo "export default \"$HEAD_VERSION\";" > packages/client-node/src/version.ts
           echo "version=$HEAD_VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Build the package
-        run: npm --workspace @hanzo-ds/client run build
+        run: npm --workspace @hanzo/datastore-client run build
 
       - name: Smoke test the packed tarball
-        run: .scripts/smoke_test_pack.sh @hanzo-ds/client
+        run: .scripts/smoke_test_pack.sh @hanzo/datastore-client
 
-      - name: Publish @hanzo-ds/client with head tag
+      - name: Publish @hanzo/datastore-client with head tag
         run: |
-          npm --workspace @hanzo-ds/client publish \
+          npm --workspace @hanzo/datastore-client publish \
             --access public \
             --provenance \
             --tag head
 
   publish:
-    name: "Publish @hanzo-ds/client"
+    name: "Publish @hanzo/datastore-client"
     if: github.ref == 'refs/heads/release' && github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     environment: npm-publish
@@ -116,7 +116,7 @@ jobs:
       id-token: write # Required for npm OIDC authentication and provenance
     outputs:
       version: ${{ steps.version.outputs.version }}
-      packages: "@hanzo-ds/client"
+      packages: "@hanzo/datastore-client"
     steps:
       - name: Checkout repository
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
@@ -138,14 +138,14 @@ jobs:
           echo "version=$BASE_VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Build the package
-        run: npm --workspace @hanzo-ds/client run build
+        run: npm --workspace @hanzo/datastore-client run build
 
       - name: Smoke test the packed tarball
-        run: .scripts/smoke_test_pack.sh @hanzo-ds/client
+        run: .scripts/smoke_test_pack.sh @hanzo/datastore-client
 
-      - name: Publish @hanzo-ds/client to the latest tag (implicit)
+      - name: Publish @hanzo/datastore-client to the latest tag (implicit)
         run: |
-          npm --workspace @hanzo-ds/client publish \
+          npm --workspace @hanzo/datastore-client publish \
             --access public \
             --provenance
 

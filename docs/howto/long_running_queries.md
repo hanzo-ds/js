@@ -62,7 +62,7 @@ The default value for `http_headers_progress_interval_ms` is defined by how ofte
 **Step 3.** Configure the client:
 
 ```ts
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 
 const client = createClient({
   // Allow up to 400s for the query to complete (adjust to your estimate).

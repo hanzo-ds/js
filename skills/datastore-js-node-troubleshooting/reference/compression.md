@@ -5,7 +5,7 @@
 Both request and response compression are supported. Only **GZIP** is supported (via zlib).
 
 ```js
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 const client = createClient({
   compression: {
     response: true,

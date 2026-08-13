@@ -1,5 +1,5 @@
 {
-  "name": "@hanzo-ds/client-web",
+  "name": "@hanzo/datastore-client-web",
   "description": "Official JS client for Hanzo Datastore - Web API implementation",
   "homepage": "https://docs.hanzo.ai/datastore",
   "version": "1.23.1",

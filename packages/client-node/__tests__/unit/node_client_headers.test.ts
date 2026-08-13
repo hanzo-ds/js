@@ -1,8 +1,8 @@
 import { vi, expect, it, describe, beforeEach, afterEach } from "vitest";
 import { getHeadersTestParams } from "@test/utils/parametrized";
 import Http from "http";
-import type { DatastoreClient } from "@hanzo-ds/client";
-import { createClient } from "@hanzo-ds/client";
+import type { DatastoreClient } from "@hanzo/datastore-client";
+import { createClient } from "@hanzo/datastore-client";
 import { emitResponseBody, stubClientRequest } from "../utils/http_stubs";
 
 describe("[Node.js] Client", () => {

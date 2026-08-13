@@ -5,7 +5,7 @@
 The default log level is **OFF** (for `< 1.18.1`) or **WARN** (for `>= 1.18.1`). Enable it explicitly:
 
 ```js
-import { DatastoreLogLevel, createClient } from "@hanzo-ds/client";
+import { DatastoreLogLevel, createClient } from "@hanzo/datastore-client";
 
 const client = createClient({
   log: {
@@ -17,8 +17,8 @@ const client = createClient({
 To use a custom logger (e.g., to pipe to your observability stack), implement the `Logger` interface:
 
 ```ts
-import { DatastoreLogLevel, createClient } from "@hanzo-ds/client";
-import type { Logger } from "@hanzo-ds/client";
+import { DatastoreLogLevel, createClient } from "@hanzo/datastore-client";
+import type { Logger } from "@hanzo/datastore-client";
 
 class MyLogger implements Logger {
   debug({ module, message, args }) {

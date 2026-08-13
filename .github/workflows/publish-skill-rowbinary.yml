@@ -1,6 +1,6 @@
 name: "publish: rowbinary"
 
-# Independent publish + release for the standalone @hanzo-ds/rowbinary
+# Independent publish + release for the standalone @hanzo/datastore-rowbinary
 # package (the RowBinary codec skill). Like the per-package client publish
 # workflows (publish-client*.yml), it carries its own version in
 # skills/datastore-js-node-rowbinary/package.json and ships on its own
@@ -72,7 +72,7 @@ jobs:
         id: version
         run: |
           VERSION=$(node -p "require('./package.json').version")
-          echo "Publishing @hanzo-ds/rowbinary@$VERSION"
+          echo "Publishing @hanzo/datastore-rowbinary@$VERSION"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Pack the tarball
@@ -96,8 +96,8 @@ jobs:
           # Verify both the main barrel entry and a subpath export resolve and
           # expose their parsers, from the exact artifact we are about to publish.
           node --input-type=module -e "
-            import * as rb from '@hanzo-ds/rowbinary';
-            import * as ints from '@hanzo-ds/rowbinary/readers/integers';
+            import * as rb from '@hanzo/datastore-rowbinary';
+            import * as ints from '@hanzo/datastore-rowbinary/readers/integers';
             if (typeof rb.readRows !== 'function') throw new Error('readRows missing from main export');
             if (typeof ints.readUInt8 !== 'function') throw new Error('readUInt8 missing from subpath export');
             console.log('OK: packed tarball imports cleanly');
@@ -120,7 +120,7 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git tag -a "${RELEASE_TAG}" -m "Release @hanzo-ds/rowbinary ${RELEASE_VERSION}"
+          git tag -a "${RELEASE_TAG}" -m "Release @hanzo/datastore-rowbinary ${RELEASE_VERSION}"
           git push origin "refs/tags/${RELEASE_TAG}"
 
   e2e:
@@ -142,14 +142,14 @@ jobs:
           node-version: ${{ matrix.node }}
           registry-url: "https://registry.npmjs.org"
 
-      - name: Wait for @hanzo-ds/rowbinary@${{ needs.publish.outputs.version }} on npm
+      - name: Wait for @hanzo/datastore-rowbinary@${{ needs.publish.outputs.version }} on npm
         run: |
           set -euo pipefail
           if [ -z "${PUBLISHED_VERSION}" ]; then
             echo "PUBLISHED_VERSION is empty; cannot wait for npm publication." >&2
             exit 1
           fi
-          pkg="@hanzo-ds/rowbinary"
+          pkg="@hanzo/datastore-rowbinary"
           # Poll the registry for up to ~5 minutes. New versions usually surface
           # in seconds, but the registry CDN can lag.
           max_attempts=60
@@ -176,13 +176,13 @@ jobs:
           work="$(mktemp -d)"
           cd "$work"
           npm init -y >/dev/null 2>&1
-          npm install "@hanzo-ds/rowbinary@${PUBLISHED_VERSION}"
+          npm install "@hanzo/datastore-rowbinary@${PUBLISHED_VERSION}"
           # Verify both the main barrel entry and a subpath export resolve and
           # expose their parsers to a downstream consumer.
           node --input-type=module -e "
-            import * as rb from '@hanzo-ds/rowbinary';
-            import * as ints from '@hanzo-ds/rowbinary/readers/integers';
+            import * as rb from '@hanzo/datastore-rowbinary';
+            import * as ints from '@hanzo/datastore-rowbinary/readers/integers';
             if (typeof rb.readRows !== 'function') throw new Error('readRows missing from main export');
             if (typeof ints.readUInt8 !== 'function') throw new Error('readUInt8 missing from subpath export');
-            console.log('OK: @hanzo-ds/rowbinary@${PUBLISHED_VERSION} imports cleanly');
+            console.log('OK: @hanzo/datastore-rowbinary@${PUBLISHED_VERSION} imports cleanly');
           "

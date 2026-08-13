@@ -102,7 +102,7 @@ Six end-to-end examples with real speedup are catalogued in [EXAMPLES.md](EXAMPL
 - **JSON / CSV / TSV / Parquet parsing** → use `datastore-js-node-coding`.
 - **Connection errors, hangs, type mismatches** → use
   `datastore-js-node-troubleshooting`.
-- **Browser / Web Worker / Edge** → `@hanzo-ds/client-web`.
+- **Browser / Web Worker / Edge** → `@hanzo/datastore-client-web`.
 
 ## Still Stuck?
 

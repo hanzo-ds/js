@@ -1,5 +1,5 @@
-import { compileRowBinaryWithNamesAndTypes } from "@hanzo-ds/rowbinary/readers/rowBinaryWithNamesAndTypes";
-import { Cursor } from "@hanzo-ds/rowbinary/readers/core";
+import { compileRowBinaryWithNamesAndTypes } from "@hanzo/datastore-rowbinary/readers/rowBinaryWithNamesAndTypes";
+import { Cursor } from "@hanzo/datastore-rowbinary/readers/core";
 import { compileRowRenderers } from "../tsv-serialize.js";
 import { appendLog } from "../log.js";
 import {
@@ -11,7 +11,7 @@ import {
 
 /**
  * RowBinary backend: instead of letting Datastore format the result text, ask
- * for `RowBinaryWithNamesAndTypes`, decode it with `@hanzo-ds/rowbinary`'s
+ * for `RowBinaryWithNamesAndTypes`, decode it with `@hanzo/datastore-rowbinary`'s
  * dynamic header→reader path, and re-render the rows as `TabSeparated` so the
  * upstream `datastore-test` diff against the static `.reference` still applies.
  * That round-trip is what actually exercises (and proves) the parser end-to-end

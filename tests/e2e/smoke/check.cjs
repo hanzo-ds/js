@@ -7,7 +7,7 @@ const {
   parseColumnType,
   SettingsMap,
   DatastoreError,
-} = require("@hanzo-ds/client");
+} = require("@hanzo/datastore-client");
 
 const t = parseColumnType("Array(String)");
 console.log('parseColumnType("Array(String)") =>', JSON.stringify(t));

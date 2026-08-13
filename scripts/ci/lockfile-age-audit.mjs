@@ -2,7 +2,7 @@
 // Fails if the PR introduces package-lock.json entries published less than MIN_AGE_DAYS ago.
 // True new entries only — compares base vs head lockfile resolutions, not just diff `+` lines,
 // so lockfile reorders don't trigger false positives.
-// Skips first-party @hanzo-ds/* packages (no upstream-compromise risk).
+// Skips first-party @hanzo/datastore-* packages (no upstream-compromise risk).
 // Fails closed on registry errors and on new deps resolved from a non-registry source
 // (skip via the 'lockfile-age-skip' PR label).
 import { execSync } from "node:child_process";
@@ -20,7 +20,7 @@ const cutoffMs = Date.now() - MIN_AGE_DAYS * 86400_000;
 
 // First-party scopes — npm has no native equivalent to yarn's npmPreapprovedPackages,
 // so hardcoded here. Mirrors the Dependabot cooldown.exclude list.
-const PREAPPROVED_SCOPES = ["@hanzo-ds/"];
+const PREAPPROVED_SCOPES = ["@hanzo/datastore-"];
 
 const REGISTRY_HOSTS = ["registry.npmjs.org", "registry.npmmirror.com"];
 

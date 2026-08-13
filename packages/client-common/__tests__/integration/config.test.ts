@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach } from "vitest";
-import type { DatastoreClient } from "@hanzo-ds/client-common";
+import type { DatastoreClient } from "@hanzo/datastore-client-common";
 import { createTestClient } from "../utils";
 
 describe("config", () => {

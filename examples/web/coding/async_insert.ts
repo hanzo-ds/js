@@ -1,4 +1,4 @@
-import { createClient, DatastoreError } from "@hanzo-ds/client-web";
+import { createClient, DatastoreError } from "@hanzo/datastore-client-web";
 
 // This example demonstrates how to use asynchronous inserts, avoiding client side batching of the incoming data.
 // Suitable for Datastore Cloud, too.

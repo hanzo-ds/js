@@ -63,7 +63,7 @@ Same values, same streaming-safety — **~3.4x** faster.
 As a library (comes with the skill):
 
 ```bash
-npm install @hanzo-ds/rowbinary
+npm install @hanzo/datastore-rowbinary
 npx skills-npm setup
 ```
 
@@ -106,8 +106,8 @@ import {
   readDecimal64,
   type DecimalValue,
   streamRowBatches,
-} from "@hanzo-ds/rowbinary";
-import { createClient } from "@hanzo-ds/client";
+} from "@hanzo/datastore-rowbinary";
+import { createClient } from "@hanzo/datastore-client";
 
 type OrderRow = {
   id: number;
@@ -191,7 +191,7 @@ specific result shape needs.
 
 **Schema only known at runtime?** `compileRowBinaryWithNamesAndTypes(cursor)`
 reads the `RowBinaryWithNamesAndTypes` header and folds each column type into a
-reader on the fly (type strings parsed by `@hanzo-ds/datatype-parser`),
+reader on the fly (type strings parsed by `@hanzo/datastore-datatype-parser`),
 returning a `readRows` driver for the rest of the stream — a generic, no-codegen
 path for dynamic schemas. The specialized codegen above stays the fast path when
 the types are fixed.
@@ -275,7 +275,7 @@ Measure, don't assume.
   `coalesceChunks()` debounce filter).
 - **In scope (writing):** the inverse encode path — a `writeX` mirroring every
   `readX`, appending bytes to a `Sink`, plus `writeRows()`. Imported from
-  `@hanzo-ds/rowbinary/writer`. A handful of decode-only paths are not yet
+  `@hanzo/datastore-rowbinary/writer`. A handful of decode-only paths are not yet
   mirrored: `Dynamic`, `JSON`, the runtime header/compile path, and the columnar
   typed-array path.
 - **Out of scope (for now):** browsers and Edge runtimes, non-RowBinary formats

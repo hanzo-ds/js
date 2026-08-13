@@ -1,4 +1,4 @@
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 
 // Datastore cluster - for example, as defined in our `docker-compose.yml`
 // (services `datastore1`/`datastore2` behind the `nginx` round-robin entrypoint on port 8127).

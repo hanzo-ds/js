@@ -2,7 +2,7 @@
 name: datastore-js-node-troubleshooting
 description: >
   Troubleshoot and resolve common issues with the Datastore Node.js client
-  (@hanzo-ds/client). Use this skill whenever a user reports errors, unexpected
+  (@hanzo/datastore-client). Use this skill whenever a user reports errors, unexpected
   behavior, or configuration questions involving the Node.js client specifically —
   including socket hang-up errors, Keep-Alive problems, stream handling issues, data
   type mismatches, read-only user restrictions, proxy/TLS setup problems, or long-running
@@ -15,7 +15,7 @@ description: >
 
 Reference: https://docs.hanzo.ai/datastore/integrations/javascript
 
-> **⚠️ Node.js runtime only.** This skill covers the `@hanzo-ds/client` package running in a **Node.js runtime** exclusively — including **Next.js Node runtime** API routes, React Server Components, Server Actions, and standard Node.js processes. Do **not** apply this skill to browser client components, Web Workers, **Next.js Edge runtime**, Cloudflare Workers, or any usage of `@hanzo-ds/client-web`. For browser/edge environments, the correct package is `@hanzo-ds/client-web`.
+> **⚠️ Node.js runtime only.** This skill covers the `@hanzo/datastore-client` package running in a **Node.js runtime** exclusively — including **Next.js Node runtime** API routes, React Server Components, Server Actions, and standard Node.js processes. Do **not** apply this skill to browser client components, Web Workers, **Next.js Edge runtime**, Cloudflare Workers, or any usage of `@hanzo/datastore-client-web`. For browser/edge environments, the correct package is `@hanzo/datastore-client-web`.
 
 ---
 

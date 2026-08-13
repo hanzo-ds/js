@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeAll, afterEach } from "vitest";
 import { TestEnv, isOnEnv } from "@test/utils/test_env";
 import { EnvKeys, getFromEnv, maybeGetFromEnv } from "@test/utils/env";
-import { createClient } from "@hanzo-ds/client";
-import type { DatastoreClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
+import type { DatastoreClient } from "@hanzo/datastore-client";
 
 describe.skipIf(!isOnEnv(TestEnv.Cloud))("[Node.js] JWT auth", () => {
   let jwtClient: DatastoreClient;

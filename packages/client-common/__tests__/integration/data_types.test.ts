@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import type {
   DatastoreClient,
   DatastoreSettings,
-} from "@hanzo-ds/client-common";
+} from "@hanzo/datastore-client-common";
 import { randomUUID } from "@test/utils/guid";
 import { createTableWithFields } from "../fixtures/table_with_fields";
 import { createTestClient, getRandomInt, TestEnv, isOnEnv } from "../utils";

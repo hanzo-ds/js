@@ -1,8 +1,8 @@
-import { DatastoreLogLevel, Logger } from "@hanzo-ds/client-common";
+import { DatastoreLogLevel, Logger } from "@hanzo/datastore-client-common";
 import { describe, it } from "vitest";
 import { createTestClient } from "@test/utils/client";
 import net from "net";
-import type { DatastoreClientConfigOptions } from "@hanzo-ds/client";
+import type { DatastoreClientConfigOptions } from "@hanzo/datastore-client";
 import { AddressInfo } from "net";
 
 describe.concurrent("Handling keep-alive header", () => {

@@ -3,7 +3,7 @@
  * ====================================================
  *
  *   Repo:        https://github.com/ToolJet/ToolJet  (~38k★)
- *   Package:     @hanzo-ds/client  ^1.14.0
+ *   Package:     @hanzo/datastore-client  ^1.14.0
  *   Lives in:    plugins/packages/clickhouse
  *   Analysed at: 2eb07546370d1c4959f16ab16a4d96cbea79a7e1
  *
@@ -14,7 +14,7 @@
  * builders can run arbitrary ClickHouse queries from the visual editor.
  *
  * Key patterns:
- *   - `import { createClient } from '@hanzo-ds/client'`.
+ *   - `import { createClient } from '@hanzo/datastore-client'`.
  *   - Implements `QueryService` with `run()` and a `testConnection()`
  *     (`ConnectionTestResult`).
  *   - Uses `node-sql-parser` alongside the client to inspect/route SQL (omitted
@@ -28,7 +28,7 @@
  */
 
 import { afterEach, describe, expect, it } from "vitest";
-import { type DatastoreClient } from "@hanzo-ds/client";
+import { type DatastoreClient } from "@hanzo/datastore-client";
 import { createTestClient } from "@test/utils";
 
 interface ConnectionTestResult {

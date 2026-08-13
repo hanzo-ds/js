@@ -1,4 +1,4 @@
-import type { DatastoreClient, Row } from "@hanzo-ds/client-common";
+import type { DatastoreClient, Row } from "@hanzo/datastore-client-common";
 import { describe, it, beforeEach, afterEach, expect } from "vitest";
 import { createTestClient } from "@test/utils/client";
 import type Stream from "stream";

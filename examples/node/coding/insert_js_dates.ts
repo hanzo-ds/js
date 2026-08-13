@@ -1,4 +1,4 @@
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 
 // NB: currently, JS Date objects work only with DateTime* fields
 const tableName = "insert_js_date";

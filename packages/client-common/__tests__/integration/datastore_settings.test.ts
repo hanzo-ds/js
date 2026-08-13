@@ -3,8 +3,8 @@ import type {
   DatastoreClient,
   DatastoreSettings,
   InsertParams,
-} from "@hanzo-ds/client-common";
-import { SettingsMap } from "@hanzo-ds/client-common";
+} from "@hanzo/datastore-client-common";
+import { SettingsMap } from "@hanzo/datastore-client-common";
 import { createSimpleTable } from "../fixtures/simple_table";
 import { createTestClient, guid, isOnEnv, TestEnv } from "../utils";
 

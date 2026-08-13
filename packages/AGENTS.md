@@ -31,12 +31,12 @@ The source packages here are:
 
 - `client-common` — platform-agnostic shared code (config, query-param formatting, multipart
   assembly, URL handling, result sets, etc.). It must not depend on Node.js-only or Web-only APIs.
-  The published `@hanzo-ds/client-common` package is **deprecated**: `client-node` and `client-web`
+  The published `@hanzo/datastore-client-common` package is **deprecated**: `client-node` and `client-web`
   no longer depend on it and instead bundle its sources via the `src/common` symlink
   (`client-node/src/common` and `client-web/src/common` both point to
   `client-common/src`), importing from it with relative paths (e.g. `./common/index`).
-- `client-node` (`@hanzo-ds/client`) — the Node.js client.
-- `client-web` (`@hanzo-ds/client-web`) — the Web/edge client.
+- `client-node` (`@hanzo/datastore-client`) — the Node.js client.
+- `client-web` (`@hanzo/datastore-client-web`) — the Web/edge client.
 
 `client-node` and `client-web` are slated to be **separated into fully independent packages**. Because
 of that, some logic is **intentionally duplicated** between the two connection implementations

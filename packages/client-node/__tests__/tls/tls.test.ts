@@ -1,5 +1,5 @@
 import { it, expect, describe, beforeEach, afterEach } from "vitest";
-import type { DatastoreClient } from "@hanzo-ds/client-common";
+import type { DatastoreClient } from "@hanzo/datastore-client-common";
 import { createTestClient } from "@test/utils/client";
 import * as fs from "fs";
 import Http from "http";

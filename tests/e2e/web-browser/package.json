@@ -1,7 +1,7 @@
 {
   "name": "e2e-web-browser",
   "version": "1.0.0",
-  "description": "Post-publish browser e2e for @hanzo-ds/client-web",
+  "description": "Post-publish browser e2e for @hanzo/datastore-client-web",
   "private": true,
   "type": "module",
   "scripts": {

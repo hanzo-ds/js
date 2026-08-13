@@ -3,7 +3,7 @@
  * ========================================================
  *
  *   Repo:        https://github.com/firecrawl/firecrawl  (~112k★)
- *   Package:     @hanzo-ds/client  ^1.8.1
+ *   Package:     @hanzo/datastore-client  ^1.8.1
  *   Lives in:    apps/api/src/lib/clickhouse-client.ts (the scraping API service)
  *   Analysed at: df88fb6d5e6a328b1f8c05fcb341b78fe581dfc7
  *
@@ -26,7 +26,7 @@
  */
 
 import { afterEach, describe, expect, it } from "vitest";
-import { type DatastoreClient } from "@hanzo-ds/client";
+import { type DatastoreClient } from "@hanzo/datastore-client";
 import { createTestClient, guid } from "@test/utils";
 
 interface ScrapeEvent {

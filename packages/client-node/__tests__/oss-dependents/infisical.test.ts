@@ -3,7 +3,7 @@
  * ========================================================
  *
  *   Repo:        https://github.com/Infisical/infisical  (~26k★)
- *   Package:     @hanzo-ds/client  ^1.17.0
+ *   Package:     @hanzo/datastore-client  ^1.17.0
  *   Lives in:    backend/src
  *   Analysed at: 3d47c85f52fa33c7337ad9f328359db806073d4f
  *
@@ -33,7 +33,7 @@
  */
 
 import { afterEach, describe, expect, it } from "vitest";
-import { type DatastoreClient } from "@hanzo-ds/client";
+import { type DatastoreClient } from "@hanzo/datastore-client";
 import { createTestClient, guid } from "@test/utils";
 
 interface ClickHouseConfig {

@@ -11,7 +11,7 @@ methods). Leaf writers (`writeUInt8`, `writeString`, …) encode directly;
 combinators (`writeArray`, `writeTuple`, …) take sub-writers and return a writer,
 so composite types compose with no per-element closures. For the `Sink`/`Writer<T>`
 types and how to drain the encoded bytes, see `src/writers/core.ts`. Import the
-barrel as `@hanzo-ds/rowbinary/writer`, or a per-type module for just what you
+barrel as `@hanzo/datastore-rowbinary/writer`, or a per-type module for just what you
 need. (Structurally this is the mirror of the decode side in
 [reader.md](reader.md), but you don't need the read side to write.)
 

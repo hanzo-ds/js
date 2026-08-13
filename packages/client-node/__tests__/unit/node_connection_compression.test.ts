@@ -3,7 +3,7 @@ import { sleep } from "../utils/sleep";
 import Http, { type ClientRequest } from "http";
 import Stream from "stream";
 import Zlib from "zlib";
-import { DatastoreLogLevel, LogWriter } from "@hanzo-ds/client-common";
+import { DatastoreLogLevel, LogWriter } from "@hanzo/datastore-client-common";
 import { TestLogger } from "../../../client-common/__tests__/utils/test_logger";
 import { assertConnQueryResult } from "../utils/assert";
 import {

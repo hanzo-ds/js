@@ -36,7 +36,7 @@ export default async function LogsPageView({
         <h1>RowBinary Logs</h1>
         <p>
           Server-rendered from Datastore, decoded with{" "}
-          <code>@hanzo-ds/rowbinary</code>. The browser only receives HTML — all
+          <code>@hanzo/datastore-rowbinary</code>. The browser only receives HTML — all
           decoding happens in <code>lib/logs.ts</code> on the server.
         </p>
       </header>

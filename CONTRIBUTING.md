@@ -217,4 +217,4 @@ See [#177](https://github.com/hanzo-ds/js/issues/177), as it should be restored 
 
 ## Running upstream Datastore SQL tests
 
-The [`tests/datastore-test-runner`](tests/datastore-test-runner) directory contains a Node.js port of `datastore-client` that lets `tests/datastore-test` from `Datastore/Datastore` exercise the JS client against the upstream SQL test suite. This harness helps validate that `@hanzo-ds/client` behaves correctly against real Datastore tests. See the [datastore-test-runner README](tests/datastore-test-runner/README.md) for setup and usage instructions.
+The [`tests/datastore-test-runner`](tests/datastore-test-runner) directory contains a Node.js port of `datastore-client` that lets `tests/datastore-test` from `Datastore/Datastore` exercise the JS client against the upstream SQL test suite. This harness helps validate that `@hanzo/datastore-client` behaves correctly against real Datastore tests. See the [datastore-test-runner README](tests/datastore-test-runner/README.md) for setup and usage instructions.

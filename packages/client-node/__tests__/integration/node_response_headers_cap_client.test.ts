@@ -1,7 +1,7 @@
 import net, { type AddressInfo } from "net";
 import { afterEach, describe, it } from "vitest";
-import { createClient } from "@hanzo-ds/client";
-import type { DatastoreClient } from "@hanzo-ds/client-common";
+import { createClient } from "@hanzo/datastore-client";
+import type { DatastoreClient } from "@hanzo/datastore-client-common";
 
 // Verifies that the Node.js client honors the `max_response_headers_size`
 // configuration option, which is forwarded to `http(s).request` as the

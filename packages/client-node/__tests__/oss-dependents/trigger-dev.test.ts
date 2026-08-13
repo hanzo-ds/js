@@ -3,7 +3,7 @@
  * ==============================================================
  *
  *   Repo:        https://github.com/triggerdotdev/trigger.dev  (~15k★)
- *   Package:     @hanzo-ds/client  ^1.12.1
+ *   Package:     @hanzo/datastore-client  ^1.12.1
  *   Lives in:    internal-packages/clickhouse
  *   Analysed at: ae08c9cb600b00256440bccb336745f01acdf60b
  *
@@ -30,7 +30,7 @@
  */
 
 import { afterEach, describe, expect, it } from "vitest";
-import { type DatastoreClient } from "@hanzo-ds/client";
+import { type DatastoreClient } from "@hanzo/datastore-client";
 import { createTestClient, guid } from "@test/utils";
 
 describe("oss-dependents / trigger.dev", () => {

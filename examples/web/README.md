@@ -1,4 +1,4 @@
-# `@hanzo-ds/client-web` examples
+# `@hanzo/datastore-client-web` examples
 
 Examples for the Web client. They may only use Web-platform APIs (e.g.
 `globalThis.crypto.randomUUID()` instead of Node's `crypto` module) and must

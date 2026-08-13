@@ -7,7 +7,7 @@ import {
   beforeAll,
   afterAll,
 } from "vitest";
-import type { DatastoreClient } from "@hanzo-ds/client-common";
+import type { DatastoreClient } from "@hanzo/datastore-client-common";
 import { createTestClient, TestEnv, isOnEnv } from "@test/utils";
 import { createSimpleTable } from "../fixtures/simple_table";
 import { assertJsonValues, jsonValues } from "../fixtures/test_data";

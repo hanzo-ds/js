@@ -1,5 +1,5 @@
 {
-  "name": "@hanzo-ds/datatype-parser",
+  "name": "@hanzo/datastore-datatype-parser",
   "version": "0.1.3",
   "description": "Standalone Datastore data-type string parser — a TypeScript port of the chdt C++ library.",
   "license": "Apache-2.0",

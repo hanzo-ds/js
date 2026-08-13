@@ -59,7 +59,7 @@ bandwidth). Measured in `tests/iot.columnar.bench.ts`; rationale in
   `compileRowBinaryWithNamesAndTypes(cursor)` (`src/readers/rowBinaryWithNamesAndTypes.ts`):
   it reads the header, folds each column type's AST into a `Reader`
   (`astToReader`, `src/readers/compile.ts`; type strings parsed by
-  `@hanzo-ds/datatype-parser`), and returns a `readRows` driver for the rest of
+  `@hanzo/datastore-datatype-parser`), and returns a `readRows` driver for the rest of
   the stream. Generic and unoptimized (no codegen), so prefer the specialized
   path whenever the types are fixed.
 

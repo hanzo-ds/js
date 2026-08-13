@@ -1,4 +1,4 @@
-import { createClient, DatastoreError } from "@hanzo-ds/client";
+import { createClient, DatastoreError } from "@hanzo/datastore-client";
 import * as crypto from "node:crypto";
 
 /**

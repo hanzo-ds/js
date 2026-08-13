@@ -3,7 +3,7 @@
  * ==========================================================
  *
  *   Repo:        https://github.com/growthbook/growthbook  (~8k★)
- *   Package:     @hanzo-ds/client  ^1.0.1
+ *   Package:     @hanzo/datastore-client  ^1.0.1
  *   Lives in:    packages/back-end/src/integrations/ClickHouse.ts
  *   Analysed at: 50f46e2a978e5ef4e321be3a8d11f551d00815b8
  *
@@ -14,7 +14,7 @@
  * results and feature-usage aggregation.
  *
  * Key patterns:
- *   - `import { createClient, ResponseJSON } from '@hanzo-ds/client'`.
+ *   - `import { createClient, ResponseJSON } from '@hanzo/datastore-client'`.
  *   - Queries return `ResponseJSON`; results feed feature-usage diagnostics.
  *   - `date-fns` used to build time-windowed queries (omitted here).
  *
@@ -26,7 +26,7 @@
  */
 
 import { afterEach, describe, expect, it } from "vitest";
-import { type DatastoreClient, type ResponseJSON } from "@hanzo-ds/client";
+import { type DatastoreClient, type ResponseJSON } from "@hanzo/datastore-client";
 import { createTestClient, guid } from "@test/utils";
 
 describe("oss-dependents / growthbook", () => {

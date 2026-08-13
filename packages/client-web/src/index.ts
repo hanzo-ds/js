@@ -6,7 +6,7 @@ export { createClient } from "./client";
 export { type WebDatastoreClientConfigOptions as DatastoreClientConfigOptions } from "./config";
 export { ResultSet } from "./result_set";
 
-/** Re-export common (formerly @hanzo-ds/client-common) types */
+/** Re-export common (formerly @hanzo/datastore-client-common) types */
 export {
   type BaseDatastoreClientConfigOptions,
   type BaseQueryParams,
@@ -64,12 +64,12 @@ export {
 } from "./common/index";
 
 /**
- * Re-export common (formerly @hanzo-ds/client-common) runtime values.
+ * Re-export common (formerly @hanzo/datastore-client-common) runtime values.
  *
  * These are intentionally re-exported through local bindings (rather than a direct
  * `export { ... } from './common/index'`) so that the `@deprecated` JSDoc tags
  * applied to them in `./common/index` are NOT propagated to consumers of this package.
- * Importing these values from `@hanzo-ds/client-web` is the recommended, non-deprecated path.
+ * Importing these values from `@hanzo/datastore-client-web` is the recommended, non-deprecated path.
  */
 import {
   DatastoreError as DatastoreError_,
@@ -109,9 +109,9 @@ export const StreamableFormats = StreamableFormats_;
 export const StreamableJSONFormats = StreamableJSONFormats_;
 export const SingleDocumentJSONFormats = SingleDocumentJSONFormats_;
 export const RecordsJSONFormats = RecordsJSONFormats_;
-/** @deprecated Superseded by the `@hanzo-ds/datatype-parser` package (`parseDataType` + its `Node` AST); slated for removal in a future major version. */
+/** @deprecated Superseded by the `@hanzo/datastore-datatype-parser` package (`parseDataType` + its `Node` AST); slated for removal in a future major version. */
 export const parseColumnType = parseColumnType_;
-/** @deprecated Superseded by the `@hanzo-ds/datatype-parser` package (`parseDataType` + its `Node` AST); slated for removal in a future major version. */
+/** @deprecated Superseded by the `@hanzo/datastore-datatype-parser` package (`parseDataType` + its `Node` AST); slated for removal in a future major version. */
 export const SimpleColumnTypes = SimpleColumnTypes_;
 export const isProgressRow = isProgressRow_;
 export const isRow = isRow_;

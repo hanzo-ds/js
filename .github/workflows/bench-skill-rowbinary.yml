@@ -1,7 +1,7 @@
 name: "skill: rowbinary benchmarks"
 
 # Runs the RowBinary skill's benchmark suite (npm run bench) against a live
-# Datastore server so the numbers cited externally (e.g. the @hanzo-ds/rowbinary
+# Datastore server so the numbers cited externally (e.g. the @hanzo/datastore-rowbinary
 # blog post: RowBinary vs JSON, monomorphized vs API-combinator readers) have a
 # timestamped, third-party-reproducible CI log + a machine-readable JSON artifact
 # behind them — not just a maintainer's laptop.
@@ -70,15 +70,15 @@ jobs:
           done
           echo "Datastore: ${chv:-<unavailable>}"
 
-      # Build + pack the in-repo @hanzo-ds/datatype-parser so the skill is
+      # Build + pack the in-repo @hanzo/datastore-datatype-parser so the skill is
       # benchmarked against THIS checkout, not the version published to npm. The
       # committed package.json keeps a published range for end users; we only
       # override node_modules below (`npm install <tarball> --no-save`).
-      - name: Pack local @hanzo-ds/datatype-parser
+      - name: Pack local @hanzo/datastore-datatype-parser
         working-directory: ${{ github.workspace }}
         run: |
           npm ci
-          npm pack --workspace @hanzo-ds/datatype-parser --pack-destination "${{ runner.temp }}"
+          npm pack --workspace @hanzo/datastore-datatype-parser --pack-destination "${{ runner.temp }}"
 
       - name: Install dependencies
         run: npm ci

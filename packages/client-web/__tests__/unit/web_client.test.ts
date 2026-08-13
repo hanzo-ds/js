@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import type { BaseDatastoreClientConfigOptions } from "@hanzo-ds/client-common";
+import type { BaseDatastoreClientConfigOptions } from "@hanzo/datastore-client-common";
 import { createClient } from "../../src";
 import { isAwaitUsingStatementSupported } from "../utils/feature_detection";
 import { sleep } from "../utils/sleep";
@@ -28,7 +28,7 @@ describe("[Web] createClient", () => {
     ).toThrow(
       expect.objectContaining({
         message: expect.stringContaining(
-          "zstd request compression is not supported by @hanzo-ds/client-web",
+          "zstd request compression is not supported by @hanzo/datastore-client-web",
         ),
       }),
     );
@@ -40,7 +40,7 @@ describe("[Web] createClient", () => {
     ).toThrow(
       expect.objectContaining({
         message: expect.stringContaining(
-          "zstd response compression is not supported by @hanzo-ds/client-web",
+          "zstd response compression is not supported by @hanzo/datastore-client-web",
         ),
       }),
     );

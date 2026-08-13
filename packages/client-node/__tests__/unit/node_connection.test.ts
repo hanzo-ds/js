@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 
-import type { QueryParams } from "@hanzo-ds/client-common";
+import type { QueryParams } from "@hanzo/datastore-client-common";
 import { guid } from "../../../client-common/__tests__/utils/guid";
 import Http from "http";
 import { getAsText } from "../../src/utils";

@@ -1,6 +1,6 @@
 const assert = require("assert");
-const { createClient } = require("@hanzo-ds/client");
-const version = require("@hanzo-ds/client/dist/version");
+const { createClient } = require("@hanzo/datastore-client");
+const version = require("@hanzo/datastore-client/dist/version");
 
 async function main() {
   const expectedVersion = process.env.EXPECTED_VERSION;
@@ -10,7 +10,7 @@ async function main() {
   );
 
   console.log(`Expected published version: ${expectedVersion}`);
-  console.log(`Installed @hanzo-ds/client version: ${version.default}`);
+  console.log(`Installed @hanzo/datastore-client version: ${version.default}`);
 
   assert.strictEqual(
     version.default,

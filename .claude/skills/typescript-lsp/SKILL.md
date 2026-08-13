@@ -10,7 +10,7 @@ description: >
   `packages/*` workspaces. The server is preinstalled as a root devDependency —
   run the repository `setup` skill (`npm install`) first so `node_modules` is
   populated. Do NOT use this skill for downstream projects that merely depend
-  on `@hanzo-ds/client`; it is specific to working inside this repo.
+  on `@hanzo/datastore-client`; it is specific to working inside this repo.
 ---
 
 # TypeScript Language Server in datastore-js

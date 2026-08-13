@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import type { DatastoreClient } from "@hanzo-ds/client-common";
+import type { DatastoreClient } from "@hanzo/datastore-client-common";
 import { createTestClient } from "@test/utils";
 import { getAsText } from "../utils/stream";
-import { ResultSet } from "@hanzo-ds/client-web";
+import { ResultSet } from "@hanzo/datastore-client-web";
 
 describe("[Web] exec result streaming", () => {
   let client: DatastoreClient<ReadableStream>;

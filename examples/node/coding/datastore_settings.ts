@@ -1,6 +1,6 @@
 // Applying Datastore settings on the client or the operation level.
 // See also: {@link DatastoreSettings} typings.
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 
 const client = createClient({
   // Settings applied in the client settings will be added to every request.

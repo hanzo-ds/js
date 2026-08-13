@@ -1,4 +1,4 @@
-import { createClient, DatastoreError } from "@hanzo-ds/client-web";
+import { createClient, DatastoreError } from "@hanzo/datastore-client-web";
 
 /**
  * An example of cancelling a long-running query on the server side.

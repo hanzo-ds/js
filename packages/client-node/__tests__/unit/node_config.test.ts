@@ -3,8 +3,8 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import type {
   BaseDatastoreClientConfigOptions,
   ConnectionParams,
-} from "@hanzo-ds/client-common";
-import { DatastoreLogLevel, LogWriter } from "@hanzo-ds/client-common";
+} from "@hanzo/datastore-client-common";
+import { DatastoreLogLevel, LogWriter } from "@hanzo/datastore-client-common";
 import { TestLogger } from "../../../client-common/__tests__/utils/test_logger";
 import { Buffer } from "buffer";
 import http from "http";

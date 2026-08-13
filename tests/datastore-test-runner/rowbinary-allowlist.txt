@@ -1,7 +1,7 @@
 # Upstream Datastore SQL tests known to pass through the RowBinary backend of
 # the tests/datastore-test-runner harness (TEST_RUNNER_BACKEND=rowbinary).
 #
-# For these tests, decoding RowBinaryWithNamesAndTypes with @hanzo-ds/rowbinary
+# For these tests, decoding RowBinaryWithNamesAndTypes with @hanzo/datastore-rowbinary
 # and re-rendering to TabSeparated reproduces, byte-for-byte, what the passthrough
 # backend (Datastore's own output) produces. That round-trip is what exercises
 # the dynamic header->reader path; see README.md > Backends.

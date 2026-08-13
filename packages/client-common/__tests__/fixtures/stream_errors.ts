@@ -1,7 +1,7 @@
 import { expect } from "vitest";
 
-import type { QueryParamsWithFormat } from "@hanzo-ds/client-common";
-import { DatastoreError } from "@hanzo-ds/client-common";
+import type { QueryParamsWithFormat } from "@hanzo/datastore-client-common";
+import { DatastoreError } from "@hanzo/datastore-client-common";
 
 export function streamErrorQueryParams(): QueryParamsWithFormat<"JSONEachRow"> {
   return {

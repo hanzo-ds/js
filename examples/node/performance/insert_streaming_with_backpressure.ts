@@ -1,4 +1,4 @@
-import { createClient, type Row } from "@hanzo-ds/client";
+import { createClient, type Row } from "@hanzo/datastore-client";
 import * as Stream from "node:stream";
 import { EventEmitter } from "node:events";
 

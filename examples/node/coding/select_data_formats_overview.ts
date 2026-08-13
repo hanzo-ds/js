@@ -10,7 +10,7 @@
 // - INSERT formats overview - insert_data_formats_overview.ts
 // - JSON data streaming example - select_streaming_json_each_row.ts
 // - Streaming Parquet into a file - node/select_parquet_as_file.ts
-import { createClient, type DataFormat } from "@hanzo-ds/client";
+import { createClient, type DataFormat } from "@hanzo/datastore-client";
 
 const tableName = "select_data_formats_overview";
 const client = createClient();

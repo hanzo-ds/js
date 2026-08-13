@@ -3,7 +3,7 @@
  * ======================================================
  *
  *   Repo:        https://github.com/hyperdxio/hyperdx  (~9k★)
- *   Packages:    @hanzo-ds/client, @hanzo-ds/client-web, @hanzo-ds/client-common
+ *   Packages:    @hanzo/datastore-client, @hanzo/datastore-client-web, @hanzo/datastore-client-common
  *                — all ^1.12.1
  *   Lives in:    packages/common-utils/src/clickhouse
  *   Analysed at: 34aa906f0a102acbb66a49e91b1a5267070d3546
@@ -13,15 +13,15 @@
  * How the client is used
  * ----------------------
  * HyperDX is an observability UI over ClickHouse and is the ONLY repo in this
- * set that uses the BROWSER client (@hanzo-ds/client-web). The `common-utils`
+ * set that uses the BROWSER client (@hanzo/datastore-client-web). The `common-utils`
  * package deliberately decouples node and browser implementations behind a
- * shared base, using common types from @hanzo-ds/client-common.
+ * shared base, using common types from @hanzo/datastore-client-common.
  *
  * Key patterns:
- *   - clickhouse/node.ts    -> createClient from @hanzo-ds/client
- *   - clickhouse/browser.ts -> createClient from @hanzo-ds/client-web
+ *   - clickhouse/node.ts    -> createClient from @hanzo/datastore-client
+ *   - clickhouse/browser.ts -> createClient from @hanzo/datastore-client-web
  *   - index.ts unifies both (NodeDatastoreClient vs WebDatastoreClient) using
- *     shared types from @hanzo-ds/client-common.
+ *     shared types from @hanzo/datastore-client-common.
  *   - A `getJSNativeCreateClient` indirection so app/api packages don't import
  *     the client directly.
  *
@@ -33,18 +33,18 @@
  *
  * Reproduction note: the node path runs through the shared `createTestClient`
  * (works on every test environment). The browser path is constructed from the
- * public `@hanzo-ds/client-web` surface and, on local environments, also runs a
+ * public `@hanzo/datastore-client-web` surface and, on local environments, also runs a
  * trivial query (the web client works under Node via global `fetch`).
  */
 
 import { afterEach, describe, expect, it } from "vitest";
 // Shared, environment-agnostic types come from the -common package.
-import type { DatastoreSettings } from "@hanzo-ds/client-common";
-import { type DatastoreClient as NodeDatastoreClient } from "@hanzo-ds/client";
+import type { DatastoreSettings } from "@hanzo/datastore-client-common";
+import { type DatastoreClient as NodeDatastoreClient } from "@hanzo/datastore-client";
 import {
   createClient as createWebClient,
   type DatastoreClient as WebDatastoreClient,
-} from "@hanzo-ds/client-web";
+} from "@hanzo/datastore-client-web";
 import {
   createTestClient,
   getDatastoreTestEnvironment,
@@ -66,7 +66,7 @@ describe("oss-dependents / hyperdx", () => {
     return createTestClient();
   }
 
-  // clickhouse/browser.ts — browser path uses @hanzo-ds/client-web.
+  // clickhouse/browser.ts — browser path uses @hanzo/datastore-client-web.
   function createBrowserDatastoreClient(
     options: BaseClientOptions,
   ): WebDatastoreClient {

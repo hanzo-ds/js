@@ -1,4 +1,4 @@
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 
 // Inserting and reading back values for all four `Decimal(P, S)` widths (32/64/128/256-bit).
 // Decimal values are passed as strings to avoid floating-point precision loss, and read back

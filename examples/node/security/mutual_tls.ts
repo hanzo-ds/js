@@ -1,4 +1,4 @@
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 import fs from "node:fs";
 
 const certsPath = "../.docker/datastore/single_node_tls/certificates";

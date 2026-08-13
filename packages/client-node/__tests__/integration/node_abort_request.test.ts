@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import type { DatastoreClient, Row } from "@hanzo-ds/client-common";
+import type { DatastoreClient, Row } from "@hanzo/datastore-client-common";
 import { createSimpleTable } from "@test/fixtures/simple_table";
 import { jsonValues } from "@test/fixtures/test_data";
 import { createTestClient } from "@test/utils/client";

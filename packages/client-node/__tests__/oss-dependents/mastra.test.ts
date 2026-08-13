@@ -3,7 +3,7 @@
  * =====================================================
  *
  *   Repo:        https://github.com/mastra-ai/mastra  (~23k★)
- *   Package:     @hanzo-ds/client  ^1.20.0
+ *   Package:     @hanzo/datastore-client  ^1.20.0
  *   Lives in:    stores/clickhouse
  *   Analysed at: 02087e1fbc54aa07f3071f7a200df1bf5be601a8
  *
@@ -33,7 +33,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import {
   type DatastoreClient,
   type DatastoreClientConfigOptions,
-} from "@hanzo-ds/client";
+} from "@hanzo/datastore-client";
 import { createTestClient, guid } from "@test/utils";
 
 describe("oss-dependents / mastra", () => {

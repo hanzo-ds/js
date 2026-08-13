@@ -9,7 +9,7 @@
 **Fix:** Use the `pathname` option separately:
 
 ```js
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 
 const client = createClient({
   url: "http://proxy:8123",
@@ -22,7 +22,7 @@ For proxies that require custom auth headers:
 > **Requires:** `>= 1.0.0` (`http_headers` config option; replaces the deprecated `additional_headers` from `>= 0.2.9`). Per-request `http_headers` overrides are available since `>= 1.11.0`.
 
 ```js
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 
 const client = createClient({
   http_headers: {

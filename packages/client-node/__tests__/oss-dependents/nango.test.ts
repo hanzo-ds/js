@@ -3,7 +3,7 @@
  * ==================================================
  *
  *   Repo:        https://github.com/NangoHQ/nango  (~7k★)
- *   Package:     @hanzo-ds/client  1.18.2 (pinned, exact)
+ *   Package:     @hanzo/datastore-client  1.18.2 (pinned, exact)
  *   Lives in:    packages/usage/lib/clickhouse
  *   Analysed at: 32a588d5d4a02cba6a869654a3c849ea16d741b0
  *
@@ -14,7 +14,7 @@
  * `DatastoreClient` type to the rest of the package.
  *
  * Key patterns:
- *   - `import { createClient } from '@hanzo-ds/client'` + `import type
+ *   - `import { createClient } from '@hanzo/datastore-client'` + `import type
  *     { DatastoreClient }`.
  *   - Configuration driven by env parsing (reproduced with process.env here).
  *   - Pinned to an exact client version (1.18.2).
@@ -27,7 +27,7 @@
  */
 
 import { afterEach, describe, expect, it } from "vitest";
-import type { DatastoreClient } from "@hanzo-ds/client";
+import type { DatastoreClient } from "@hanzo/datastore-client";
 import { createTestClient, guid } from "@test/utils";
 
 describe("oss-dependents / nango", () => {

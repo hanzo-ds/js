@@ -1,5 +1,5 @@
-import { createClient } from "@hanzo-ds/client";
-import type { DatastoreClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
+import type { DatastoreClient } from "@hanzo/datastore-client";
 import { Readable } from "node:stream";
 import { request } from "undici";
 
@@ -21,13 +21,13 @@ export interface TransportClient {
 }
 
 /**
- * Wraps `@hanzo-ds/client` as built from this repository (resolved via the
+ * Wraps `@hanzo/datastore-client` as built from this repository (resolved via the
  * npm workspace symlink, not the published npm release), which sends requests
  * through the legacy `node:http` / `node:https` modules. `exec()` is used so we
  * measure the raw transport stream without any client-side row parsing overhead.
  */
 export class SdkTransportClient implements TransportClient {
-  readonly name = "@hanzo-ds/client (http/https)";
+  readonly name = "@hanzo/datastore-client (http/https)";
   private readonly client: DatastoreClient;
 
   constructor(url: string) {
@@ -77,7 +77,7 @@ export class SdkTransportClient implements TransportClient {
  * Crucially we use `request()` rather than the global `fetch()`: `request()`
  * returns the response body as a Node.js `Readable` stream, whereas `fetch()`
  * exposes it through the much slower WebStreams (`ReadableStream`) layer. This
- * keeps the comparison against `@hanzo-ds/client` apples-to-apples — both
+ * keeps the comparison against `@hanzo/datastore-client` apples-to-apples — both
  * drain a native Node stream — and reflects the API a real migration would use.
  * See https://github.com/nodejs/undici/issues/1203.
  */

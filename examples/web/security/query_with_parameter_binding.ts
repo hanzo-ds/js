@@ -1,4 +1,4 @@
-import { createClient, TupleParam } from "@hanzo-ds/client-web";
+import { createClient, TupleParam } from "@hanzo/datastore-client-web";
 
 /**
  * Binding query parameters of various data types.

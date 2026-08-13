@@ -1,6 +1,6 @@
 // Post-publish integration smoke against a real Datastore server.
 //
-// Where src/index.ts proves the freshly published @hanzo-ds/client installs
+// Where src/index.ts proves the freshly published @hanzo/datastore-client installs
 // and exposes the expected version + createClient, this exercises the installed
 // artifact END-TO-END against a live server: connect, create/insert/select,
 // stream, and confirm a bad query surfaces as a DatastoreError. It runs in the
@@ -13,7 +13,7 @@
 // syntax (no type annotations, `as` casts, etc.) — plain JS in a .ts file, like
 // src/index.ts.
 const assert = require("assert");
-const { createClient, DatastoreError } = require("@hanzo-ds/client");
+const { createClient, DatastoreError } = require("@hanzo/datastore-client");
 
 async function main() {
   // Defaults target http://localhost:8123 with the default user, matching the
@@ -89,7 +89,7 @@ async function main() {
 
     await client.command({ query: `DROP TABLE ${table}` });
     console.log(
-      "OK: integration against the published @hanzo-ds/client passed",
+      "OK: integration against the published @hanzo/datastore-client passed",
     );
   } finally {
     await client.close();

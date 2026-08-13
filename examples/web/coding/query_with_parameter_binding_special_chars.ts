@@ -2,7 +2,7 @@
 // Available since datastore-js 0.3.1.
 //
 // For an overview of binding regular values of various data types, see `query_with_parameter_binding.ts`.
-import { createClient } from "@hanzo-ds/client-web";
+import { createClient } from "@hanzo/datastore-client-web";
 
 const client = createClient();
 

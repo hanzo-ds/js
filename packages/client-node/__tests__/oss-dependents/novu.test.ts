@@ -3,7 +3,7 @@
  * ================================================
  *
  *   Repo:        https://github.com/novuhq/novu  (~39k★)
- *   Package:     @hanzo-ds/client  ^1.20.0
+ *   Package:     @hanzo/datastore-client  ^1.20.0
  *   Lives in:    libs/application-generic/src/services/analytic-logs
  *   Analysed at: 215418079c02fec5fbea1304835fd75985b26ae8
  *
@@ -39,7 +39,7 @@ import {
   type DatastoreClient,
   type DatastoreSettings,
   type PingResult,
-} from "@hanzo-ds/client";
+} from "@hanzo/datastore-client";
 import { createTestClient, guid } from "@test/utils";
 
 // Barrel re-export: `createClient` is surfaced as `createDatastoreClient`.

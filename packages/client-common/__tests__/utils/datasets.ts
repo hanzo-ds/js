@@ -1,4 +1,4 @@
-import type { DatastoreClient } from "@hanzo-ds/client-common";
+import type { DatastoreClient } from "@hanzo/datastore-client-common";
 import { fakerRU } from "@faker-js/faker";
 import { createTableWithFields } from "@test/fixtures/table_with_fields";
 

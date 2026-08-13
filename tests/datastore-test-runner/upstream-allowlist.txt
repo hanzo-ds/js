@@ -1,4 +1,4 @@
-# Upstream Datastore SQL tests known/expected to pass through @hanzo-ds/client
+# Upstream Datastore SQL tests known/expected to pass through @hanzo/datastore-client
 # via the tests/datastore-test-runner harness.
 #
 # Conventions:

@@ -5,7 +5,7 @@
 // See also:
 //  - `select_json_with_metadata.ts` for metadata-aware JSON responses.
 //  - `select_data_formats_overview.ts` for a broader format comparison.
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 
 interface Data {
   number: string;

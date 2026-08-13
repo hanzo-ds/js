@@ -1,4 +1,4 @@
-# @hanzo-ds/client
+# @hanzo/datastore-client
 
 Official Node.js client for [Datastore](https://hanzo.ai/), written
 purely in TypeScript and thoroughly tested against actual Datastore versions.
@@ -9,12 +9,12 @@ both selects and inserts. The client has zero external dependencies and is
 optimized for maximum performance.
 
 > Looking for a browser / edge runtime (Cloudflare Workers, etc.) instead? Use
-> [`@hanzo-ds/client-web`](https://www.npmjs.com/package/@hanzo-ds/client-web).
+> [`@hanzo/datastore-client-web`](https://www.npmjs.com/package/@hanzo/datastore-client-web).
 
 ## Installation
 
 ```sh
-npm i @hanzo-ds/client
+npm i @hanzo/datastore-client
 ```
 
 ## Environment requirements
@@ -47,7 +47,7 @@ support and is not guaranteed.
 ## Quick start
 
 ```ts
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 
 const client = createClient({
   url: process.env.DATASTORE_URL ?? "http://localhost:8123",

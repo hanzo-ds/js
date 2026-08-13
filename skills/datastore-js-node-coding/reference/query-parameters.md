@@ -59,7 +59,7 @@ it out explicitly when the user shows template-literal interpolation.
 ## Common types
 
 ```ts
-import { TupleParam } from "@hanzo-ds/client";
+import { TupleParam } from "@hanzo/datastore-client";
 
 await client.query({
   query: `

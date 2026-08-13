@@ -1,4 +1,4 @@
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 
 // Writing to a table that lives in a database other than the client's default `database`.
 // Pass a fully qualified `database.table` name to `client.insert`/`client.query`/`client.command`

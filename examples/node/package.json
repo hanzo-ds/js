@@ -17,7 +17,7 @@
     "run-examples": "vitest run -c vitest.config.ts"
   },
   "dependencies": {
-    "@hanzo-ds/client": "latest"
+    "@hanzo/datastore-client": "latest"
   },
   "devDependencies": {
     "@opentelemetry/api": "^1.9.0",

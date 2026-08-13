@@ -1,4 +1,4 @@
-import { createClient } from "@hanzo-ds/client-web";
+import { createClient } from "@hanzo/datastore-client-web";
 
 if (typeof DATASTORE_CLUSTER_URL === "undefined") {
   throw new Error("DATASTORE_CLUSTER_URL is required");

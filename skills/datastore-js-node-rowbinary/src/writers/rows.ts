@@ -35,7 +35,7 @@ export interface WriteRowsFlush {
  * subscriber `writeRows` skips the publish entirely (a single `hasSubscribers`
  * check per buffer, off the per-row path), so it's free when unused.
  */
-export const FLUSH_CHANNEL_NAME = "@hanzo-ds/rowbinary:writeRows.flush";
+export const FLUSH_CHANNEL_NAME = "@hanzo/datastore-rowbinary:writeRows.flush";
 
 /** Created once — `channel()` is idempotent (same name → same object). */
 const flushChannel = channel(FLUSH_CHANNEL_NAME);

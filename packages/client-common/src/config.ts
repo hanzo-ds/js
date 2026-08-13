@@ -75,7 +75,7 @@ export interface BaseDatastoreClientConfigOptions {
      *  `Accept-Encoding` header and the `enable_http_compression=1` Datastore HTTP
      *  setting. Decompression takes no codec options (the server chose them).
      *  `"zstd"` requires Node.js >= 22.15.0; `"br"` works on any supported Node.js.
-     *  On `@hanzo-ds/client-web`, `zstd` is rejected at client creation; `gzip`
+     *  On `@hanzo/datastore-client-web`, `zstd` is rejected at client creation; `gzip`
      *  and `br` responses are decompressed by the browser.
      *  <p><b>Warning</b>: Response compression can't be enabled for a user with readonly=1, as Datastore will not allow settings modifications for such user.</p>
      *  @default false */
@@ -88,8 +88,8 @@ export interface BaseDatastoreClientConfigOptions {
      *  used (gzip/zstd use zlib's defaults, `br` defaults to quality 4 since
      *  zlib's brotli default of 11 is far too slow for a streaming insert body).
      *  `"zstd"` requires Node.js >= 22.15.0; `"br"` works on any supported Node.js.
-     *  Request-body compression is performed only by `@hanzo-ds/client` (Node.js);
-     *  `@hanzo-ds/client-web` sends request bodies uncompressed.
+     *  Request-body compression is performed only by `@hanzo/datastore-client` (Node.js);
+     *  `@hanzo/datastore-client-web` sends request bodies uncompressed.
      *  @default false */
     request?: boolean | RequestCompression;
   };

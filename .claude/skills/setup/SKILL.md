@@ -10,7 +10,7 @@ description: >
   the two independent example packages, building the workspace packages so
   inter-package imports resolve, and starting Datastore via Docker Compose for
   integration tests. Do NOT use this skill for downstream user projects that
-  merely depend on `@hanzo-ds/client` or `@hanzo-ds/client-web`; it is
+  merely depend on `@hanzo/datastore-client` or `@hanzo/datastore-client-web`; it is
   specific to contributing to the `hanzo-ds/js` repo itself.
 ---
 
@@ -39,7 +39,7 @@ The root `postinstall` script patches `node_modules/parquet-wasm/package.json`; 
 
 ## 2. Build the workspace packages
 
-The workspace packages (`@hanzo-ds/client-common`, `@hanzo-ds/client`, `@hanzo-ds/client-web`) must be built before some tests, examples, and typechecks can resolve their inter-package imports:
+The workspace packages (`@hanzo/datastore-client-common`, `@hanzo/datastore-client`, `@hanzo/datastore-client-web`) must be built before some tests, examples, and typechecks can resolve their inter-package imports:
 
 ```bash
 npm run build

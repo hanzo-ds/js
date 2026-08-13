@@ -1,4 +1,4 @@
-import { createClient, DatastoreError } from "@hanzo-ds/client";
+import { createClient, DatastoreError } from "@hanzo/datastore-client";
 import { EventEmitter } from "node:events";
 import { setTimeout as sleep } from "node:timers/promises";
 

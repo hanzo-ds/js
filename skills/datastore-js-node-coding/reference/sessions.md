@@ -65,7 +65,7 @@ script, a background job, a single user's session that you've already manually
 serialized in the code).
 
 ```ts
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 import * as crypto from "node:crypto";
 
 const client = createClient({
@@ -97,7 +97,7 @@ await client.close();
 client, every subsequent call inherits the change.
 
 ```ts
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 import * as crypto from "node:crypto";
 
 const client = createClient({

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import type { QueryParams } from "@hanzo-ds/client-common";
-import { TupleParam } from "@hanzo-ds/client-common";
-import { type DatastoreClient } from "@hanzo-ds/client-common";
+import type { QueryParams } from "@hanzo/datastore-client-common";
+import { TupleParam } from "@hanzo/datastore-client-common";
+import { type DatastoreClient } from "@hanzo/datastore-client-common";
 import { createTestClient } from "../utils";
 
 describe("select with query binding", () => {

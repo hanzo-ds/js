@@ -2,13 +2,13 @@
 
 Guidance for the [`datastore-test-runner`](.) harness. See the [repo-root `AGENTS.md`](../../AGENTS.md) for cross-cutting guidance.
 
-This harness is a Node.js port of `datastore-client` that allows the official Datastore Python test runner (`tests/datastore-test`) to drive a subset of the upstream SQL test suite against `@hanzo-ds/client`.
+This harness is a Node.js port of `datastore-client` that allows the official Datastore Python test runner (`tests/datastore-test`) to drive a subset of the upstream SQL test suite against `@hanzo/datastore-client`.
 
 ## What the harness does
 
-- Wraps `@hanzo-ds/client` in a tiny CLI (`bin/datastore` → `dist/main.js`) that mimics enough of the upstream `datastore-client` binary (same flags, `extract-from-config` shortcut, stdin/`--query` behavior) for the Python `tests/datastore-test` runner to drive it without modification.
-- The runner is an npm workspace of the root `datastore-js` package, so `npm install` from the repo root links `@hanzo-ds/client` and `@hanzo-ds/client-common` from the local checkout instead of resolving them from the npm registry. Always install + build from the repo root (`npm install && npm run build`) so the harness exercises the code under review rather than the last published client.
-- The CI matrix runs the harness against Datastore `latest` and `head` so that we exercise `@hanzo-ds/client` against both server versions and detect server regressions. The allowlist is also split into round-robin shards (`SHARD_INDEX` / `SHARD_TOTAL`) so each matrix job stays at roughly one minute; bump both the `shard` matrix values and the `SHARD_TOTAL` env value in the workflow together if per-shard runtime climbs back above ~1 minute.
+- Wraps `@hanzo/datastore-client` in a tiny CLI (`bin/datastore` → `dist/main.js`) that mimics enough of the upstream `datastore-client` binary (same flags, `extract-from-config` shortcut, stdin/`--query` behavior) for the Python `tests/datastore-test` runner to drive it without modification.
+- The runner is an npm workspace of the root `datastore-js` package, so `npm install` from the repo root links `@hanzo/datastore-client` and `@hanzo/datastore-client-common` from the local checkout instead of resolving them from the npm registry. Always install + build from the repo root (`npm install && npm run build`) so the harness exercises the code under review rather than the last published client.
+- The CI matrix runs the harness against Datastore `latest` and `head` so that we exercise `@hanzo/datastore-client` against both server versions and detect server regressions. The allowlist is also split into round-robin shards (`SHARD_INDEX` / `SHARD_TOTAL`) so each matrix job stays at roughly one minute; bump both the `shard` matrix values and the `SHARD_TOTAL` env value in the workflow together if per-shard runtime climbs back above ~1 minute.
 - Reads the curated test list from [`upstream-allowlist.txt`](upstream-allowlist.txt) (one test name per line, `#` for comments) and forwards them as positional arguments to `tests/datastore-test`.
 - The `SERVER_SETTINGS`/`CLIENT_ONLY_SETTINGS` allowlists in [`src/settings.ts`](src/settings.ts) are copied from the Java port and may need periodic resync as Datastore adds or reclassifies settings.
 

@@ -1,4 +1,4 @@
-import { createClient, ResultSet } from "@hanzo-ds/client";
+import { createClient, ResultSet } from "@hanzo/datastore-client";
 
 // Using the `default_format` Datastore setting with `client.exec` so that the query
 // does not need an explicit `FORMAT` clause and the response can be wrapped in a

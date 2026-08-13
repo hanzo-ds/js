@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { parseDataType } from "@hanzo-ds/datatype-parser";
-import { formatUUID } from "@hanzo-ds/rowbinary/readers/uuid";
+import { parseDataType } from "@hanzo/datastore-datatype-parser";
+import { formatUUID } from "@hanzo/datastore-rowbinary/readers/uuid";
 import { renderValue, compileRowRenderers } from "../src/tsv-serialize.js";
 
 /**
  * Render a single value at top level or nested, given a Datastore type string.
- * The value shapes here mirror exactly what `@hanzo-ds/rowbinary` decodes —
+ * The value shapes here mirror exactly what `@hanzo/datastore-rowbinary` decodes —
  * Decimal as `[bigint, scale]`, Date/DateTime as `Date`, UUID/IPv6 as `Buffer`,
  * Map as a JS `Map`, etc. — so the test doubles as documentation of that model.
  */
@@ -101,7 +101,7 @@ describe("renderValue — top level (escaped, unquoted)", () => {
   });
 
   it("renders the enum name the reader already resolved", () => {
-    // @hanzo-ds/rowbinary resolves Enum8/16 to the NAME (not the wire
+    // @hanzo/datastore-rowbinary resolves Enum8/16 to the NAME (not the wire
     // integer), so renderValue receives the name string and renders it
     // stringish: escaped + unquoted at top level, single-quoted when nested.
     expect(render("Enum8('x' = 1, 'y' = 2)", "y")).toBe("y");
@@ -167,7 +167,7 @@ describe("renderValue — composites", () => {
   });
 
   it("geo types render as Point tuples and their array nestings", () => {
-    // shapes mirror @hanzo-ds/rowbinary: Point [x,y]; Ring/LineString
+    // shapes mirror @hanzo/datastore-rowbinary: Point [x,y]; Ring/LineString
     // Point[]; Polygon/MultiLineString Point[][]; MultiPolygon Point[][][].
     expect(render("Point", [1.5, 2.5])).toBe("(1.5,2.5)");
     expect(

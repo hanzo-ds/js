@@ -1,7 +1,7 @@
 import type {
   DatastoreClient,
   MergeTreeSettings,
-} from "@hanzo-ds/client-common";
+} from "@hanzo/datastore-client-common";
 import { createTable, TestEnv } from "../utils";
 
 export function createSimpleTable<Stream = unknown>(

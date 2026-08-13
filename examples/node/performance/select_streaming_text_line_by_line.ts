@@ -1,4 +1,4 @@
-import { createClient, type Row } from "@hanzo-ds/client";
+import { createClient, type Row } from "@hanzo/datastore-client";
 
 /**
  * Can be used for consuming large datasets for reducing memory overhead,

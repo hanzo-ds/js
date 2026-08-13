@@ -54,7 +54,7 @@ env:
 
 jobs:
   # Runnable reproductions of how the top OSS dependents use the client, resolved
-  # against the workspace source via the @hanzo-ds/client* vitest aliases. This
+  # against the workspace source via the @hanzo/datastore-client* vitest aliases. This
   # is a separate workflow so a regression that breaks a known consumer is clearly
   # attributable. It targets only the stable Datastore release on a local
   # single-node instance, across the supported Node.js versions.
@@ -86,7 +86,7 @@ jobs:
         run: |
           npm ci
 
-      # The oss-dependents specs resolve `@hanzo-ds/client*` to the built
+      # The oss-dependents specs resolve `@hanzo/datastore-client*` to the built
       # workspace packages (not `src`), so build before running them.
       - name: Build workspace packages
         run: |

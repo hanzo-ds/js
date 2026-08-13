@@ -1,6 +1,6 @@
 /**
  * The fold: turn a parsed Datastore data-type AST (from
- * `@hanzo-ds/datatype-parser`) into a RowBinary value {@link Reader}.
+ * `@hanzo/datastore-datatype-parser`) into a RowBinary value {@link Reader}.
  *
  * AST in, reader out — nothing else. Reading the `RowBinaryWithNamesAndTypes`
  * header, parsing type strings, and assembling a row reader live in
@@ -15,7 +15,7 @@
  * Datastore's BINARY type encoding rather than the textual type's AST.
  */
 
-import { NodeKind, type Node } from "@hanzo-ds/datatype-parser";
+import { NodeKind, type Node } from "@hanzo/datastore-datatype-parser";
 
 import type { Reader } from "./core.js";
 import {
@@ -85,7 +85,7 @@ import { readDynamic } from "./dynamic.js";
  * A dedicated class so callers can `catch (e) { if (e instanceof
  * RowBinaryTypeError) … }` and branch on a bad-type error specifically rather
  * than string-matching a generic `Error`. Note the standalone
- * `@hanzo-ds/datatype-parser` is itself NON-throwing (it returns a
+ * `@hanzo/datastore-datatype-parser` is itself NON-throwing (it returns a
  * `ParseResult`); this is the error the compile layer raises on top of it.
  */
 export class RowBinaryTypeError extends Error {

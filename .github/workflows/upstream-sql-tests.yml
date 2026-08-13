@@ -58,7 +58,7 @@ jobs:
         datastore: [latest]
         # passthrough: stream Datastore's own TabSeparated text (transport /
         # session / settings coverage). rowbinary: decode
-        # RowBinaryWithNamesAndTypes through @hanzo-ds/rowbinary and re-render
+        # RowBinaryWithNamesAndTypes through @hanzo/datastore-rowbinary and re-render
         # to TabSeparated, exercising the dynamic header->reader path. Each
         # backend has its own allowlist (see the "Run upstream SQL tests" step).
         backend: [passthrough, rowbinary]

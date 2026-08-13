@@ -1,4 +1,4 @@
-import { createClient } from "@hanzo-ds/client-web";
+import { createClient } from "@hanzo/datastore-client-web";
 
 /**
  * Binding query parameters that contain special characters (tabs, newlines, quotes, backslashes, etc.).

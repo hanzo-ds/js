@@ -1,4 +1,4 @@
-import { createClient } from "@hanzo-ds/client-web";
+import { createClient } from "@hanzo/datastore-client-web";
 
 const tableName = `chjs_dynamic_variant_json_web`;
 const client = createClient({

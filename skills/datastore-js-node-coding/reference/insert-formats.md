@@ -27,7 +27,7 @@ When answering "what format/call should I use for an array of JS objects?":
 This is the right answer for ~90% of inserts.
 
 ```ts
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 
 const client = createClient();
 
@@ -88,7 +88,7 @@ These cannot be streamed — the entire body is sent in one shot.
 | `JSONObjectEachRow`       | `Record<string, { col: value, ... }>` (the record key labels each row but is not stored)                                  |
 
 ```ts
-import type { InputJSON, InputJSONObjectEachRow } from "@hanzo-ds/client";
+import type { InputJSON, InputJSONObjectEachRow } from "@hanzo/datastore-client";
 
 const meta: InputJSON["meta"] = [
   { name: "id", type: "UInt32" },

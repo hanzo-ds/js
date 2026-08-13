@@ -25,7 +25,7 @@ import {
   type DataFormat,
   type InputJSON,
   type InputJSONObjectEachRow,
-} from "@hanzo-ds/client";
+} from "@hanzo/datastore-client";
 
 const tableName = "insert_data_formats_overview";
 const client = createClient();

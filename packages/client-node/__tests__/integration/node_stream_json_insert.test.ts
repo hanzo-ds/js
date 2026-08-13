@@ -1,4 +1,4 @@
-import { type DatastoreClient } from "@hanzo-ds/client-common";
+import { type DatastoreClient } from "@hanzo/datastore-client-common";
 import { it, beforeEach, afterEach, expect } from "vitest";
 import { createSimpleTable } from "@test/fixtures/simple_table";
 import { assertJsonValues, jsonValues } from "@test/fixtures/test_data";

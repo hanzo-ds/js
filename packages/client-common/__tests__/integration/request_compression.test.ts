@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import {
   type DatastoreClient,
   type ResponseJSON,
-} from "@hanzo-ds/client-common";
+} from "@hanzo/datastore-client-common";
 import { createSimpleTable } from "../fixtures/simple_table";
 import { createTestClient, guid } from "../utils";
 

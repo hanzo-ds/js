@@ -1,5 +1,5 @@
 import { expect } from "vitest";
-import type { DatastoreClient } from "@hanzo-ds/client-common";
+import type { DatastoreClient } from "@hanzo/datastore-client-common";
 import { sleep } from "../utils";
 
 export const jsonValues = [

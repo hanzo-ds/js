@@ -1,6 +1,6 @@
 import { strict as assert } from "node:assert";
 
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 
 // Datastore converts UUID values into UInt128 implicitly only for the `VALUES`
 // clause. With row-oriented input formats such as `JSONEachRow`, sending a UUID

@@ -186,5 +186,5 @@ function formatMessage({
   message: string;
 }): string {
   const ts = new Date().toISOString();
-  return `[${ts}][${level}][@hanzo-ds/client][${module}] ${message}`;
+  return `[${ts}][${level}][@hanzo/datastore-client][${module}] ${message}`;
 }

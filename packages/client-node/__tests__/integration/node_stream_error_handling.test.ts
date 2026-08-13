@@ -4,8 +4,8 @@ import {
   streamErrorQueryParams,
 } from "@test/fixtures/stream_errors";
 import { isDatastoreVersionAtLeast } from "@test/utils/server_version";
-import type { DatastoreClient } from "@hanzo-ds/client";
-import type { DatastoreError } from "@hanzo-ds/client";
+import type { DatastoreClient } from "@hanzo/datastore-client";
+import type { DatastoreError } from "@hanzo/datastore-client";
 import { createNodeTestClient } from "../utils/node_client";
 
 // See https://github.com/hanzoai/datastore/pull/88818

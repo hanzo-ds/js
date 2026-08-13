@@ -2,7 +2,7 @@
 
 A tiny, **server-only** Next.js app that pages through a Datastore logs table,
 decoding each page from `RowBinary` with
-[`@hanzo-ds/rowbinary`](../../). The browser receives only HTML — there are no
+[`@hanzo/datastore-rowbinary`](../../). The browser receives only HTML — there are no
 client components and no client-side data fetching. All decoding happens on the
 server in [`lib/logs.ts`](lib/logs.ts).
 
@@ -47,7 +47,7 @@ hot path.
 From this directory (`demo/logs`):
 
 ```bash
-npm install          # installs Next + the local @hanzo-ds/rowbinary tarball
+npm install          # installs Next + the local @hanzo/datastore-rowbinary tarball
 npm run seed         # create demo_logs and insert 1000 rows (pass a number to change: npm run seed -- 50000)
 npm run dev          # http://localhost:3000
 ```
@@ -85,7 +85,7 @@ vendor/
 
 ## Updating the library
 
-This app installs `@hanzo-ds/rowbinary` from the packed tarball in `vendor/`.
+This app installs `@hanzo/datastore-rowbinary` from the packed tarball in `vendor/`.
 To pick up changes you make in the parent package, repack and reinstall — from
 the package root (`../../`):
 

@@ -6,7 +6,7 @@
 
 ```js
 import fs from "fs";
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 
 const client = createClient({
   url: "https://<hostname>:<port>",
@@ -22,7 +22,7 @@ const client = createClient({
 
 ```js
 import fs from "fs";
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 
 const client = createClient({
   url: "https://<hostname>:<port>",
@@ -67,7 +67,7 @@ The server uses a self-signed cert (the certificate is its own CA). Options in o
 
    ```js
    import https from "https";
-   import { createClient } from "@hanzo-ds/client";
+   import { createClient } from "@hanzo/datastore-client";
 
    const client = createClient({
      url: "https://<hostname>:<port>",

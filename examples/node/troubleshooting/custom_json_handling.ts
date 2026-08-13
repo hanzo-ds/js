@@ -1,4 +1,4 @@
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 
 /**
  * Similar to `insert_js_dates.ts` but testing custom JSON handling

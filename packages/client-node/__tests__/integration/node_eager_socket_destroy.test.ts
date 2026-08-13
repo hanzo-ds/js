@@ -4,11 +4,11 @@ import {
   type ErrorLogParams,
   type Logger,
   type LogParams,
-} from "@hanzo-ds/client-common";
+} from "@hanzo/datastore-client-common";
 import { createTestClient } from "@test/utils/client";
 import * as http from "http";
 import { AddressInfo } from "net";
-import type { DatastoreClientConfigOptions } from "@hanzo-ds/client";
+import type { DatastoreClientConfigOptions } from "@hanzo/datastore-client";
 
 describe("[Node.js] Eager socket destruction", () => {
   afterEach(() => {

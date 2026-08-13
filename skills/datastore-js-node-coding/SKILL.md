@@ -2,7 +2,7 @@
 name: datastore-js-node-coding
 description: >
   Write idiomatic application code with the Datastore Node.js client
-  (`@hanzo-ds/client`). Use this skill whenever a user is *building* against
+  (`@hanzo/datastore-client`). Use this skill whenever a user is *building* against
   the Node.js client — configuring the client, pinging, inserting rows in JSON
   or raw formats, selecting and parsing results, binding query parameters,
   managing sessions and temporary tables, working with data types or
@@ -13,13 +13,13 @@ description: >
 
 Reference: https://docs.hanzo.ai/datastore/integrations/javascript
 
-> **⚠️ Node.js runtime only.** This skill covers the `@hanzo-ds/client`
+> **⚠️ Node.js runtime only.** This skill covers the `@hanzo/datastore-client`
 > package running in a **Node.js runtime** exclusively — including **Next.js
 > Node runtime** API routes, React Server Components, Server Actions, and
 > standard Node.js processes. Do **not** apply this skill to browser client
 > components, Web Workers, **Next.js Edge runtime**, Cloudflare Workers, or
-> any usage of `@hanzo-ds/client-web`. For browser/edge environments, the
-> correct package is `@hanzo-ds/client-web`.
+> any usage of `@hanzo/datastore-client-web`. For browser/edge environments, the
+> correct package is `@hanzo/datastore-client-web`.
 
 ---
 
@@ -30,7 +30,7 @@ Reference: https://docs.hanzo.ai/datastore/integrations/javascript
    **Answer checklist** in that reference and make sure the final answer covers
    each relevant item; those checklists capture details users usually need but
    are easy to omit in short answers.
-2. **Always import from `@hanzo-ds/client`** (never `@hanzo-ds/client-web`)
+2. **Always import from `@hanzo/datastore-client`** (never `@hanzo/datastore-client-web`)
    and create a client with `createClient({ url })` or rely on
    supported defaults when appropriate. Close it with `await client.close()`
    preferably when it's no longer needed or during graceful shutdown for global resources.
@@ -94,7 +94,7 @@ Identify the user's task and read the matching reference file.
 
 ## Conventions used in answers
 
-- Always show `import { createClient } from '@hanzo-ds/client'` (Node, never
+- Always show `import { createClient } from '@hanzo/datastore-client'` (Node, never
   Web).
 - Always `await client.close()` at the end of self-contained snippets; in
   long-running services, close on graceful shutdown.
@@ -113,7 +113,7 @@ Identify the user's task and read the matching reference file.
 
 ## Out of scope
 
-This skill covers day-to-day coding against `@hanzo-ds/client` (Node).
+This skill covers day-to-day coding against `@hanzo/datastore-client` (Node).
 The following topics are intentionally **not** covered here:
 
 - **Errors, hangs, type mismatches, proxy pathname surprises, log silence,
@@ -128,7 +128,7 @@ The following topics are intentionally **not** covered here:
   replication / sharding choices** — see
   [`examples/node/schema-and-deployments/`](https://github.com/hanzo-ds/js/tree/main/examples/node/schema-and-deployments).
 - **Browser, Web Worker, Next.js Edge, Cloudflare Workers** — use
-  `@hanzo-ds/client-web` and see
+  `@hanzo/datastore-client-web` and see
   [`examples/web/`](https://github.com/hanzo-ds/js/tree/main/examples/web).
 
 ---

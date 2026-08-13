@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import type { ExecParams } from "@hanzo-ds/client-common";
-import { type DatastoreClient } from "@hanzo-ds/client-common";
+import type { ExecParams } from "@hanzo/datastore-client-common";
+import { type DatastoreClient } from "@hanzo/datastore-client-common";
 import {
   createTestClient,
   getDatastoreTestEnvironment,

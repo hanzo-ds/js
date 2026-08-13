@@ -29,7 +29,7 @@
 // JSON*EachRow formats (see the list above); it's just that the Datastore JSON
 // format and a few others are represented as a single object in the response
 // and cannot be streamed by the client.
-import { createClient } from "@hanzo-ds/client-web";
+import { createClient } from "@hanzo/datastore-client-web";
 
 const client = createClient();
 const rows = await client.query({

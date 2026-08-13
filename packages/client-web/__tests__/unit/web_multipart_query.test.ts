@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { DatastoreLogLevel, LogWriter } from "@hanzo-ds/client-common";
+import { DatastoreLogLevel, LogWriter } from "@hanzo/datastore-client-common";
 import { TestLogger } from "../../../client-common/__tests__/utils/test_logger";
 import { WebConnection, type WebConnectionParams } from "../../src/connection";
 

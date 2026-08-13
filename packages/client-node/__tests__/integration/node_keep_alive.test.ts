@@ -1,10 +1,10 @@
 import { describe, it, expect, afterEach } from "vitest";
-import { DatastoreLogLevel } from "@hanzo-ds/client-common";
+import { DatastoreLogLevel } from "@hanzo/datastore-client-common";
 import { createSimpleTable } from "@test/fixtures/simple_table";
 import { guid } from "@test/utils/guid";
 import { sleep } from "@test/utils/sleep";
-import type { DatastoreClient } from "@hanzo-ds/client";
-import type { DatastoreClientConfigOptions } from "@hanzo-ds/client";
+import type { DatastoreClient } from "@hanzo/datastore-client";
+import type { DatastoreClientConfigOptions } from "@hanzo/datastore-client";
 import { createNodeTestClient } from "../utils/node_client";
 
 describe("[Node.js] Keep Alive", () => {

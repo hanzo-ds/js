@@ -9,7 +9,7 @@ on:
     paths:
       - .github/workflows/tests-skill-rowbinary.yml
       - skills/datastore-js-node-rowbinary/**
-      # The skill depends on @hanzo-ds/datatype-parser; rerun against local
+      # The skill depends on @hanzo/datastore-datatype-parser; rerun against local
       # parser changes so a parser regression cannot pass this suite unnoticed.
       - packages/datatype-parser/**
   pull_request:
@@ -45,15 +45,15 @@ jobs:
         with:
           node-version: 24
 
-      # Build + pack the in-repo @hanzo-ds/datatype-parser so the skill is
+      # Build + pack the in-repo @hanzo/datastore-datatype-parser so the skill is
       # exercised against THIS checkout, not the version published to npm. The
       # committed package.json keeps a published range for end users; we only
       # override node_modules below (`npm install <tarball> --no-save`).
-      - name: Pack local @hanzo-ds/datatype-parser
+      - name: Pack local @hanzo/datastore-datatype-parser
         working-directory: ${{ github.workspace }}
         run: |
           npm ci
-          npm pack --workspace @hanzo-ds/datatype-parser --pack-destination "${{ runner.temp }}"
+          npm pack --workspace @hanzo/datastore-datatype-parser --pack-destination "${{ runner.temp }}"
 
       - name: Install dependencies
         run: npm ci
@@ -93,15 +93,15 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
-      # Build + pack the in-repo @hanzo-ds/datatype-parser so the skill is
+      # Build + pack the in-repo @hanzo/datastore-datatype-parser so the skill is
       # exercised against THIS checkout, not the version published to npm. The
       # committed package.json keeps a published range for end users; we only
       # override node_modules below (`npm install <tarball> --no-save`).
-      - name: Pack local @hanzo-ds/datatype-parser
+      - name: Pack local @hanzo/datastore-datatype-parser
         working-directory: ${{ github.workspace }}
         run: |
           npm ci
-          npm pack --workspace @hanzo-ds/datatype-parser --pack-destination "${{ runner.temp }}"
+          npm pack --workspace @hanzo/datastore-datatype-parser --pack-destination "${{ runner.temp }}"
 
       - name: Install dependencies
         run: npm ci

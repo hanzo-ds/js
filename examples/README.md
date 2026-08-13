@@ -4,14 +4,14 @@ Examples are split first by **client flavor**, then by **use case**:
 
 ```
 examples/
-├── node/                       # @hanzo-ds/client (Node.js)
+├── node/                       # @hanzo/datastore-client (Node.js)
 │   ├── coding/
 │   ├── performance/
 │   ├── troubleshooting/
 │   ├── security/
 │   ├── schema-and-deployments/
 │   └── resources/              # shared fixture data
-└── web/                        # @hanzo-ds/client-web
+└── web/                        # @hanzo/datastore-client-web
     ├── coding/
     ├── performance/
     ├── troubleshooting/

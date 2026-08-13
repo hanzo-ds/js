@@ -1,4 +1,4 @@
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 import Stream from "node:stream";
 
 // If your application deals with a string input that can be considered as one of "raw" formats, such as CSV, TabSeparated, etc.

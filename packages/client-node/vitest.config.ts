@@ -25,7 +25,7 @@ if (
   );
 }
 
-// Which build of the client the `@hanzo-ds/*` specifiers resolve to:
+// Which build of the client the `@hanzo/datastore-*` specifiers resolve to:
 //   src  (default) - the raw TypeScript sources, for a fast, build-free loop.
 //   dist           - the compiled packages, exactly as a published consumer
 //                    sees them (run `npm run build` first). An e2e-style guard
@@ -33,7 +33,7 @@ if (
 // TEST_TARGET is orthogonal to TEST_MODE (which only selects the spec files),
 // so e.g. `TEST_TARGET=dist TEST_MODE=integration` runs the integration specs
 // against the built packages. Caveat: only specs that import EXCLUSIVELY via
-// the `@hanzo-ds/*` names retarget cleanly; specs that also reach into
+// the `@hanzo/datastore-*` names retarget cleanly; specs that also reach into
 // `../../src` directly (most unit/integration specs do) keep importing source
 // for those paths regardless. The `oss-dependents` collection imports only the
 // published names, so it is a true built-surface guard and defaults to `dist`.
@@ -131,40 +131,40 @@ export default defineConfig({
   },
   resolve: {
     // Driven by TEST_TARGET (see above). With `dist`, the published package
-    // names (`@hanzo-ds/client`, `-web`, `-common`) resolve through the
+    // names (`@hanzo/datastore-client`, `-web`, `-common`) resolve through the
     // node_modules workspace symlinks to the BUILT packages (run `npm run build`
     // first) — an e2e-style guard against the published surface. With `src`,
     // they alias the workspace sources for a fast, build-free loop.
-    // `@hanzo-ds/client-node` is not a real package name (the node client
-    // publishes as `@hanzo-ds/client`); it is an internal alias the shared
+    // `@hanzo/datastore-client-node` is not a real package name (the node client
+    // publishes as `@hanzo/datastore-client`); it is an internal alias the shared
     // node setup/util files import, so under `dist` we repoint it at the built
     // node `dist`.
     //
     // Under `dist`, the node and common specifiers aliased below
-    // (`@hanzo-ds/client`, `@hanzo-ds/client-common`, and the internal
-    // `@hanzo-ds/client-node`) all resolve to the node client's own bundle.
+    // (`@hanzo/datastore-client`, `@hanzo/datastore-client-common`, and the internal
+    // `@hanzo/datastore-client-node`) all resolve to the node client's own bundle.
     // The node client bundles the common sources (client-common is deprecated
     // and not a runtime dep), so a real consumer gets common-origin symbols —
     // `DatastoreError`, value classes like `SettingsMap`/`TupleParam` — from
-    // `@hanzo-ds/client`, not from a separate `client-common`. Pointing them
+    // `@hanzo/datastore-client`, not from a separate `client-common`. Pointing them
     // at one bundle keeps a single class identity, so the client's internal
     // `instanceof` checks on test-provided values (and the tests' own
-    // `instanceof` assertions) hold. (`@hanzo-ds/client-web`, imported by the
+    // `instanceof` assertions) hold. (`@hanzo/datastore-client-web`, imported by the
     // oss-dependents suite, is not aliased here — it resolves through
     // node_modules to the web client's own dist.)
     alias:
       testTarget === "dist"
         ? {
-            "@hanzo-ds/client": "packages/client-node/dist",
-            "@hanzo-ds/client-common": "packages/client-node/dist",
-            "@hanzo-ds/client-node": "packages/client-node/dist",
+            "@hanzo/datastore-client": "packages/client-node/dist",
+            "@hanzo/datastore-client-common": "packages/client-node/dist",
+            "@hanzo/datastore-client-node": "packages/client-node/dist",
             "@test": "packages/client-common/__tests__",
           }
         : {
             // The published node name, imported by the integration specs.
-            "@hanzo-ds/client": "packages/client-node/src",
-            "@hanzo-ds/client-common": "packages/client-common/src",
-            "@hanzo-ds/client-node": "packages/client-node/src",
+            "@hanzo/datastore-client": "packages/client-node/src",
+            "@hanzo/datastore-client-common": "packages/client-common/src",
+            "@hanzo/datastore-client-node": "packages/client-node/src",
             "@test": "packages/client-common/__tests__",
           },
   },

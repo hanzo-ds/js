@@ -3,7 +3,7 @@ import type {
   DatastoreSpan,
   DatastoreSpanAttributes,
   DatastoreSpanStatus,
-} from "@hanzo-ds/client-common";
+} from "@hanzo/datastore-client-common";
 import Stream, { Readable } from "stream";
 import { ResultSet } from "../../src";
 

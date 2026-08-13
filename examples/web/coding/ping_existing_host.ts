@@ -7,7 +7,7 @@
 //
 // See also:
 //  - `ping_non_existing_host.ts` - ping against a host that does not exist.
-import { createClient } from "@hanzo-ds/client-web";
+import { createClient } from "@hanzo/datastore-client-web";
 
 const client = createClient({
   // In a browser application, configure the URL/credentials directly here

@@ -1,4 +1,4 @@
-import { createClient } from "@hanzo-ds/client-web";
+import { createClient } from "@hanzo/datastore-client-web";
 
 // Note that session will work as expected ONLY if you are accessing the Node directly.
 // If there is a load-balancer in front of Datastore nodes, the requests might end up on different nodes,

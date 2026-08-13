@@ -1,22 +1,22 @@
-# @hanzo-ds/client-common
+# @hanzo/datastore-client-common
 
 > [!WARNING]
 > **This package is deprecated and is no longer maintained as a dependency.**
-> It is no longer used by [`@hanzo-ds/client`](https://www.npmjs.com/package/@hanzo-ds/client)
-> (Node.js) or [`@hanzo-ds/client-web`](https://www.npmjs.com/package/@hanzo-ds/client-web)
+> It is no longer used by [`@hanzo/datastore-client`](https://www.npmjs.com/package/@hanzo/datastore-client)
+> (Node.js) or [`@hanzo/datastore-client-web`](https://www.npmjs.com/package/@hanzo/datastore-client-web)
 > (Web), and there is **no replacement package** to depend on. Do not add this
 > package to new projects.
 >
 > - Building a Datastore app on **Node.js**? Install
->   [`@hanzo-ds/client`](https://www.npmjs.com/package/@hanzo-ds/client).
+>   [`@hanzo/datastore-client`](https://www.npmjs.com/package/@hanzo/datastore-client).
 > - Building for the **browser / edge runtimes**? Install
->   [`@hanzo-ds/client-web`](https://www.npmjs.com/package/@hanzo-ds/client-web).
+>   [`@hanzo/datastore-client-web`](https://www.npmjs.com/package/@hanzo/datastore-client-web).
 
 ## What this package was for
 
-Historically, the shared code between `@hanzo-ds/client` (Node.js) and
-`@hanzo-ds/client-web` lived in this third published package,
-`@hanzo-ds/client-common`, which both of them depended on. It exposed the
+Historically, the shared code between `@hanzo/datastore-client` (Node.js) and
+`@hanzo/datastore-client-web` lived in this third published package,
+`@hanzo/datastore-client-common`, which both of them depended on. It exposed the
 shared types and the base framework that were also intended to be the foundation
 for building **custom client implementations** for alternative runtimes (such as
 Bun or Cloudflare Workers) or alternative protocols (such as the native
@@ -33,7 +33,7 @@ What this means in practice:
 - The shared code is **not** being moved into a new shared package; there is no
   replacement to depend on.
 - Instead, the shared code is now inlined / co-located inside each runtime
-  package (`@hanzo-ds/client`, `@hanzo-ds/client-web`, …). Going forward,
+  package (`@hanzo/datastore-client`, `@hanzo/datastore-client-web`, …). Going forward,
   each runtime package is **self-contained** and published independently.
 
 ## Building a client for an alternative runtime or protocol

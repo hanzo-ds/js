@@ -1,7 +1,7 @@
 // See also:
 //  - https://docs.hanzo.ai/datastore/sql-reference/data-types/time
 //  - https://docs.hanzo.ai/datastore/sql-reference/data-types/time64
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 
 const tableName = `chjs_time_time64`;
 const client = createClient({

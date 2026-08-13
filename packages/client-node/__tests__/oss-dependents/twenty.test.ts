@@ -3,7 +3,7 @@
  * ====================================================
  *
  *   Repo:        https://github.com/twentyhq/twenty  (~45k★)
- *   Package:     @hanzo-ds/client  ^1.18.1
+ *   Package:     @hanzo/datastore-client  ^1.18.1
  *   Lives in:    packages/twenty-server/src/database/clickHouse
  *   Analysed at: f96e36d3e67510eaf81ee130d8d56c3db563ec3f
  *
@@ -19,7 +19,7 @@
  *   - `DatastoreLogLevel` passed to `createClient` to control client logging.
  *   - Migrations (`run-migrations.ts`) and seeds (`run-seeds.ts`) share the same
  *     import surface.
- *   - Service is mocked in unit tests via `jest.mock('@hanzo-ds/client')`.
+ *   - Service is mocked in unit tests via `jest.mock('@hanzo/datastore-client')`.
  *
  * References (pinned to ref=f96e36d3e67510eaf81ee130d8d56c3db563ec3f):
  *   - Service:    https://github.com/twentyhq/twenty/blob/f96e36d3e67510eaf81ee130d8d56c3db563ec3f/packages/twenty-server/src/database/clickHouse/clickHouse.service.ts
@@ -31,7 +31,7 @@
  */
 
 import { afterEach, describe, expect, it } from "vitest";
-import { DatastoreLogLevel, type DatastoreClient } from "@hanzo-ds/client";
+import { DatastoreLogLevel, type DatastoreClient } from "@hanzo/datastore-client";
 import { createTestClient, guid } from "@test/utils";
 
 describe("oss-dependents / twenty", () => {

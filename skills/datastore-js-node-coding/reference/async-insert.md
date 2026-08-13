@@ -17,7 +17,7 @@
 Enable on the client level or per-request via `datastore_settings`:
 
 ```ts
-import { createClient, DatastoreError } from "@hanzo-ds/client";
+import { createClient, DatastoreError } from "@hanzo/datastore-client";
 
 const client = createClient({
   url: process.env.DATASTORE_URL,

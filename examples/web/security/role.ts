@@ -1,5 +1,5 @@
-import type { DatastoreError } from "@hanzo-ds/client-web";
-import { createClient } from "@hanzo-ds/client-web";
+import type { DatastoreError } from "@hanzo/datastore-client-web";
+import { createClient } from "@hanzo/datastore-client-web";
 
 /**
  * An example of specifying a role using query parameters

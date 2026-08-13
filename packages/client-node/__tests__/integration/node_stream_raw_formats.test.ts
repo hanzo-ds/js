@@ -2,7 +2,7 @@ import type {
   DatastoreClient,
   DatastoreSettings,
   RawDataFormat,
-} from "@hanzo-ds/client-common";
+} from "@hanzo/datastore-client-common";
 import { describe, it, beforeEach, afterEach, expect } from "vitest";
 import { createSimpleTable } from "@test/fixtures/simple_table";
 import { assertJsonValues, jsonValues } from "@test/fixtures/test_data";

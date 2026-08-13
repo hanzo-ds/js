@@ -1,4 +1,4 @@
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 
 // Inserting and selecting an array of JS objects using the `JSONEachRow` format.
 // This is the most common shape for app code: pass `values` as `Array<Record<string, unknown>>`

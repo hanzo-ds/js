@@ -20,11 +20,11 @@ Before you write a lot of code, please:
    saves a lot of rework and makes the eventual PR much easier to review and
    merge.
 
-## A note on `@hanzo-ds/client-common`
+## A note on `@hanzo/datastore-client-common`
 
-Historically, shared code between `@hanzo-ds/client` (Node.js) and
-`@hanzo-ds/client-web` lived in a third published package,
-`@hanzo-ds/client-common`, which both of them depended on.
+Historically, shared code between `@hanzo/datastore-client` (Node.js) and
+`@hanzo/datastore-client-web` lived in a third published package,
+`@hanzo/datastore-client-common`, which both of them depended on.
 
 That package is being **deprecated**. The motivation is to simplify versioning
 across our packages and to avoid bundling/duplication issues that several
@@ -87,7 +87,7 @@ test(client-bun): port web integration tests
 - [ ] There is an issue / discussion describing the motivation and design.
 - [ ] The new package lives under `packages/<your-client>` and has its own
       `package.json` with a unique `name`.
-- [ ] No dependency on `@hanzo-ds/client-common` (it is deprecated).
+- [ ] No dependency on `@hanzo/datastore-client-common` (it is deprecated).
 - [ ] Commit history shows the diff against the package you forked from.
 - [ ] Tests for the new runtime/protocol are included where practical.
 - [ ] Build, lint, and tests pass via the repo's standard scripts.

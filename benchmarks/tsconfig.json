@@ -11,9 +11,9 @@
     "noUnusedParameters": false,
     "outDir": "dist",
     "paths": {
-      "@hanzo-ds/client-common": ["../packages/client-common/src/index.ts"],
-      "@hanzo-ds/client": ["../packages/client-node/src/index.ts"],
-      "@hanzo-ds/client/*": ["../packages/client-node/src/*"]
+      "@hanzo/datastore-client-common": ["../packages/client-common/src/index.ts"],
+      "@hanzo/datastore-client": ["../packages/client-node/src/index.ts"],
+      "@hanzo/datastore-client/*": ["../packages/client-node/src/*"]
     }
   }
 }

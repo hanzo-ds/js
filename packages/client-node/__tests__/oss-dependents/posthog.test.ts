@@ -3,7 +3,7 @@
  * ====================================================
  *
  *   Repo:        https://github.com/PostHog/posthog  (~33k★)
- *   Package:     @hanzo-ds/client  ^1.12.0
+ *   Package:     @hanzo/datastore-client  ^1.12.0
  *   Lives in:    nodejs/ (the TypeScript services; ClickHouse is core to PostHog)
  *   Analysed at: 000d0abdab8c45eb5456741c68a361562a5b8fc8
  *
@@ -19,7 +19,7 @@
  *   - `import { DatastoreClient, createClient as createDatastoreClient }`.
  *   - Custom `https` agent passed to `createClient` for connection tuning.
  *   - `ExecResult` + `node:stream` `Readable` in test helpers for streaming reads.
- *   - `jest.mock('@hanzo-ds/client')` with `query`/`close` stubs in unit tests.
+ *   - `jest.mock('@hanzo/datastore-client')` with `query`/`close` stubs in unit tests.
  *
  * References (pinned to ref=000d0abdab8c45eb5456741c68a361562a5b8fc8):
  *   - Session-replay API: https://github.com/PostHog/posthog/blob/000d0abdab8c45eb5456741c68a361562a5b8fc8/nodejs/src/session-replay/recording-api/recording-api.ts
@@ -36,7 +36,7 @@
 import { Agent } from "node:http";
 import type { Readable } from "node:stream";
 import { afterEach, describe, expect, it } from "vitest";
-import { type DatastoreClient } from "@hanzo-ds/client";
+import { type DatastoreClient } from "@hanzo/datastore-client";
 import { createTestClient, guid } from "@test/utils";
 
 describe("oss-dependents / posthog", () => {

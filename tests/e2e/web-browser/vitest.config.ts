@@ -1,7 +1,7 @@
 import { defineConfig } from "vitest/config";
 import { playwright } from "@vitest/browser-playwright";
 
-// Real-browser post-publish e2e for @hanzo-ds/client-web. The published
+// Real-browser post-publish e2e for @hanzo/datastore-client-web. The published
 // package is installed into this project (see the publish workflow), and
 // vitest's own Vite bundler serves it to a Playwright-driven browser — exactly
 // how a bundler-based web consumer would load it. This is the right runtime to
@@ -21,8 +21,8 @@ export default defineConfig({
       instances: [{ browser }],
     },
   },
-  // The published @hanzo-ds/client-web ships a CJS bundle; force Vite to
+  // The published @hanzo/datastore-client-web ships a CJS bundle; force Vite to
   // pre-bundle it so its named exports are exposed to the browser ESM import
   // (mirrors the main web suite's `dist` mode).
-  optimizeDeps: { include: ["@hanzo-ds/client-web"] },
+  optimizeDeps: { include: ["@hanzo/datastore-client-web"] },
 });

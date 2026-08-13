@@ -3,7 +3,7 @@
  * ====================================================
  *
  *   Repo:        https://github.com/civitai/civitai  (~7k★)
- *   Package:     @hanzo-ds/client  ^0.2.2 (notably old — pre-1.0)
+ *   Package:     @hanzo/datastore-client  ^0.2.2 (notably old — pre-1.0)
  *   Lives in:    src/server/clickhouse/client.ts
  *   Analysed at: dfbd42ac3b2809610e12e749f24f35159d057bfa
  *
@@ -14,11 +14,11 @@
  * metrics, rewards and event jobs on top of it.
  *
  * Key patterns:
- *   - `import { createClient, type DatastoreClient } from '@hanzo-ds/client'`.
+ *   - `import { createClient, type DatastoreClient } from '@hanzo/datastore-client'`.
  *   - A `CustomDatastoreClient` augmentation reused across metrics/rewards.
  *   - Error handling via `DatastoreError`.
  *
- * Outlier: upstream is still on @hanzo-ds/client@^0.2.2, so it predates a large
+ * Outlier: upstream is still on @hanzo/datastore-client@^0.2.2, so it predates a large
  * amount of the current API surface — a good migration candidate. This example
  * targets the CURRENT (1.x) API on purpose, so the integration test reflects
  * where civitai would land after upgrading.
@@ -33,7 +33,7 @@
  */
 
 import { afterEach, describe, expect, it } from "vitest";
-import { DatastoreError, type DatastoreClient } from "@hanzo-ds/client";
+import { DatastoreError, type DatastoreClient } from "@hanzo/datastore-client";
 import { createTestClient, guid } from "@test/utils";
 
 describe("oss-dependents / civitai", () => {

@@ -3,7 +3,7 @@
  * ==================================================
  *
  *   Repo:        https://github.com/arkime/arkime  (~7k★)
- *   Package:     @hanzo-ds/client  ^1.12.1
+ *   Package:     @hanzo/datastore-client  ^1.12.1
  *   Lives in:    cont3xt/integrations/clickhouse
  *   Analysed at: dc5bd802e1b071d4a54993ceb2fd2b42677c917b
  *
@@ -15,7 +15,7 @@
  * enrich an indicator (IP/domain/etc.).
  *
  * Key patterns:
- *   - Upstream is CommonJS: `const { createClient } = require('@hanzo-ds/client')`.
+ *   - Upstream is CommonJS: `const { createClient } = require('@hanzo/datastore-client')`.
  *     Reproduced here with an ESM import (the runtime surface is identical).
  *   - `class ClickHouseIntegration extends Integration` — implements the
  *     integration contract and runs user-configured queries.
@@ -28,7 +28,7 @@
  */
 
 import { afterEach, describe, expect, it } from "vitest";
-import { type DatastoreClient } from "@hanzo-ds/client";
+import { type DatastoreClient } from "@hanzo/datastore-client";
 import { createTestClient, guid } from "@test/utils";
 
 // Minimal stand-in for Cont3xt's Integration base class.

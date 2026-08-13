@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import Http from "http";
 import Https from "https";
-import { DatastoreLogLevel, LogWriter } from "@hanzo-ds/client-common";
+import { DatastoreLogLevel, LogWriter } from "@hanzo/datastore-client-common";
 import { TestLogger } from "../../../client-common/__tests__/utils/test_logger";
 import type { NodeConnectionParams } from "../../src/connection";
 import { NodeCustomAgentConnection } from "../../src/connection/node_custom_agent_connection";

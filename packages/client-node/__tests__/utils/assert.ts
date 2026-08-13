@@ -1,5 +1,5 @@
 import { expect } from "vitest";
-import type { ConnQueryResult } from "@hanzo-ds/client-common";
+import type { ConnQueryResult } from "@hanzo/datastore-client-common";
 import { validateUUID } from "../../../client-common/__tests__/utils/guid";
 import type Stream from "stream";
 import { getAsText } from "./stream";

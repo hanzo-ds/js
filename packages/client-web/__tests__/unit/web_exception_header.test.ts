@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { DatastoreError } from "@hanzo-ds/client-common";
+import { DatastoreError } from "@hanzo/datastore-client-common";
 import { createSimpleWebTestClient } from "../utils/simple_web_client";
 
 // Datastore can respond with HTTP 200 but still report an exception via the

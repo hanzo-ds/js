@@ -1,4 +1,4 @@
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 import { randomInt } from "crypto";
 import Stream from "stream";
 import { v4 as uuid_v4 } from "uuid";

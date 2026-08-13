@@ -65,7 +65,7 @@ await client.query({
 Use the `TupleParam` wrapper to pass a tuple:
 
 ```js
-import { TupleParam, createClient } from "@hanzo-ds/client";
+import { TupleParam, createClient } from "@hanzo/datastore-client";
 
 const client = createClient({
   url: "http://localhost:8123",

@@ -3,14 +3,14 @@
  * =================================================
  *
  *   Repo:        https://github.com/cube-js/cube  (~20k★)
- *   Package:     @hanzo-ds/client  ^1.12.0
+ *   Package:     @hanzo/datastore-client  ^1.12.0
  *   Lives in:    packages/cubejs-clickhouse-driver
  *   Analysed at: f8851968710e332121d2ad8399f9d788660275f1
  *
  * How the client is used
  * ----------------------
  * Cube ships a first-party CLICKHOUSE DRIVER. It migrated from the legacy
- * `apla-clickhouse` package to the official `@hanzo-ds/client` (#8928), and
+ * `apla-clickhouse` package to the official `@hanzo/datastore-client` (#8928), and
  * keeps the version bumped via dependency PRs (e.g. 1.7.0 -> 1.12.0, #9829).
  *
  * Key patterns:
@@ -34,7 +34,7 @@ import {
   type DatastoreClient,
   type DatastoreSettings,
   type ResponseJSON,
-} from "@hanzo-ds/client";
+} from "@hanzo/datastore-client";
 import { createTestClient } from "@test/utils";
 
 describe("oss-dependents / cube", () => {

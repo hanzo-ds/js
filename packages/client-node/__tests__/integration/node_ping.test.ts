@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach } from "vitest";
-import type { DatastoreClient, DatastoreError } from "@hanzo-ds/client-common";
+import type { DatastoreClient, DatastoreError } from "@hanzo/datastore-client-common";
 import { createTestClient } from "@test/utils/client";
 
 describe("[Node.js] ping", () => {

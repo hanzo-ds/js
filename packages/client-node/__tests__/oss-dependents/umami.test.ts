@@ -3,7 +3,7 @@
  * =========================================================
  *
  *   Repo:        https://github.com/umami-software/umami  (~36k★)
- *   Package:     @hanzo-ds/client  ^1.18.2
+ *   Package:     @hanzo/datastore-client  ^1.18.2
  *   Lives in:    src/lib/clickhouse.ts
  *   Analysed at: c0ea3aefbee7a3429ee2f824b06dc4a9dbe0b7e1
  *
@@ -16,7 +16,7 @@
  * SQL.
  *
  * Key patterns:
- *   - `import { type DatastoreClient, createClient } from '@hanzo-ds/client'`.
+ *   - `import { type DatastoreClient, createClient } from '@hanzo/datastore-client'`.
  *   - Centralised filter -> SQL translation (FILTER_COLUMNS, OPERATORS) feeding
  *     `query`/`insert`.
  *   - Timezone handling via `date-fns-tz` around ClickHouse `DateTime` values
@@ -31,7 +31,7 @@
  */
 
 import { afterEach, describe, expect, it } from "vitest";
-import { type DatastoreClient } from "@hanzo-ds/client";
+import { type DatastoreClient } from "@hanzo/datastore-client";
 import { createTestClient, guid } from "@test/utils";
 
 describe("oss-dependents / umami", () => {

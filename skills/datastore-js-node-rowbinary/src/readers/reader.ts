@@ -32,7 +32,7 @@
  * - header   — readHeader: the RowBinaryWithNamesAndTypes preamble (column
  *              names + type strings) off the cursor
  * - compile  — astToReader: fold one parsed type AST (from
- *              `@hanzo-ds/datatype-parser`) into a value Reader. AST in,
+ *              `@hanzo/datastore-datatype-parser`) into a value Reader. AST in,
  *              reader out — the type-to-combinator mapping, nothing else
  * - rowBinaryWithNamesAndTypes — typeStringToReader (parse a type string +
  *              fold) and compileRowBinaryWithNamesAndTypes (read the header,

@@ -10,7 +10,7 @@
 
 When answering configuration questions, include the relevant points:
 
-- Show `createClient` from `@hanzo-ds/client` with explicit fields when the
+- Show `createClient` from `@hanzo/datastore-client` with explicit fields when the
   user is writing code; this is easier to read and review than encoding
   everything into a URL string.
 - When mentioning the URL form for environment variables / DSNs: show a **Bash**
@@ -30,7 +30,7 @@ When answering configuration questions, include the relevant points:
 ## Minimal client
 
 ```ts
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 
 const client = createClient({
   url: process.env.DATASTORE_URL, // defaults to 'http://localhost:8123'
@@ -96,7 +96,7 @@ query has no trailing `FORMAT …` clause, set `default_format` so the server
 knows what to send back, then wrap the response in a `ResultSet`:
 
 ```ts
-import { createClient, ResultSet } from "@hanzo-ds/client";
+import { createClient, ResultSet } from "@hanzo/datastore-client";
 
 const client = createClient();
 const format = "JSONCompactEachRowWithNamesAndTypes";

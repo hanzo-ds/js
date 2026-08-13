@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import type { DatastoreClient } from "@hanzo-ds/client-common";
+import type { DatastoreClient } from "@hanzo/datastore-client-common";
 import { isCloudTestEnv } from "@test/utils/test_env";
 import { createReadOnlyUser } from "../fixtures/read_only_user";
 import { createSimpleTable } from "../fixtures/simple_table";

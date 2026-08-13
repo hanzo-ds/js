@@ -1,4 +1,4 @@
-import { createClient, type Row } from "@hanzo-ds/client";
+import { createClient, type Row } from "@hanzo/datastore-client";
 
 /**
  * Similar to `select_streaming_text_line_by_line.ts`, but using `for await const` syntax instead of `on(data)`.

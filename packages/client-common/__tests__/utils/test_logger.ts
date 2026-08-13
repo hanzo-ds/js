@@ -2,7 +2,7 @@ import type {
   ErrorLogParams,
   Logger,
   LogParams,
-} from "@hanzo-ds/client-common";
+} from "@hanzo/datastore-client-common";
 
 export class TestLogger implements Logger {
   trace({ module, message, args }: LogParams) {

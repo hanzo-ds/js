@@ -2,7 +2,7 @@
 // Demonstrates that `client.command` can run server-side data movement queries
 // (no client-side rows are sent), and that aggregate states are read back via
 // `finalizeAggregation`. Inspired by https://github.com/hanzo-ds/js/issues/166
-import { createClient } from "@hanzo-ds/client-web";
+import { createClient } from "@hanzo/datastore-client-web";
 
 const tableName = "insert_from_select_web";
 const client = createClient();

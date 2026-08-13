@@ -5,7 +5,7 @@ import {
   isException,
   isRow,
   parseError,
-} from "@hanzo-ds/client";
+} from "@hanzo/datastore-client";
 
 /** A few use cases of the `JSONEachRowWithProgress` format with Datastore and the Node.js/TypeScript client.
  *  Here, the ResultSet infers the final row type as `{ row: T } | ProgressRow | SpecialEventRow<T>`. */

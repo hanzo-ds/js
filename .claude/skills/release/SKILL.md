@@ -6,10 +6,10 @@ description: >
   publish (which is gated by a manual approval on the `npm-publish` environment),
   and create the GitHub Release from the CHANGELOG. Use this skill whenever the
   task is to "release", "cut a release", "publish a new version", or "ship" one
-  of the packages: `@hanzo-ds/client` (Node.js), `@hanzo-ds/client-web`
-  (Web), `@hanzo-ds/client-common` (deprecated, rarely released), the
-  standalone `@hanzo-ds/datatype-parser` (the type parser, under
-  `packages/datatype-parser`), or `@hanzo-ds/rowbinary` (the RowBinary codec
+  of the packages: `@hanzo/datastore-client` (Node.js), `@hanzo/datastore-client-web`
+  (Web), `@hanzo/datastore-client-common` (deprecated, rarely released), the
+  standalone `@hanzo/datastore-datatype-parser` (the type parser, under
+  `packages/datatype-parser`), or `@hanzo/datastore-rowbinary` (the RowBinary codec
   skill/package, under `skills/datastore-js-node-rowbinary`). The agent
   drives the GitHub Actions workflows (`gh workflow run`), watches CI, pauses at
   the human-judgment points (PR review, the approval gate, GitHub Release text),
@@ -27,12 +27,12 @@ This skill is the source of truth for the release process. It supersedes the old
 1. **Releases are per package.** There is no "release everything" button. Ask the
    user **which package(s)** they want to release and confirm — the packages are
    versioned independently and ship on independent cadences:
-   - `@hanzo-ds/client` — Node.js client (`packages/client-node`)
-   - `@hanzo-ds/client-web` — Web client (`packages/client-web`)
-   - `@hanzo-ds/client-common` — **deprecated**, effectively frozen; only cut a
+   - `@hanzo/datastore-client` — Node.js client (`packages/client-node`)
+   - `@hanzo/datastore-client-web` — Web client (`packages/client-web`)
+   - `@hanzo/datastore-client-common` — **deprecated**, effectively frozen; only cut a
      final standalone release if explicitly asked.
-   - `@hanzo-ds/datatype-parser` — standalone type parser (`packages/datatype-parser`)
-   - `@hanzo-ds/rowbinary` — standalone RowBinary codec skill/package
+   - `@hanzo/datastore-datatype-parser` — standalone type parser (`packages/datatype-parser`)
+   - `@hanzo/datastore-rowbinary` — standalone RowBinary codec skill/package
      (`skills/datastore-js-node-rowbinary`)
 
    The flow forks into two families — **workspace client packages** (client /
@@ -52,19 +52,19 @@ This skill is the source of truth for the release process. It supersedes the old
 
 > **One workflow per package.** Each package has its own publish workflow:
 >
-> - `@hanzo-ds/client` → `publish-client.yml`
-> - `@hanzo-ds/client-web` → `publish-client-web.yml`
-> - `@hanzo-ds/client-common` → `publish-client-common.yml`
-> - `@hanzo-ds/datatype-parser` → `publish-datatype-parser.yml`
-> - `@hanzo-ds/rowbinary` → `publish-skill-rowbinary.yml`
+> - `@hanzo/datastore-client` → `publish-client.yml`
+> - `@hanzo/datastore-client-web` → `publish-client-web.yml`
+> - `@hanzo/datastore-client-common` → `publish-client-common.yml`
+> - `@hanzo/datastore-datatype-parser` → `publish-datatype-parser.yml`
+> - `@hanzo/datastore-rowbinary` → `publish-skill-rowbinary.yml`
 >
 > Each client workflow has two triggers: an automatic `head` publish on push to
 > `release` and a manual `latest` publish via `workflow_dispatch`. The standalone
 > packages have the manual trigger only.
 >
 > The client `head` triggers are path-scoped: a change touching only one client's
-> own sources no longer republishes the others. Both `@hanzo-ds/client` and
-> `@hanzo-ds/client-web` bundle the shared common sources via the `src/common`
+> own sources no longer republishes the others. Both `@hanzo/datastore-client` and
+> `@hanzo/datastore-client-web` bundle the shared common sources via the `src/common`
 > symlink (`packages/*/src/common` → `packages/client-common/src`), so
 > `packages/client-common/**` is also an input to both client workflows — a
 > change to the common sources publishes a new `head` for every client that
@@ -72,16 +72,16 @@ This skill is the source of truth for the release process. It supersedes the old
 
 ---
 
-## Part A — Workspace client packages (`@hanzo-ds/client`, `-web`, `-common`)
+## Part A — Workspace client packages (`@hanzo/datastore-client`, `-web`, `-common`)
 
 ### Step 1 — Verify the package CHANGELOG on `main`
 
 Each package now keeps its **own** `CHANGELOG.md` (the repo-wide root
 `CHANGELOG.md` is frozen). The package you're releasing maps to:
 
-- `@hanzo-ds/client` → `packages/client-node/CHANGELOG.md`
-- `@hanzo-ds/client-web` → `packages/client-web/CHANGELOG.md`
-- `@hanzo-ds/client-common` → `packages/client-common/CHANGELOG.md`
+- `@hanzo/datastore-client` → `packages/client-node/CHANGELOG.md`
+- `@hanzo/datastore-client-web` → `packages/client-web/CHANGELOG.md`
+- `@hanzo/datastore-client-common` → `packages/client-common/CHANGELOG.md`
 
 These are normally updated **inside feature PRs** as they merge to `main`, under
 a top `# <version>` header. A common mistake: the in-progress entries sit under
@@ -108,7 +108,7 @@ Dispatch the `bump-version` workflow. It bumps the selected package's
 
 ```bash
 gh workflow run bump-version.yml --ref main \
-  -f package='@hanzo-ds/client' \
+  -f package='@hanzo/datastore-client' \
   -f bump_type=patch        # patch | minor | major
 ```
 
@@ -162,7 +162,7 @@ and runs integration tests, and the Web client runs a real-browser smoke
 - **If e2e fails:** the broken build is already on npm under the `head` tag.
   Suggest moving that tag out of the way so nobody installs it, e.g.:
   ```bash
-  npm dist-tag add @hanzo-ds/client@<broken-version> debugging
+  npm dist-tag add @hanzo/datastore-client@<broken-version> debugging
   ```
   Then fix forward on `main` and re-sync `release`.
 
@@ -174,9 +174,9 @@ from the `release` branch (no inputs). This builds, publishes to the `latest` ta
 or `client-common-<ver>`):
 
 ```bash
-gh workflow run publish-client.yml --ref release          # @hanzo-ds/client
-# gh workflow run publish-client-web.yml --ref release     # @hanzo-ds/client-web
-# gh workflow run publish-client-common.yml --ref release  # @hanzo-ds/client-common (deprecated)
+gh workflow run publish-client.yml --ref release          # @hanzo/datastore-client
+# gh workflow run publish-client-web.yml --ref release     # @hanzo/datastore-client-web
+# gh workflow run publish-client-common.yml --ref release  # @hanzo/datastore-client-common (deprecated)
 ```
 
 This also runs under `npm-publish` → **approval gate again**. Same drill: hand
@@ -190,7 +190,7 @@ gh run watch <run-id>
 
 Repeat for each package being released, dispatching its own workflow.
 
-For the deprecated `@hanzo-ds/client-common`, if you ever cut one, also confirm
+For the deprecated `@hanzo/datastore-client-common`, if you ever cut one, also confirm
 its npm deprecation notice is in place (it should already be).
 
 ### Step 6 — Create the GitHub Release
@@ -198,7 +198,7 @@ its npm deprecation notice is in place (it should already be).
 The auto-published `head` betas are **not** tracked as Releases. The `latest`
 release **is**. Create a GitHub Release from the matching section of **that
 package's** `CHANGELOG.md` (e.g. `packages/client-node/CHANGELOG.md` for
-`@hanzo-ds/client`).
+`@hanzo/datastore-client`).
 
 - The tag was pushed by the publish workflow: `client-<ver>` / `client-web-<ver>`
   / `client-common-<ver>` (note: client tags have **no** `v` prefix).
@@ -223,7 +223,7 @@ package's** `CHANGELOG.md` (e.g. `packages/client-node/CHANGELOG.md` for
 
 ---
 
-## Part B — Standalone packages (`@hanzo-ds/datatype-parser`, `@hanzo-ds/rowbinary`)
+## Part B — Standalone packages (`@hanzo/datastore-datatype-parser`, `@hanzo/datastore-rowbinary`)
 
 These ship independently. **There is no `bump-version` workflow and no `head`
 beta** for them.
@@ -232,14 +232,14 @@ beta** for them.
 
 Edit the version in the package's `package.json` (these have **no** `src/version.ts`):
 
-- `@hanzo-ds/datatype-parser` → `packages/datatype-parser/package.json`
-- `@hanzo-ds/rowbinary` → `skills/datastore-js-node-rowbinary/package.json`
+- `@hanzo/datastore-datatype-parser` → `packages/datatype-parser/package.json`
+- `@hanzo/datastore-rowbinary` → `skills/datastore-js-node-rowbinary/package.json`
 
 Do this in a normal PR to `main`, together with the relevant entry in **that
 package's own** `CHANGELOG.md` (verify the changelog as in Part A, Step 1):
 
-- `@hanzo-ds/datatype-parser` → `packages/datatype-parser/CHANGELOG.md`
-- `@hanzo-ds/rowbinary` → `skills/datastore-js-node-rowbinary/CHANGELOG.md`
+- `@hanzo/datastore-datatype-parser` → `packages/datatype-parser/CHANGELOG.md`
+- `@hanzo/datastore-rowbinary` → `skills/datastore-js-node-rowbinary/CHANGELOG.md`
 
 Merge it.
 

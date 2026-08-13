@@ -1,5 +1,5 @@
 {
-  "name": "@hanzo-ds/rowbinary",
+  "name": "@hanzo/datastore-rowbinary",
   "version": "0.2.0",
   "description": "RowBinary building blocks for Node.js — read and write (decode/encode) Datastore RowBinary / RowBinaryWithNames(AndTypes) streams. Ships with the datastore-js-node-rowbinary agent skill.",
   "homepage": "https://docs.hanzo.ai/datastore",
@@ -71,7 +71,7 @@
     "prepack": "cp ../../LICENSE . && npm run build"
   },
   "dependencies": {
-    "@hanzo-ds/datatype-parser": "^0.1.2"
+    "@hanzo/datastore-datatype-parser": "^0.1.2"
   },
   "devDependencies": {
     "@types/node": "25.9.3",

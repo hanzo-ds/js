@@ -2,8 +2,8 @@ import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import Http from "node:http";
 import { AddressInfo } from "node:net";
 import type Stream from "stream";
-import type { DatastoreClient } from "@hanzo-ds/client-common";
-import { DatastoreError } from "@hanzo-ds/client-common";
+import type { DatastoreClient } from "@hanzo/datastore-client-common";
+import { DatastoreError } from "@hanzo/datastore-client-common";
 import { createSimpleNodeTestClient } from "../utils/simple_node_client";
 
 // Datastore can respond with HTTP 200 but still report an exception via the

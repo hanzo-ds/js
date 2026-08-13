@@ -1,5 +1,5 @@
-import type { DatastoreClient } from "@hanzo-ds/client";
-import { createClient, drainStream } from "@hanzo-ds/client";
+import type { DatastoreClient } from "@hanzo/datastore-client";
+import { createClient, drainStream } from "@hanzo/datastore-client";
 import Fs from "node:fs";
 import { cwd } from "node:process";
 import Path from "node:path";

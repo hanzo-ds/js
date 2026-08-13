@@ -3,7 +3,7 @@
  * ======================================================
  *
  *   Repo:        https://github.com/langfuse/langfuse  (~26k★)
- *   Package:     @hanzo-ds/client  ^1.18.5
+ *   Package:     @hanzo/datastore-client  ^1.18.5
  *   Lives in:    packages/shared/src/server
  *   Analysed at: dee4118e8e9e672bc59a844a0ee3addd6a34a144
  *   Test partner: beta release-test branch peter_leonov_ch_clickhouse_client_beta_test
@@ -22,8 +22,8 @@
  *     ClickHouse log levels to Winston (`mapLogLevel`).
  *   - OpenTelemetry spans wrapped around every query (omitted here).
  *   - Read/write/command wrappers; `commandClickhouse` for DDL; `InsertResult`.
- *   - Unit tests that `vi.mock('@hanzo-ds/client')`.
- *   - Upstream also deep-imports `@hanzo-ds/client/dist/config`
+ *   - Unit tests that `vi.mock('@hanzo/datastore-client')`.
+ *   - Upstream also deep-imports `@hanzo/datastore-client/dist/config`
  *     (NodeDatastoreClientConfigOptions), which makes it sensitive to the
  *     client's published file layout — flagged but intentionally NOT reproduced
  *     here (we depend on the public export surface only).
@@ -49,7 +49,7 @@ import {
   type InsertResult,
   type LogParams,
   type Logger,
-} from "@hanzo-ds/client";
+} from "@hanzo/datastore-client";
 import { createTestClient, guid, validateUUID } from "@test/utils";
 
 // Custom logger implementing the client Logger interface (maps to Winston in

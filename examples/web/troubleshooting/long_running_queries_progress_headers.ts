@@ -1,4 +1,4 @@
-import { type DatastoreClient, createClient } from "@hanzo-ds/client-web";
+import { type DatastoreClient, createClient } from "@hanzo/datastore-client-web";
 
 /**
  * If you execute a long-running query without data coming in from the client,

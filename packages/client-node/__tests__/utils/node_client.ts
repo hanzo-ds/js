@@ -3,7 +3,7 @@ import type Stream from "stream";
 import type {
   DatastoreClient,
   DatastoreClientConfigOptions,
-} from "@hanzo-ds/client";
+} from "@hanzo/datastore-client";
 
 export function createNodeTestClient(
   config: DatastoreClientConfigOptions = {},

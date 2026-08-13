@@ -1,6 +1,6 @@
 import { createTestClient } from "@test/utils";
-import type { DatastoreClientConfigOptions } from "@hanzo-ds/client-web";
-import type { DatastoreClient } from "@hanzo-ds/client-web";
+import type { DatastoreClientConfigOptions } from "@hanzo/datastore-client-web";
+import type { DatastoreClient } from "@hanzo/datastore-client-web";
 
 export function createWebTestClient(
   config: DatastoreClientConfigOptions = {},

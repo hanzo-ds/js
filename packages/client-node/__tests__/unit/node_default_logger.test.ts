@@ -3,7 +3,7 @@ import {
   DatastoreLogLevel,
   DefaultLogger,
   LogWriter,
-} from "@hanzo-ds/client-common";
+} from "@hanzo/datastore-client-common";
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -150,7 +150,7 @@ describe("[Node.js] Logger/LogWriter", () => {
   function checkLogLevelSet(level: LogLevel) {
     expect(infoSpy.mock.calls[0]).toEqual([
       expect.stringContaining(
-        `[INFO][@hanzo-ds/client][${module}] Log level is set to ${level}`,
+        `[INFO][@hanzo/datastore-client][${module}] Log level is set to ${level}`,
       ),
     ]);
     expect(infoSpy).toHaveBeenCalledTimes(1);
@@ -159,7 +159,7 @@ describe("[Node.js] Logger/LogWriter", () => {
   function checkLog(spy: any, level: LogLevel, callNumber = 0) {
     expect(spy.mock.calls[callNumber]).toEqual([
       expect.stringContaining(
-        `[${level}][@hanzo-ds/client][${module}] ${message}`,
+        `[${level}][@hanzo/datastore-client][${module}] ${message}`,
       ),
       expect.stringContaining("\nArguments:"),
       { foo: `${level.toLowerCase()}-42` },
@@ -169,7 +169,7 @@ describe("[Node.js] Logger/LogWriter", () => {
   function checkErrorLog() {
     expect(errSpy.mock.calls[0]).toEqual([
       expect.stringContaining(
-        `[ERROR][@hanzo-ds/client][${module}] ${message}`,
+        `[ERROR][@hanzo/datastore-client][${module}] ${message}`,
       ),
       expect.stringContaining("\nArguments:"),
       { foo: "err-42" },

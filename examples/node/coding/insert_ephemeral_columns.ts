@@ -1,4 +1,4 @@
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 
 // Ephemeral columns documentation: https://docs.hanzo.ai/datastore/en/sql-reference/statements/create/table#ephemeral
 const tableName = "insert_ephemeral_columns";

@@ -1,4 +1,4 @@
-import { DatastoreLogLevel, LogWriter } from "@hanzo-ds/client-common";
+import { DatastoreLogLevel, LogWriter } from "@hanzo/datastore-client-common";
 import { sleep } from "../../../client-common/__tests__/utils/sleep";
 import { TestLogger } from "../../../client-common/__tests__/utils/test_logger";
 import { randomUUID } from "../../../client-common/__tests__/utils/guid";

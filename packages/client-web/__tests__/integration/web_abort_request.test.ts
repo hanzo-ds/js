@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import type { Row } from "@hanzo-ds/client-common";
+import type { Row } from "@hanzo/datastore-client-common";
 import { createTestClient } from "@test/utils";
-import type { DatastoreClient } from "@hanzo-ds/client-web";
+import type { DatastoreClient } from "@hanzo/datastore-client-web";
 
 describe("[Web] abort request", () => {
   let client: DatastoreClient;

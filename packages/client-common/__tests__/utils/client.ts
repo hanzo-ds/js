@@ -4,7 +4,7 @@ import {
   type BaseDatastoreClientConfigOptions,
   type DatastoreClient,
   type DatastoreSettings,
-} from "@hanzo-ds/client-common";
+} from "@hanzo/datastore-client-common";
 import { EnvKeys, getFromEnv } from "./env";
 import { guid } from "./guid";
 import { createSimpleTestClient, getTestLogConfig } from "./simple_client";

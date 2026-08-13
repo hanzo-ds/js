@@ -1,6 +1,6 @@
 # Recommendations for AI agents — `skills/`
 
-Guidance for the shipped agent skills. See the [repo-root `AGENTS.md`](../AGENTS.md) for cross-cutting guidance. The `@hanzo-ds/rowbinary` skill has its own [`datastore-js-node-rowbinary/AGENTS.md`](datastore-js-node-rowbinary/AGENTS.md).
+Guidance for the shipped agent skills. See the [repo-root `AGENTS.md`](../AGENTS.md) for cross-cutting guidance. The `@hanzo/datastore-rowbinary` skill has its own [`datastore-js-node-rowbinary/AGENTS.md`](datastore-js-node-rowbinary/AGENTS.md).
 
 - Each shipped skill must also be listed in the `agents.skills` array of
   [`packages/client-node/package.json`](../packages/client-node/package.json) so downstream tooling can

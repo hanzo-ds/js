@@ -1,7 +1,7 @@
 import type {
   DatastoreClient,
   DatastoreSettings,
-} from "@hanzo-ds/client-common";
+} from "@hanzo/datastore-client-common";
 import { createTable, guid, TestEnv } from "../utils";
 
 export async function createTableWithFields(

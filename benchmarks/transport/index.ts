@@ -13,7 +13,7 @@ import {
 } from "./stats";
 
 /*
- * Transport benchmark: `@hanzo-ds/client` (legacy `http`/`https`) vs a trivial
+ * Transport benchmark: `@hanzo/datastore-client` (legacy `http`/`https`) vs a trivial
  * `undici.request()` stub.
  *
  * Motivation: https://github.com/hanzo-ds/js/issues/511 proposes
@@ -150,7 +150,7 @@ async function run(): Promise<void> {
   attachExceptionHandlers();
 
   console.log(
-    "Transport benchmark: @hanzo-ds/client (http/https) vs undici.request()",
+    "Transport benchmark: @hanzo/datastore-client (http/https) vs undici.request()",
   );
   console.log("Configuration:");
   console.log(`  url:              ${url}`);

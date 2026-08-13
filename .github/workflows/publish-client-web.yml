@@ -1,6 +1,6 @@
 name: "publish: client-web"
 
-# Publish + release for @hanzo-ds/client-web (the Web client).
+# Publish + release for @hanzo/datastore-client-web (the Web client).
 #
 # Split out of the former all-in-one publish.yml so each client package
 # publishes on its own. Two triggers, like the standalone-package workflows:
@@ -55,13 +55,13 @@ env:
 
 jobs:
   head:
-    name: "Publish @hanzo-ds/client-web (head)"
+    name: "Publish @hanzo/datastore-client-web (head)"
     if: github.ref == 'refs/heads/release' && github.event_name == 'push'
     runs-on: ubuntu-latest
     environment: npm-publish
     outputs:
       version: ${{ steps.version.outputs.version }}
-      packages: "@hanzo-ds/client-web"
+      packages: "@hanzo/datastore-client-web"
     steps:
       - name: Checkout repository
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
@@ -81,22 +81,22 @@ jobs:
           BASE_VERSION=$(node -p "require('./packages/client-web/package.json').version")
           HEAD_VERSION="${BASE_VERSION}-head.${GITHUB_SHA::7}.${GITHUB_RUN_ATTEMPT}"
           echo "Setting version to: $HEAD_VERSION"
-          npm --workspace @hanzo-ds/client-web version --no-git-tag-version "$HEAD_VERSION"
+          npm --workspace @hanzo/datastore-client-web version --no-git-tag-version "$HEAD_VERSION"
           echo "export default \"$HEAD_VERSION\";" > packages/client-web/src/version.ts
           echo "version=$HEAD_VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Build the package
-        run: npm --workspace @hanzo-ds/client-web run build
+        run: npm --workspace @hanzo/datastore-client-web run build
 
-      - name: Publish @hanzo-ds/client-web with head tag
+      - name: Publish @hanzo/datastore-client-web with head tag
         run: |
-          npm --workspace @hanzo-ds/client-web publish \
+          npm --workspace @hanzo/datastore-client-web publish \
             --access public \
             --provenance \
             --tag head
 
   publish:
-    name: "Publish @hanzo-ds/client-web"
+    name: "Publish @hanzo/datastore-client-web"
     if: github.ref == 'refs/heads/release' && github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     environment: npm-publish
@@ -105,7 +105,7 @@ jobs:
       id-token: write # Required for npm OIDC authentication and provenance
     outputs:
       version: ${{ steps.version.outputs.version }}
-      packages: "@hanzo-ds/client-web"
+      packages: "@hanzo/datastore-client-web"
     steps:
       - name: Checkout repository
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
@@ -127,11 +127,11 @@ jobs:
           echo "version=$BASE_VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Build the package
-        run: npm --workspace @hanzo-ds/client-web run build
+        run: npm --workspace @hanzo/datastore-client-web run build
 
-      - name: Publish @hanzo-ds/client-web to the latest tag (implicit)
+      - name: Publish @hanzo/datastore-client-web to the latest tag (implicit)
         run: |
-          npm --workspace @hanzo-ds/client-web publish \
+          npm --workspace @hanzo/datastore-client-web publish \
             --access public \
             --provenance
 
@@ -186,7 +186,7 @@ jobs:
             echo "PUBLISHED_VERSION is empty; cannot wait for npm publication." >&2
             exit 1
           fi
-          pkg="@hanzo-ds/client-web"
+          pkg="@hanzo/datastore-client-web"
           # Poll the registry for up to ~5 minutes. New versions usually surface
           # in seconds, but the registry CDN can lag.
           max_attempts=60
@@ -213,8 +213,8 @@ jobs:
       - name: Install the Playwright browser
         run: npx playwright install ${{ matrix.browser }}
 
-      - name: Install @hanzo-ds/client-web at the published version
-        run: npm install "@hanzo-ds/client-web@${PUBLISHED_VERSION}"
+      - name: Install @hanzo/datastore-client-web at the published version
+        run: npm install "@hanzo/datastore-client-web@${PUBLISHED_VERSION}"
 
       # Real-browser e2e: vitest's Vite bundler serves the installed package to a
       # Playwright-driven browser and runs it against the live Datastore started

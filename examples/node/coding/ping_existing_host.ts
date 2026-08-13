@@ -8,7 +8,7 @@
 // See also:
 //  - `ping_non_existing_host.ts` - ping against a host that does not exist.
 //  - `../troubleshooting/ping_timeout.ts` - Node.js-only ping timeout example.
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 
 const client = createClient({
   url: process.env["DATASTORE_URL"], // defaults to 'http://localhost:8123'

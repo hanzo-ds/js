@@ -3,9 +3,9 @@ import type {
   ErrorLogParams,
   Logger,
   LogParams,
-} from "@hanzo-ds/client-common";
+} from "@hanzo/datastore-client-common";
 import { describe, it, afterEach, expect, vi } from "vitest";
-import { DatastoreLogLevel } from "@hanzo-ds/client-common";
+import { DatastoreLogLevel } from "@hanzo/datastore-client-common";
 import { createTestClient } from "@test/utils/client";
 
 describe("[Node.js] logger support", () => {

@@ -3,7 +3,7 @@
  * ======================================================
  *
  *   Repo:        https://github.com/daytonaio/daytona  (~72k★)
- *   Package:     @hanzo-ds/client  ^1.16.0
+ *   Package:     @hanzo/datastore-client  ^1.16.0
  *   Lives in:    apps/api/src/clickhouse
  *   Analysed at: 8be4772fbff159856b99ca595622a7fb1e64e63a
  *
@@ -29,7 +29,7 @@
  */
 
 import { afterEach, describe, expect, it } from "vitest";
-import { type DatastoreClient } from "@hanzo-ds/client";
+import { type DatastoreClient } from "@hanzo/datastore-client";
 import { createTestClient, guid } from "@test/utils";
 
 describe("oss-dependents / daytona", () => {

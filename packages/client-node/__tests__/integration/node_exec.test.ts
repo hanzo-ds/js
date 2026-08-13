@@ -1,11 +1,11 @@
-import type { DatastoreClient } from "@hanzo-ds/client-common";
+import type { DatastoreClient } from "@hanzo/datastore-client-common";
 import { describe, it, beforeEach, afterEach, expect } from "vitest";
 import { createSimpleTable } from "@test/fixtures/simple_table";
 import { createTestClient } from "@test/utils/client";
 import { guid } from "@test/utils/guid";
 import Stream from "stream";
 import Zlib from "zlib";
-import { ResultSet, drainStream } from "@hanzo-ds/client";
+import { ResultSet, drainStream } from "@hanzo/datastore-client";
 import { getAsText } from "../utils/stream";
 
 describe("[Node.js] exec", () => {

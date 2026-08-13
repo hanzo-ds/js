@@ -9,12 +9,12 @@
 # package is published to npm, rather than after.
 #
 # Usage: .scripts/smoke_test_pack.sh [workspace]
-#   workspace defaults to @hanzo-ds/client.
+#   workspace defaults to @hanzo/datastore-client.
 #
 # Run from the repository root, after `npm run build` (or a per-workspace build).
 set -euo pipefail
 
-WORKSPACE="${1:-@hanzo-ds/client}"
+WORKSPACE="${1:-@hanzo/datastore-client}"
 REPO="$(pwd)"
 SMOKE_DIR="$REPO/tests/e2e/smoke"
 
@@ -33,7 +33,7 @@ npm init -y >/dev/null
 npm install "./$TARBALL"
 
 echo "--- installed @datastore packages ---"
-ls node_modules/@hanzo-ds/
+ls node_modules/@hanzo/datastore-
 
 echo "--- ESM check ---"
 node check.mjs

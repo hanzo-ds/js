@@ -5,7 +5,7 @@
 // See also:
 //  - `select_json_each_row.ts` for row-by-row JSON output.
 //  - `select_data_formats_overview.ts` for a broader format comparison.
-import { createClient, type ResponseJSON } from "@hanzo-ds/client";
+import { createClient, type ResponseJSON } from "@hanzo/datastore-client";
 
 const client = createClient();
 const rows = await client.query({

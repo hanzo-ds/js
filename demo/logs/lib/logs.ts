@@ -13,7 +13,7 @@ import {
   readUInt16,
   readFloat64,
   type Reader,
-} from "@hanzo-ds/rowbinary";
+} from "@hanzo/datastore-rowbinary";
 
 import { queryRowBinary } from "./datastore";
 
@@ -53,7 +53,7 @@ const LEVEL_BY_ID: Record<number, LogLevel> = {
 /**
  * Read exactly one log row from the cursor.
  *
- * This is the clear, API-combinator form the `@hanzo-ds/rowbinary` README calls
+ * This is the clear, API-combinator form the `@hanzo/datastore-rowbinary` README calls
  * "correct, clear, and a fine default" — one leaf read per column, in wire order.
  * The row mixes fixed-width columns (DateTime64, Enum8, IPv4, UUID, UInt16,
  * Float64) with variable-width ones (the two Strings), so it is a natural fit for

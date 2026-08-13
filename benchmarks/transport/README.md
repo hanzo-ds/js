@@ -4,10 +4,10 @@
 
 This benchmark provides reproducible numbers for the proposal in
 [#511](https://github.com/hanzo-ds/js/issues/511): replacing the
-legacy `node:http` / `node:https` transport used by `@hanzo-ds/client` with
+legacy `node:http` / `node:https` transport used by `@hanzo/datastore-client` with
 `undici`.
 
-It compares `@hanzo-ds/client` **as built from this repository** (resolved via
+It compares `@hanzo/datastore-client` **as built from this repository** (resolved via
 the npm workspace symlink, which uses `http`/`https` internally) against a
 **trivial `undici.request()`-based stub** over the exact same HTTP requests, so
 the difference reflects raw transport cost rather than client-side parsing or
@@ -17,7 +17,7 @@ configuration.
 > response body through the WebStreams (`ReadableStream`) layer, which is a known
 > Node.js-core bottleneck ([nodejs/undici#1203](https://github.com/nodejs/undici/issues/1203))
 > and drains large bodies several times slower than native streams. `request()`
-> returns a native Node `Readable` — the same stream type `@hanzo-ds/client`
+> returns a native Node `Readable` — the same stream type `@hanzo/datastore-client`
 > drains — so this is an apples-to-apples transport comparison and reflects the
 > API a real migration would actually adopt. An earlier revision of this
 > benchmark used `fetch()` and showed it losing the download scenario by ~5×;
@@ -43,12 +43,12 @@ Start a local Datastore instance (the default `docker-compose.yml` works):
 docker-compose up -d
 ```
 
-The benchmark drives `@hanzo-ds/client` through the compiled workspace package
+The benchmark drives `@hanzo/datastore-client` through the compiled workspace package
 (`packages/client-node/dist`), so build the workspace packages first, then run
 the benchmark with `tsx`:
 
 ```sh
-# 1. Build the workspace packages so `@hanzo-ds/client` resolves at runtime.
+# 1. Build the workspace packages so `@hanzo/datastore-client` resolves at runtime.
 npm run build
 
 # 2. Run the benchmark.
@@ -87,7 +87,7 @@ DOWNLOAD_ROWS=1000000 UPLOAD_ROWS=1000000 ITERATIONS=10 WARMUP=3`). **Reproduce
 on your own hardware before drawing conclusions** — absolute values are
 environment-specific.
 
-| Scenario                  | `@hanzo-ds/client` (http/https) | `undici.request()` stub |
+| Scenario                  | `@hanzo/datastore-client` (http/https) | `undici.request()` stub |
 | ------------------------- | ------------------------------- | ----------------------- |
 | `SELECT 1` latency (mean) | ~2.1–2.7 ms                     | ~0.50 ms                |
 | Download throughput       | ~1310–1440 MiB/s                | ~1850–1920 MiB/s        |

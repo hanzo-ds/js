@@ -3,7 +3,7 @@ import {
   createClient,
   DatastoreError,
   type DatastoreClient,
-} from "@hanzo-ds/client-web";
+} from "@hanzo/datastore-client-web";
 
 // The publish workflow starts the single-node Datastore compose service before
 // this runs. Its HTTP interface sends CORS headers (see
@@ -11,7 +11,7 @@ import {
 // browser can reach it cross-origin from the vitest page.
 const url = "http://127.0.0.1:8123";
 
-describe("[Web e2e] published @hanzo-ds/client-web in a real browser", () => {
+describe("[Web e2e] published @hanzo/datastore-client-web in a real browser", () => {
   let client: DatastoreClient;
 
   beforeAll(() => {

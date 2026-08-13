@@ -31,8 +31,8 @@ function ensureNoZstdCodec(compression: CompressionSettings): void {
   for (const [direction, value] of directions) {
     if (value?.codec === "zstd") {
       throw new Error(
-        `zstd ${direction} compression is not supported by @hanzo-ds/client-web; ` +
-          `it is only available in @hanzo-ds/client (Node.js). Use gzip instead.`,
+        `zstd ${direction} compression is not supported by @hanzo/datastore-client-web; ` +
+          `it is only available in @hanzo/datastore-client (Node.js). Use gzip instead.`,
       );
     }
   }

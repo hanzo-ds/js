@@ -2,10 +2,10 @@ import { afterAll, beforeAll, describe, it } from "vitest";
 import type {
   DatastoreClient as BaseDatastoreClient,
   DataFormat,
-} from "@hanzo-ds/client-common";
+} from "@hanzo/datastore-client-common";
 import { createTableWithFields } from "@test/fixtures/table_with_fields";
 import { guid } from "@test/utils/guid";
-import type { DatastoreClient, ResultSet } from "@hanzo-ds/client";
+import type { DatastoreClient, ResultSet } from "@hanzo/datastore-client";
 import { createNodeTestClient } from "../utils/node_client";
 
 /* eslint-disable @typescript-eslint/no-unused-expressions */

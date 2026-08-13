@@ -1649,8 +1649,8 @@ export type DatastoreSettings = Partial<DatastoreServerSettings> &
  *
  * Identical to {@link DatastoreSettings} except that the index signature does
  * not include {@link SettingsMap}. `SettingsMap` is a class with a private
- * member, so TypeScript compares it nominally; because `@hanzo-ds/client` and
- * `@hanzo-ds/client-web` each bundle their own copy of this module, their
+ * member, so TypeScript compares it nominally; because `@hanzo/datastore-client` and
+ * `@hanzo/datastore-client-web` each bundle their own copy of this module, their
  * `DatastoreSettings` types are mutually unassignable. This interface omits the
  * only nominal member, so it is structurally identical across all three packages
  * and assignable into each package's `DatastoreSettings`.

@@ -4,7 +4,7 @@ import type {
   DataFormat,
   InputJSON,
   InputJSONObjectEachRow,
-} from "@hanzo-ds/client-common";
+} from "@hanzo/datastore-client-common";
 import Stream from "stream";
 import { NodeValuesEncoder } from "../../src/utils";
 import * as simdjson from "simdjson";

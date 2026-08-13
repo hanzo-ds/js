@@ -2,7 +2,7 @@
 //
 // For binding parameters that contain special characters (tabs, newlines, quotes, etc.),
 // see `query_with_parameter_binding_special_chars.ts`.
-import { createClient, TupleParam } from "@hanzo-ds/client";
+import { createClient, TupleParam } from "@hanzo/datastore-client";
 
 const client = createClient();
 const resultSet = await client.query({

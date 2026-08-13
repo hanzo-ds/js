@@ -1,4 +1,4 @@
-import type { DatastoreClient } from "@hanzo-ds/client-common";
+import type { DatastoreClient } from "@hanzo/datastore-client-common";
 import { PRINT_DDL } from "@test/utils/test_env";
 import {
   getDatastoreTestEnvironment,

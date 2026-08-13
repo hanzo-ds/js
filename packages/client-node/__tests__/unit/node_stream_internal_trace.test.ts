@@ -3,7 +3,7 @@ import {
   DefaultLogger,
   LogWriter,
   DatastoreLogLevel,
-} from "@hanzo-ds/client-common";
+} from "@hanzo/datastore-client-common";
 import { drainStreamInternal, type Context } from "../../src/connection/stream";
 import stream from "stream";
 

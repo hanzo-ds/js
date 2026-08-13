@@ -7,7 +7,7 @@ import {
   afterAll,
   vi,
 } from "vitest";
-import type { DataFormat, Row } from "@hanzo-ds/client-common";
+import type { DataFormat, Row } from "@hanzo/datastore-client-common";
 import { guid } from "../../../client-common/__tests__/utils/guid";
 import Stream, { Readable } from "stream";
 import { ResultSet } from "../../src";

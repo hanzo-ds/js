@@ -5,9 +5,9 @@ single source of truth and is kept in step with the GitHub Actions workflows:
 
 - [.claude/skills/release/SKILL.md](.claude/skills/release/SKILL.md)
 
-It covers all the packages — `@hanzo-ds/client`, `@hanzo-ds/client-web`,
-the deprecated `@hanzo-ds/client-common`, and the standalone
-`@hanzo-ds/datatype-parser` and `@hanzo-ds/rowbinary` — including version
+It covers all the packages — `@hanzo/datastore-client`, `@hanzo/datastore-client-web`,
+the deprecated `@hanzo/datastore-client-common`, and the standalone
+`@hanzo/datastore-datatype-parser` and `@hanzo/datastore-rowbinary` — including version
 bumping, syncing the protected `release` branch from `main`, the `npm-publish`
 approval gate, and creating the GitHub Release from `CHANGELOG.md`.
 

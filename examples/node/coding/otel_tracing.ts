@@ -32,7 +32,7 @@ import {
   createClient,
   type DatastoreSpan,
   type DatastoreTracer,
-} from "@hanzo-ds/client";
+} from "@hanzo/datastore-client";
 
 // 1. Register the AsyncLocalStorageContextManager so that the span started by
 //    `startActiveSpan` stays *active* across the `await` points inside the
@@ -50,7 +50,7 @@ const exporter = new InMemorySpanExporter();
 const provider = new BasicTracerProvider({
   spanProcessors: [new SimpleSpanProcessor(exporter)],
 });
-const otelTracer = provider.getTracer("@hanzo-ds/client");
+const otelTracer = provider.getTracer("@hanzo/datastore-client");
 
 // 3. The zero-adapter path: a raw OpenTelemetry tracer is structurally
 //    assignable to `DatastoreTracer` - this compiles with no casts.

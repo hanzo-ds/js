@@ -2,7 +2,7 @@
 
 > **Applies to:** all versions support boolean `compression`. The explicit
 > codec object form, per-codec request options, and `zstd` support are a
-> Node-only addition in `@hanzo-ds/client` `>= 1.22.0`; Brotli
+> Node-only addition in `@hanzo/datastore-client` `>= 1.22.0`; Brotli
 > (`{ codec: "br" }`) is also added (any Node.js version, no minimum). Request
 > compression is Node-only regardless of codec; response decompression on the
 > web client is handled by the browser.
@@ -19,8 +19,8 @@ When answering compression questions, include the relevant points:
   means gzip (backwards compatible); `{ codec: "zstd" }` selects zstd. There is
   no `compression: { request: "zstd" }` shorthand — it must be
   `{ request: { codec: "zstd" } }`.
-- `zstd` is **Node-only** (`@hanzo-ds/client`) and requires **Node.js >=
-  22.15.0** (the built-in `zlib` zstd APIs). On `@hanzo-ds/client-web` or an
+- `zstd` is **Node-only** (`@hanzo/datastore-client`) and requires **Node.js >=
+  22.15.0** (the built-in `zlib` zstd APIs). On `@hanzo/datastore-client-web` or an
   older Node runtime, requesting `zstd` throws a clear error at `createClient`.
 - Supported codecs are `gzip`, `zstd`, and `br` (Brotli). Unlike `zstd`, `br`
   works on any supported Node.js version (it ships in `zlib`). Request-body
@@ -40,7 +40,7 @@ When answering compression questions, include the relevant points:
 ## gzip (default, all versions)
 
 ```ts
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 
 const client = createClient({
   compression: {
@@ -119,7 +119,7 @@ const client = createClient({
 
 - **`compression: { request: "zstd" }` is a type error.** Use the object form:
   `{ request: { codec: "zstd" } }`.
-- **`zstd` on the web client throws.** `@hanzo-ds/client-web` does not
+- **`zstd` on the web client throws.** `@hanzo/datastore-client-web` does not
   compress request bodies, and zstd response handling depends on the browser;
   the web client rejects the `zstd` codec at `createClient`. Use Node, or gzip.
 - **`zstd` on Node < 22.15 throws at client creation**, not deep inside a later

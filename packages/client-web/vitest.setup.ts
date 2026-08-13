@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { createClient } from "@hanzo-ds/client-web";
+import { createClient } from "@hanzo/datastore-client-web";
 
 /**
  * This file is used to set up the test environment for Vitest when running tests in Node.js.

@@ -1,4 +1,4 @@
-import { type DatastoreClient, createClient } from "@hanzo-ds/client";
+import { type DatastoreClient, createClient } from "@hanzo/datastore-client";
 import * as crypto from "node:crypto";
 import { setTimeout as sleep } from "node:timers/promises";
 

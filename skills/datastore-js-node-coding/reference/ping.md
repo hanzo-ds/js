@@ -28,7 +28,7 @@ When answering "how do I health-check / readiness-probe Datastore?":
 ## Successful ping
 
 ```ts
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 
 const client = createClient({
   url: process.env.DATASTORE_URL,
@@ -57,8 +57,8 @@ Use `ping()` to:
 `{ success: false, error: Error }`, so you can branch without `try/catch`:
 
 ```ts
-import type { PingResult } from "@hanzo-ds/client";
-import { createClient } from "@hanzo-ds/client";
+import type { PingResult } from "@hanzo/datastore-client";
+import { createClient } from "@hanzo/datastore-client";
 
 const client = createClient({
   url: "http://localhost:8100", // non-existing host

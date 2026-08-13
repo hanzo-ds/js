@@ -1,5 +1,5 @@
 {
-  "name": "@hanzo-ds/client",
+  "name": "@hanzo/datastore-client",
   "description": "Official JS client for Hanzo Datastore - Node.js implementation",
   "homepage": "https://docs.hanzo.ai/datastore",
   "version": "1.23.1",

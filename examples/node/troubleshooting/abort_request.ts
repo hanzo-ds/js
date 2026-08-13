@@ -1,4 +1,4 @@
-import { createClient } from "@hanzo-ds/client";
+import { createClient } from "@hanzo/datastore-client";
 
 /**
  * Cancelling a request in progress. By default, this does not cancel the query on the server, only the request itself.

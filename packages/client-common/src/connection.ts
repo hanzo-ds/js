@@ -33,7 +33,7 @@ export interface ConnectionParams {
  *  (read) bodies. `zstd` requires Node.js >= 22.15.0 (zstd support in the
  *  built-in `zlib` module); `br` (Brotli) is available on every supported
  *  Node.js version. Request-body compression is performed only by
- *  `@hanzo-ds/client` (Node.js); on the web client, response decompression is
+ *  `@hanzo/datastore-client` (Node.js); on the web client, response decompression is
  *  handled by the browser and only `zstd` is rejected. */
 export type CompressionMethod = "gzip" | "zstd" | "br";
 
